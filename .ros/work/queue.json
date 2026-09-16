@@ -44,13 +44,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "principle"
+        "principle",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#0"
@@ -62,13 +63,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "purpose"
+        "purpose",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#1"
@@ -80,13 +82,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#2"
@@ -98,13 +101,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#3"
@@ -116,13 +120,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#4"
@@ -134,13 +139,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "api"
+        "api",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#5"
@@ -152,13 +158,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "boundaries"
+        "boundaries",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#6"
@@ -170,13 +177,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "policy"
+        "policy",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#7"
@@ -188,13 +196,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "recovery"
+        "recovery",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#8"
@@ -206,13 +215,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "integration-sde"
+        "integration-sde",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#9"
@@ -224,13 +234,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "integration-limen"
+        "integration-limen",
+        "epic-e11"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#10"
@@ -242,13 +253,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "privacy"
+        "privacy",
+        "epic-e02"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#11"
@@ -260,13 +272,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "privacy"
+        "privacy",
+        "epic-e02"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#12"
@@ -278,13 +291,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "context"
+        "context",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#13"
@@ -296,13 +310,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "correlation"
+        "correlation",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#14"
@@ -314,13 +329,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#15"
@@ -332,13 +348,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "translation"
+        "translation",
+        "epic-e04"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#16"
@@ -350,13 +367,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "translation"
+        "translation",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#17"
@@ -368,13 +386,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#18"
@@ -386,13 +405,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "policy"
+        "policy",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#19"
@@ -404,13 +424,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "data-integrity"
+        "data-integrity",
+        "epic-e04"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#20"
@@ -422,13 +443,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "recovery"
+        "recovery",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#21"
@@ -440,13 +462,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "history"
+        "history",
+        "epic-e06"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#22"
@@ -458,13 +481,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#23"
@@ -476,13 +500,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#24"
@@ -494,13 +519,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "resilience"
+        "resilience",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#25"
@@ -512,13 +538,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "configuration"
+        "configuration",
+        "epic-e08"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#26"
@@ -530,13 +557,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "testing"
+        "testing",
+        "epic-e13"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#27"
@@ -548,13 +576,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "testing"
+        "testing",
+        "epic-e13"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#28"
@@ -566,13 +595,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "policy"
+        "policy",
+        "epic-e03"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#29"
@@ -584,13 +614,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "diagnostics"
+        "diagnostics",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#30"
@@ -602,13 +633,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "diagnostics"
+        "diagnostics",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#31"
@@ -620,13 +652,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "integration"
+        "integration",
+        "epic-e04"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#32"
@@ -638,13 +671,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "integration-ros"
+        "integration-ros",
+        "epic-e14"
       ],
       "priority": "low",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#33"
@@ -656,13 +690,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "documentation"
+        "documentation",
+        "epic-e14"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#34"
@@ -674,13 +709,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "constraints"
+        "constraints",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#35"
@@ -692,13 +728,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "constraints"
+        "constraints",
+        "epic-e00"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#36"
@@ -710,13 +747,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "schema"
+        "schema",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#37"
@@ -728,13 +766,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "constraints"
+        "constraints",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#38"
@@ -746,13 +785,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#39"
@@ -764,13 +804,14 @@
       "tags": [
         "requirement",
         "aegis-core",
-        "traceability"
+        "traceability",
+        "epic-e14"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#40"
@@ -782,13 +823,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "context"
+        "context",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#1"
@@ -800,13 +842,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "diagnostics"
+        "diagnostics",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#2"
@@ -818,13 +861,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "aggregation"
+        "aggregation",
+        "epic-e10"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#3"
@@ -836,13 +880,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "aggregation"
+        "aggregation",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#4"
@@ -854,13 +899,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "escalation"
+        "escalation",
+        "epic-e10"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#5"
@@ -872,13 +918,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "resilience"
+        "resilience",
+        "epic-e12"
       ],
       "priority": "low",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#6"
@@ -890,13 +937,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "quarantine"
+        "quarantine",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#7"
@@ -908,13 +956,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "quarantine"
+        "quarantine",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#8"
@@ -926,13 +975,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#9"
@@ -944,13 +994,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "metadata"
+        "metadata",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#10"
@@ -962,13 +1013,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "metadata"
+        "metadata",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#11"
@@ -980,13 +1032,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "diagnostics"
+        "diagnostics",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#12"
@@ -998,13 +1051,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "diagnostics"
+        "diagnostics",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#13"
@@ -1016,13 +1070,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "catalog"
+        "catalog",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#14"
@@ -1034,13 +1089,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "recovery"
+        "recovery",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#15"
@@ -1052,13 +1108,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "obligations"
+        "obligations",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#16"
@@ -1070,13 +1127,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#17"
@@ -1088,13 +1146,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#18"
@@ -1106,13 +1165,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "safe-mode"
+        "safe-mode",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#19"
@@ -1124,13 +1184,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "bootstrap"
+        "bootstrap",
+        "epic-e08"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#20"
@@ -1142,13 +1203,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e08"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#21"
@@ -1160,13 +1222,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "boundaries"
+        "boundaries",
+        "epic-e03"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#22"
@@ -1178,13 +1241,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "testing"
+        "testing",
+        "epic-e04"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#23"
@@ -1196,13 +1260,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "schema"
+        "schema",
+        "epic-e04"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#24"
@@ -1214,13 +1279,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "presentation"
+        "presentation",
+        "epic-e11"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#25"
@@ -1232,13 +1298,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "presentation"
+        "presentation",
+        "epic-e11"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#26"
@@ -1250,13 +1317,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "privacy"
+        "privacy",
+        "epic-e02"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#27"
@@ -1268,13 +1336,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "automation"
+        "automation",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#28"
@@ -1286,13 +1355,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#29"
@@ -1304,13 +1374,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#30"
@@ -1322,13 +1393,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#31"
@@ -1340,13 +1412,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#32"
@@ -1358,13 +1431,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#33"
@@ -1376,13 +1450,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "lifecycle"
+        "lifecycle",
+        "epic-e10"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#34"
@@ -1394,13 +1469,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "aggregation"
+        "aggregation",
+        "epic-e10"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#35"
@@ -1412,13 +1488,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "escalation"
+        "escalation",
+        "epic-e10"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#36"
@@ -1430,13 +1507,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "recovery"
+        "recovery",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#37"
@@ -1448,13 +1526,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "recovery"
+        "recovery",
+        "epic-e09"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#38"
@@ -1466,13 +1545,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "obligations"
+        "obligations",
+        "epic-e09"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#39"
@@ -1484,13 +1564,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "privacy"
+        "privacy",
+        "epic-e02"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#40"
@@ -1502,13 +1583,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "query"
+        "query",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#41"
@@ -1520,13 +1602,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "automation"
+        "automation",
+        "epic-e12"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#42"
@@ -1538,13 +1621,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#43"
@@ -1556,13 +1640,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#44"
@@ -1574,13 +1659,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "model"
+        "model",
+        "epic-e01"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#45"
@@ -1592,13 +1678,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "aggregation"
+        "aggregation",
+        "epic-e10"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#46"
@@ -1610,13 +1697,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "configuration"
+        "configuration",
+        "epic-e08"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#47"
@@ -1628,13 +1716,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#48"
@@ -1646,13 +1735,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "resilience"
+        "resilience",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#49"
@@ -1664,13 +1754,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#50"
@@ -1682,13 +1773,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "health"
+        "health",
+        "epic-e06"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#51"
@@ -1700,13 +1792,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "retention"
+        "retention",
+        "epic-e07"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#52"
@@ -1718,13 +1811,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "principle"
+        "principle",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#53"
@@ -1736,13 +1830,14 @@
       "tags": [
         "requirement",
         "aegis-additional",
-        "principle"
+        "principle",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#54"
@@ -1754,13 +1849,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "purpose"
+        "purpose",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#1"
@@ -1772,13 +1868,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#2"
@@ -1790,13 +1887,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "storage"
+        "storage",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#3"
@@ -1808,13 +1906,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "storage"
+        "storage",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#4"
@@ -1827,13 +1926,14 @@
         "requirement",
         "aegis-logging",
         "model",
-        "lifecycle"
+        "lifecycle",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#5"
@@ -1845,13 +1945,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "storage"
+        "storage",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#6"
@@ -1863,13 +1964,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "github"
+        "github",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#7"
@@ -1881,13 +1983,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "github"
+        "github",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#8"
@@ -1899,13 +2002,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "github"
+        "github",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#9"
@@ -1917,13 +2021,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "database"
+        "database",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#10"
@@ -1935,13 +2040,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "schema"
+        "schema",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#11"
@@ -1953,13 +2059,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "schema"
+        "schema",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#12"
@@ -1972,13 +2079,14 @@
         "requirement",
         "aegis-logging",
         "schema",
-        "model"
+        "model",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#13"
@@ -1990,13 +2098,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#14"
@@ -2008,13 +2117,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "sinks"
+        "sinks",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#15"
@@ -2026,13 +2136,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "resilience"
+        "resilience",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#16"
@@ -2044,13 +2155,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "policy"
+        "policy",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#17"
@@ -2062,13 +2174,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "performance"
+        "performance",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#18"
@@ -2080,13 +2193,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "performance"
+        "performance",
+        "epic-e06"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#19"
@@ -2098,13 +2212,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "offline"
+        "offline",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#20"
@@ -2116,13 +2231,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "privacy"
+        "privacy",
+        "epic-e02"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#21"
@@ -2134,13 +2250,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "correlation"
+        "correlation",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#22"
@@ -2152,13 +2269,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "correlation"
+        "correlation",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#23"
@@ -2170,13 +2288,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "model"
+        "model",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#24"
@@ -2188,13 +2307,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "model"
+        "model",
+        "epic-e05"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#25"
@@ -2206,13 +2326,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "retention"
+        "retention",
+        "epic-e07"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#26"
@@ -2224,13 +2345,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "query"
+        "query",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#27"
@@ -2242,13 +2364,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "principle"
+        "principle",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#28"
@@ -2260,13 +2383,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "diagnostics"
+        "diagnostics",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#29"
@@ -2278,13 +2402,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "diagnostics"
+        "diagnostics",
+        "epic-e06"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#30"
@@ -2296,13 +2421,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "audit"
+        "audit",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#31"
@@ -2314,13 +2440,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "storage"
+        "storage",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#32"
@@ -2332,13 +2459,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "storage"
+        "storage",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#33"
@@ -2350,13 +2478,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "concurrency"
+        "concurrency",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#34"
@@ -2368,13 +2497,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "github"
+        "github",
+        "epic-e07"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#35"
@@ -2386,13 +2516,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "github"
+        "github",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#36"
@@ -2404,13 +2535,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "database"
+        "database",
+        "epic-e07"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#37"
@@ -2422,13 +2554,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "health"
+        "health",
+        "epic-e06"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#38"
@@ -2440,13 +2573,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "configuration"
+        "configuration",
+        "epic-e08"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#39"
@@ -2458,13 +2592,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "testing"
+        "testing",
+        "epic-e13"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#40"
@@ -2476,13 +2611,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "testing"
+        "testing",
+        "epic-e06"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#41"
@@ -2494,13 +2630,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "constraints"
+        "constraints",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#42"
@@ -2512,13 +2649,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "integration"
+        "integration",
+        "epic-e07"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#43"
@@ -2530,13 +2668,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "integration-sde"
+        "integration-sde",
+        "epic-e14"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#44"
@@ -2548,13 +2687,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "integration-limen"
+        "integration-limen",
+        "epic-e11"
       ],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#45"
@@ -2566,13 +2706,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "integration-ros"
+        "integration-ros",
+        "epic-e14"
       ],
       "priority": "low",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#46"
@@ -2584,13 +2725,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "principle"
+        "principle",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#47"
@@ -2603,16 +2745,304 @@
         "requirement",
         "aegis-logging",
         "principle",
-        "constraints"
+        "constraints",
+        "epic-e00"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T22:29:25Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#48"
+    },
+    {
+      "id": "AEG-SYNTH-001",
+      "title": "Synthesize Aegis requirements into dependency-ordered implementation epics",
+      "description": "Group the 143 captured requirement items into a verified partition of dependency-ordered epics, record the sequencing decision as a canonical DF decision record, and tag each requirement item with its epic.",
+      "tags": [
+        "synthesis",
+        "planning"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:14:45Z",
+      "updatedAt": "2026-09-16T23:17:08Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-EPIC-E00",
+      "title": "E00: Governing constraints and scope",
+      "description": "Cross-cutting principles that constrain every other epic rather than being built once. Reviewed as acceptance criteria throughout, not scheduled as standalone delivery. Wave 1; depends on nothing; 12 requirement items tagged epic-e00.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-1"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E01",
+      "title": "E01: Fault model and classification vocabulary",
+      "description": "The representation and classification vocabulary every later epic consumes. Nothing can be captured, recorded, recovered or presented before Fault, FailureCategory, codes, severity and impact exist. Wave 2; depends on E00; 14 requirement items tagged epic-e01.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-2"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E02",
+      "title": "E02: Redaction and privacy core",
+      "description": "Sequenced before anything persists or exports because the requirements state sensitive-data protection is foundational rather than optional, and sinks must never decide whether credentials are safe to persist. Wave 3; depends on E01; 5 requirement items tagged epic-e02.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-3"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E03",
+      "title": "E03: Capture API and architectural boundaries",
+      "description": "The public surface and the rules for where it is used. Depends on the fault model for what it produces and on redaction so captured context is safe from the first call. Wave 4; depends on E01, E02; 9 requirement items tagged epic-e03.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-4"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E04",
+      "title": "E04: Translation and integration contracts",
+      "description": "Keeps technology exceptions from crossing integration boundaries and gives each integration assembly a typed failure model, with contract tests proving the translation. Wave 5; depends on E01, E03; 5 requirement items tagged epic-e04.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E05",
+      "title": "E05: Event model and serialization",
+      "description": "The persisted lifecycle event vocabulary and its wire shape, versioned from the start. Storage adapters and the lifecycle projection both build on this. Wave 4; depends on E01, E02; 7 requirement items tagged epic-e05.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-4"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E06",
+      "title": "E06: Sink runtime",
+      "description": "Sink abstraction, fan-out, independence, failure containment and delivery behaviour, including the guarantee that Aegis survives its own sink failures. Wave 5; depends on E05, E03; 27 requirement items tagged epic-e06.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E07",
+      "title": "E07: Storage adapters and retrieval",
+      "description": "Concrete durable stores behind the standard contract, kept outside the core, plus the query and retention model that makes history usable. Wave 6; depends on E06; 15 requirement items tagged epic-e07.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E08",
+      "title": "E08: Configuration, bootstrap and shutdown",
+      "description": "Declare-once configuration with startup validation, plus fault boundaries that work before state exists and during controlled shutdown. Wave 6; depends on E06; 5 requirement items tagged epic-e08.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E09",
+      "title": "E09: Recovery and obligations",
+      "description": "Recovery policy, retry safety, verification that recovery actually worked, and the obligations and safe-mode requests that Aegis proposes but SDE authorizes. Wave 5; depends on E01, E03, E05; 10 requirement items tagged epic-e09.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E10",
+      "title": "E10: Fault lifecycle and projections",
+      "description": "The lifecycle Aegis owns beyond exception capture: immutable events, the active-fault projection derived from them, resolution, reopening, supersession, deduplication and escalation. Wave 5; depends on E05; 12 requirement items tagged epic-e10.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E11",
+      "title": "E11: Presentation intent",
+      "description": "Structured presentation intent and noise control for Limen to render, without Aegis generating UI. Wave 6; depends on E01, E10; 4 requirement items tagged epic-e11.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E12",
+      "title": "E12: Diagnostics and agent surface",
+      "description": "The operator- and agent-facing diagnostic layer: breadcrumbs, environment and deployment metadata, bundles, the known-fault catalog, and the containment behaviours that consume fault state. Wave 6; depends on E01, E06; 10 requirement items tagged epic-e12.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E13",
+      "title": "E13: Test strategy",
+      "description": "Deterministic testability as a design constraint plus the concrete suites the requirements enumerate for the package and for every sink. Wave 6; depends on E03, E06; 3 requirement items tagged epic-e13.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E14",
+      "title": "E14: Documentation and ROS compliance",
+      "description": "The teaching documentation the requirements mandate, the declared fault boundaries and persistence declarations ROS should enforce, and closing out the initial pass's open design questions. Wave 7; depends on E03, E07; 5 requirement items tagged epic-e14.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-7"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-16T23:15:39Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
     }
   ]
 }
