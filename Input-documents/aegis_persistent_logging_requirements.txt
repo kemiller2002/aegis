@@ -1,0 +1,698 @@
+Aegis Persistent Logging and Sink Requirements
+
+1. Purpose
+
+Aegis shall provide a standard, storage-independent way to persist faults and related lifecycle events.
+
+The persistence mechanism shall support GitHub, databases, local files, memory, console output, and future telemetry systems without requiring application code to know which storage mechanism is configured.
+
+Applications shall interact with Aegis through a common reporting interface.
+
+Example:
+
+Aegis.report fault
+
+
+2. Standard Sink Abstraction
+
+Aegis shall define a common sink abstraction.
+
+Example:
+
+type IAegisSink =
+    abstract member Write :
+        AegisEvent -> Async<unit>
+
+Aegis shall support one or many configured sinks.
+
+Initial sink types should include:
+
+- Console
+- Memory
+- File
+- GitHub
+- Database
+
+Potential future sinks may include:
+
+- Remote telemetry
+- Cloud logging systems
+- Message queues
+- Diagnostic collectors
+- Test collectors
+
+
+3. Standard Store Abstraction
+
+Aegis shall separate durable storage concerns from the core runtime.
+
+A standard durable store contract should be defined.
+
+Example:
+
+type IAegisStore =
+    abstract member Append :
+        AegisEvent -> Async<unit>
+
+    abstract member AppendBatch :
+        AegisEvent list -> Async<unit>
+
+    abstract member Query :
+        AegisQuery -> Async<AegisEvent list>
+
+The core Aegis package shall not depend directly on PostgreSQL, SQL Server, SQLite, or any other specific database engine.
+
+
+4. Storage Adapters
+
+Storage-specific adapters may implement the standard store contract.
+
+Potential adapters include:
+
+Aegis.Store.Postgres
+Aegis.Store.SqlServer
+Aegis.Store.Sqlite
+Aegis.Store.GitHub
+
+Adapters shall remain outside the core runtime unless a compelling reason exists otherwise.
+
+
+5. Persist More Than Faults
+
+Aegis persistence should record the lifecycle of faults, not only the original exception or fault record.
+
+A common event model should be defined.
+
+Example:
+
+type AegisEvent =
+    | FaultRecorded of Fault
+    | RecoveryAttempted of RecoveryAttempt
+    | RecoverySucceeded of RecoveryResult
+    | RecoveryFailed of RecoveryFailure
+    | FaultAcknowledged of FaultId
+    | FaultResolved of FaultResolution
+
+This provides a complete history of what happened after a fault occurred.
+
+
+6. Append-Oriented Storage
+
+Aegis persistent storage should favor append-oriented writes where practical.
+
+Persistent records should normally be immutable once written.
+
+Corrections, acknowledgements, recovery attempts, and resolution events should be represented as additional events rather than destructive updates to existing history.
+
+
+7. GitHub Storage Model
+
+The GitHub sink should favor one immutable event file per event rather than repeatedly rewriting a single large log file.
+
+Example structure:
+
+/aegis/
+    /2026/
+        /09/
+            /16/
+                01KHXXXXXXXXXXXX.json
+                01KHYYYYYYYYYYYY.json
+                01KHZZZZZZZZZZZZ.json
+
+This design should minimize merge conflicts and simplify:
+
+- audit history
+- agent inspection
+- Git history
+- retention rules
+- archival
+- diagnostics
+- correlation searches
+
+
+8. GitHub File Naming
+
+GitHub event file names should use stable, sortable unique identifiers.
+
+ULID-style identifiers are preferred because they provide uniqueness and time ordering.
+
+File names should not contain sensitive information.
+
+File names should not depend on mutable human-readable messages.
+
+
+9. GitHub Repository Configuration
+
+The GitHub sink should be configurable with:
+
+- repository
+- organization or owner
+- branch
+- root path
+- authentication provider
+- batching policy
+- retention metadata
+- write strategy
+
+The Aegis core runtime shall not require application methods to repeatedly provide this configuration.
+
+
+10. Database Storage
+
+The database sink shall persist Aegis events using the same semantic event model used by GitHub and other sinks.
+
+Database implementations should support efficient lookup by at least:
+
+- event ID
+- fault ID
+- correlation ID
+- timestamp
+- application
+- operation
+- fault code
+- severity
+- event type
+
+
+11. Storage Schema Consistency
+
+GitHub, database, file, and telemetry sinks should preserve the same semantic event schema.
+
+A fault stored in PostgreSQL should represent the same information as the equivalent fault stored in GitHub.
+
+Storage-specific representation may differ, but meaning must not.
+
+
+12. Versioned Event Schema
+
+Every persisted event shall include a schema version.
+
+Example:
+
+{
+  "schema": "aegis/event/v1"
+}
+
+Schema evolution must not silently break existing consumers, agents, tools, or historical records.
+
+
+13. Standard Serialized Event Shape
+
+A representative serialized Aegis event may look like:
+
+{
+  "schema": "aegis/event/v1",
+  "eventId": "01KH...",
+  "faultId": "01KH...",
+  "correlationId": "01KH...",
+  "timestamp": "2026-09-16T12:15:00Z",
+  "application": "Chrona",
+  "operation": "Chrona.TimeEntry.Load",
+  "eventType": "FaultRecorded",
+  "code": "CHRONA.GITHUB.LOAD_FAILED",
+  "severity": "Error",
+  "context": {
+    "entryId": "123"
+  }
+}
+
+The exact schema may evolve, but it should remain storage independent.
+
+
+14. Multiple Sinks
+
+Aegis shall support simultaneous logging to multiple destinations.
+
+Example:
+
+Application
+    |
+    v
+Aegis
+    |
+    +--> Memory sink
+    |
+    +--> GitHub sink
+    |
+    +--> Database sink
+    |
+    `--> Future telemetry sink
+
+Applications shall not need separate reporting logic for each sink.
+
+
+15. Sink Independence
+
+Failure of one sink should not automatically prevent other configured sinks from receiving the event.
+
+Example:
+
+If GitHub persistence fails but a database sink is available, the database sink should still receive the event where practical.
+
+
+16. Sink Failure Handling
+
+A sink failure must not recursively create an infinite Aegis failure loop.
+
+Aegis shall define a bounded fallback strategy for sink failures.
+
+Example:
+
+Original fault
+    ->
+GitHub sink fails
+    ->
+Aegis records a minimal sink failure through fallback handling
+    ->
+No recursive retry loop
+
+There must be a hard recursion or re-entry guard.
+
+
+17. Primary Operation Safety
+
+A persistence failure should not normally cause the original business operation to fail solely because diagnostic logging failed.
+
+Exceptions may exist where audit persistence is itself a business or compliance requirement.
+
+Such cases must be explicitly configured rather than assumed.
+
+
+18. Asynchronous Persistence
+
+Persistence should be asynchronous from the application's primary operation where practical.
+
+The error reporting path should add minimal latency to application behavior.
+
+Aegis should not block normal application execution on slow remote storage unless configured to do so.
+
+
+19. Batching
+
+Aegis shall support event batching for sinks where batching improves efficiency.
+
+Potential examples include:
+
+- PostgreSQL batch inserts
+- GitHub grouped commits
+- remote telemetry submission
+
+Batching must not destroy event ordering, identity, correlation, or schema consistency.
+
+
+20. Offline and Deferred Delivery
+
+Aegis should support deferred persistence where useful.
+
+If a remote sink is temporarily unavailable, Aegis may queue events for later delivery.
+
+Deferred delivery behavior should be configurable.
+
+Queued events must preserve:
+
+- event identity
+- timestamps
+- correlation IDs
+- ordering metadata
+- redaction state
+- schema version
+
+
+21. Sensitive Data Redaction
+
+Sensitive data must be redacted before an event reaches any sink.
+
+Sinks must never be responsible for deciding whether credentials are safe to persist.
+
+Examples that must be removed or masked before persistence include:
+
+- GitHub tokens
+- API keys
+- authorization headers
+- passwords
+- cookies
+- session tokens
+- private keys
+- secrets
+
+Applications shall be able to register additional redaction rules.
+
+
+22. Correlation Support
+
+Every sink shall preserve correlation IDs consistently.
+
+A developer or agent should be able to trace a single application operation across:
+
+- application command
+- integration assembly
+- GitHub API
+- serialization
+- recovery action
+- resolution
+
+regardless of which sink is being queried.
+
+
+23. Fault ID Support
+
+Every persisted lifecycle event associated with a fault shall preserve the fault ID.
+
+This allows all events related to a single fault to be reconstructed.
+
+
+24. Event Identity
+
+Every Aegis event shall have its own unique event ID.
+
+Fault IDs and event IDs are different concepts.
+
+Example:
+
+Fault ID:
+AG-F-01KH...
+
+Events:
+
+AG-E-01KH1... FaultRecorded
+AG-E-01KH2... RecoveryAttempted
+AG-E-01KH3... RecoverySucceeded
+AG-E-01KH4... FaultResolved
+
+
+25. Timestamp Requirements
+
+Every persisted event shall include a UTC timestamp.
+
+Storage implementations may additionally preserve local time or timezone information if required, but UTC shall be canonical.
+
+
+26. Retention Metadata
+
+Aegis should support retention policy metadata.
+
+Examples:
+
+- retain indefinitely
+- retain 30 days
+- retain 90 days
+- archive after 1 year
+- diagnostic-only
+- audit-required
+
+The storage adapter may enforce retention policy.
+
+The core event model should allow retention intent to be represented.
+
+
+27. Query Model
+
+Aegis should define a standard query model independent of the storage provider.
+
+Potential filters include:
+
+- fault ID
+- event ID
+- correlation ID
+- application
+- operation
+- fault code
+- severity
+- event type
+- time range
+- unresolved faults
+- recovery status
+
+
+28. Recording vs Querying
+
+Aegis shall keep the recording path small and dependable.
+
+Querying, filtering, dashboards, analytics, and reporting shall sit above the write path.
+
+The write path must not become dependent on advanced query infrastructure.
+
+
+29. Agent Readability
+
+Persisted Aegis events should be intentionally easy for agents to inspect and understand.
+
+Structured fields should be preferred over large unstructured log messages.
+
+GitHub persistence should make direct repository inspection practical.
+
+
+30. Human Readability
+
+Persisted records should remain understandable to developers and operators without requiring proprietary tooling.
+
+JSON records stored in GitHub should be reasonably readable.
+
+Database records should be renderable into equivalent human-readable diagnostic views.
+
+
+31. Audit History
+
+Append-oriented storage should make it possible to reconstruct:
+
+- what failed
+- when it failed
+- what caused it
+- what recovery was attempted
+- whether recovery succeeded
+- who or what acknowledged the fault
+- when the fault was resolved
+
+Historical events should not normally be destructively rewritten.
+
+
+32. Idempotency
+
+Sink implementations should consider duplicate-write protection.
+
+Retrying persistence should not silently create misleading duplicate events.
+
+Event IDs should be usable as idempotency keys where supported.
+
+
+33. Ordering
+
+Aegis should preserve enough ordering information to reconstruct event sequence.
+
+Timestamp alone may not always be sufficient.
+
+Event IDs or sequence metadata may be used when necessary.
+
+
+34. Concurrency
+
+Sinks must tolerate concurrent event writes.
+
+GitHub storage strategy must minimize conflicts when multiple users, browser sessions, agents, or application instances record events simultaneously.
+
+Database implementations should use normal concurrency safeguards appropriate to the database engine.
+
+
+35. GitHub Commit Strategy
+
+The GitHub adapter should define a standard commit strategy.
+
+Potential approaches include:
+
+- one event per commit
+- multiple queued events per commit
+- periodic batch commits
+
+The preferred strategy should minimize API usage while retaining understandable history.
+
+The decision should remain adapter-level policy rather than core Aegis behavior.
+
+
+36. GitHub Conflict Handling
+
+GitHub write conflicts must be handled explicitly.
+
+Aegis should not silently overwrite an existing event file.
+
+Because event records are intended to be immutable and uniquely named, filename collisions should be extremely rare and treated as abnormal.
+
+
+37. Database Transaction Behavior
+
+Database sinks should define transaction behavior for batch persistence.
+
+Failure of one event in a batch must have deterministic behavior.
+
+The adapter must document whether:
+
+- the whole batch rolls back
+- valid events persist independently
+- failed events are quarantined
+
+Silent partial persistence is not acceptable.
+
+
+38. Health and Diagnostics
+
+Aegis should expose sink health information without turning Aegis into a monitoring platform.
+
+Useful state may include:
+
+- sink available
+- sink degraded
+- sink unavailable
+- queued event count
+- last successful write
+- last failed write
+
+This information should be structured and consumable by Limen or agents.
+
+
+39. Configuration
+
+Aegis configuration should allow applications to declare sinks once.
+
+Example:
+
+Aegis.configure {
+    Application = "Chrona"
+    Sinks = [
+        Memory memorySink
+        GitHub githubSink
+        Database databaseSink
+    ]
+}
+
+Application methods should remain unaware of individual sink configuration.
+
+
+40. Testing
+
+Each sink implementation shall have deterministic tests for:
+
+- successful writes
+- duplicate writes
+- concurrency
+- batching
+- serialization
+- schema versioning
+- redaction
+- sink outage
+- retry behavior
+- correlation preservation
+- event ordering
+- malformed storage responses
+- partial failure
+- fallback behavior
+
+
+41. Test Sink
+
+Aegis should provide a simple in-memory test sink.
+
+Example:
+
+let collector = TestAegisSink()
+
+Tests should be able to inspect:
+
+collector.Events
+
+without requiring a real database, GitHub repository, console capture, or network dependency.
+
+
+42. Minimal Dependencies
+
+The Aegis core shall not require database drivers, GitHub SDKs, telemetry SDKs, or logging frameworks.
+
+Storage-specific dependencies belong in adapters.
+
+This allows applications to include only the sink packages they actually use.
+
+
+43. Integration Assemblies
+
+Integration assemblies should be able to provide Aegis-compatible sinks or storage adapters where appropriate.
+
+For example, a standard Echelon GitHub integration assembly may provide the GitHub persistence implementation.
+
+Aegis should not duplicate GitHub API code already owned by the integration layer.
+
+
+44. SDE Integration
+
+Sink availability and persistence failures may influence application state when relevant.
+
+Example:
+
+DiagnosticPersistenceAvailable
+    ->
+DiagnosticPersistenceDegraded
+
+However, Aegis must not independently bypass SDE rules.
+
+SDE remains responsible for determining valid application state transitions.
+
+
+45. Limen Integration
+
+Limen may expose useful diagnostic persistence state.
+
+Examples:
+
+- diagnostics queued
+- diagnostics synchronized
+- diagnostics unavailable
+- last synchronization failed
+
+Aegis shall provide structured state.
+
+Limen shall decide how that state is rendered.
+
+
+46. ROS Integration
+
+ROS should eventually be able to require projects to declare:
+
+- configured Aegis sinks
+- required durable storage
+- fallback behavior
+- retention policy
+- fault boundaries
+- offline behavior
+
+Architecture validation may later verify that required persistence is configured.
+
+
+47. Recommended Architectural Principle
+
+The core design principle should be:
+
+Aegis produces structured events.
+
+Sinks persist those events.
+
+Stores provide durable retrieval.
+
+SDE governs legal state transitions.
+
+Limen presents diagnostic and recovery state.
+
+Applications report faults without knowing where those faults are ultimately stored.
+
+
+48. Scope Constraint
+
+Aegis persistence must not turn Aegis into:
+
+- a general application database
+- a business event store
+- a metrics platform
+- a distributed tracing product
+- a logging vendor abstraction covering every possible feature
+- an analytics system
+- a monitoring platform
+
+Aegis owns fault and fault-lifecycle diagnostics.
+
+Other application events should only enter Aegis when they directly support fault diagnosis, recovery, acknowledgement, or resolution.

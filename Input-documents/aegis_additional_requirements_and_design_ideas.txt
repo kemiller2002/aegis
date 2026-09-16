@@ -1,0 +1,940 @@
+Aegis Additional Requirements and Design Ideas
+
+1. Fault Scopes
+
+Aegis should support contextual scopes that establish shared diagnostic context once for an operation.
+
+Example:
+
+Aegis.scope
+    "Chrona.Entry.Save"
+    [
+        "repository", repo
+        "entryId", string entryId
+    ]
+    (fun () ->
+        saveEntry entry)
+
+All faults and diagnostic events created inside the scope should inherit the scope context unless explicitly overridden.
+
+Fault scopes should reduce repetitive context plumbing through method signatures.
+
+
+2. Breadcrumbs
+
+Aegis should support a bounded in-memory breadcrumb trail of meaningful application actions leading up to a fault.
+
+Examples:
+
+- Repository loaded
+- Parsed 42 entries
+- Transition requested
+- Transition accepted
+- Calling GitHub
+- Processing integration message
+- Writing state
+
+Breadcrumbs should be structured rather than plain free-form strings where practical.
+
+A fault may attach the most recent relevant breadcrumbs.
+
+Breadcrumb history must be bounded to avoid unbounded memory growth.
+
+Breadcrumbs should be especially useful for agent-driven diagnostics where a stack trace alone does not explain the operational sequence.
+
+
+3. Fault Deduplication
+
+Aegis should support detection of repeated occurrences of the same underlying fault.
+
+Repeated identical or near-identical faults should be able to aggregate into one active fault rather than creating excessive diagnostic noise.
+
+Aggregated fault information should be able to include:
+
+- first seen timestamp
+- last seen timestamp
+- occurrence count
+- sample contexts
+- latest correlation IDs
+- latest recovery result
+
+Deduplication must not destroy the ability to investigate individual occurrences when that information is needed.
+
+
+4. Fault Fingerprints
+
+Aegis should generate a stable fingerprint for faults where practical.
+
+A fingerprint may be derived from:
+
+- fault code
+- operation
+- normalized cause
+- source subsystem
+- exception type
+- selected non-sensitive context
+
+The fingerprint should make it possible to determine whether a fault observed today is likely the same underlying problem as a fault observed previously.
+
+Fingerprint generation must avoid including timestamps, correlation IDs, secrets, or other values that make every occurrence unique.
+
+
+5. Escalation Rules
+
+Aegis should support escalation policies.
+
+Examples:
+
+- Warning becomes Error after repeated occurrence
+- Error becomes Critical after a threshold
+- Transient fault becomes persistent after N minutes
+- FeatureUnavailable becomes ApplicationDegraded after multiple subsystem failures
+
+Escalation should be policy-driven rather than hard-coded.
+
+Escalation events should themselves be recorded.
+
+
+6. Circuit-Breaker Integration
+
+Aegis should expose enough structured fault state for infrastructure adapters to implement circuit-breaker behavior.
+
+Potential circuit states include:
+
+- Closed
+- Open
+- HalfOpen
+
+Aegis does not need to become a general resilience framework.
+
+However, repeated known infrastructure failures should be able to influence whether further calls are temporarily blocked or tested cautiously.
+
+Circuit-breaker behavior must remain explicit and observable.
+
+
+7. Quarantine Support
+
+Aegis should support quarantining malformed, corrupt, or unprocessable inbound data.
+
+A quarantined item may include:
+
+- source identifier
+- raw payload reference
+- fault ID
+- fault code
+- reason for quarantine
+- timestamp
+- recovery status
+- retry eligibility
+
+Quarantine should prevent repeatedly processing known-bad data.
+
+Quarantine storage must follow sensitive-data and retention rules.
+
+
+8. Dead-Letter Handling
+
+Aegis should support dead-letter behavior for work that cannot be processed successfully after defined recovery or retry attempts.
+
+Dead-letter records should include enough information to:
+
+- identify the failed item
+- understand why it failed
+- determine what retries occurred
+- determine whether manual intervention is required
+- reprocess the item later if appropriate
+
+Dead-letter behavior should be deterministic and policy-driven.
+
+
+9. Fault Ownership
+
+Aegis faults should be able to identify an owning subsystem or logical component.
+
+Examples:
+
+- GitHubIntegration
+- Chrona
+- Summa
+- Strata
+- Limen
+- ROS
+- SDE
+
+Ownership should help with diagnosis, routing, filtering, and remediation.
+
+Ownership must describe the responsible software boundary, not necessarily an individual person.
+
+
+10. Environment Metadata
+
+Aegis diagnostic events should be able to include environment metadata.
+
+Useful metadata may include:
+
+- application version
+- build version
+- commit SHA
+- branch
+- deployment environment
+- browser version
+- runtime version
+- operating system
+- schema version
+- Limen version
+- SDE version
+- integration assembly version
+
+Environment metadata should be structured and optional.
+
+
+11. Deployment Correlation
+
+Aegis should support correlation between faults and deployments or code revisions.
+
+A diagnostic event should make it possible to answer questions such as:
+
+- Did this fault start after commit X?
+- Did the occurrence rate increase after release Y?
+- Which application build generated this fault?
+
+Commit or build identity should be recorded where available.
+
+
+12. State Snapshot References
+
+For serious faults, Aegis should be able to associate a fault with a reference to an application-state snapshot or state summary.
+
+Aegis should prefer references over embedding the entire state payload directly into the fault event.
+
+This reduces:
+
+- privacy risk
+- payload size
+- duplication
+- persistence cost
+
+Snapshot capture must follow redaction and sensitive-data requirements.
+
+
+13. Diagnostic Bundles
+
+Aegis should support generating a diagnostic bundle suitable for human or agent analysis.
+
+A bundle may include:
+
+- selected fault history
+- breadcrumbs
+- application version
+- commit SHA
+- environment metadata
+- schema versions
+- integration versions
+- configuration metadata with secrets removed
+- state summaries
+- sink health
+- known recovery attempts
+
+Diagnostic bundles must never include secrets unless explicitly and safely authorized.
+
+The bundle format should be portable and machine-readable.
+
+
+14. Known-Fault Catalog
+
+Aegis should support a catalog of known fault codes.
+
+Each known fault may include metadata such as:
+
+- code
+- title
+- description
+- category
+- default severity
+- likely causes
+- safe recovery actions
+- retry eligibility
+- documentation reference
+- escalation guidance
+- whether automatic recovery is allowed
+- whether user notification is normally required
+
+The catalog should help both humans and agents understand faults consistently.
+
+
+15. Recovery Verification
+
+Aegis should not assume that a recovery action succeeded simply because the recovery operation returned without throwing.
+
+Recovery policies should optionally define a verification step.
+
+Example:
+
+Authentication failure
+    ->
+Reauthenticate
+    ->
+Verify repository access
+    ->
+Mark recovered
+
+Recovery should only be considered successful when the relevant condition has been verified where verification is possible.
+
+
+16. Fault Obligations
+
+Certain faults should be able to create explicit unresolved obligations.
+
+Examples:
+
+- Reauthenticate
+- Resolve corrupt entry
+- Review failed payment
+- Reprocess dead-letter item
+- Investigate schema mismatch
+- Restore diagnostic sink
+
+Obligations should integrate with SDE rather than becoming a second unrelated workflow system.
+
+A fault obligation should remain visible until explicitly resolved or superseded.
+
+
+17. Acknowledged Is Not Resolved
+
+Aegis shall distinguish acknowledgement from resolution.
+
+Acknowledgement means:
+
+Someone or some system has recognized the fault.
+
+Resolution means:
+
+The underlying failure condition has been corrected or no longer applies.
+
+A fault may therefore be:
+
+- active and unacknowledged
+- active and acknowledged
+- resolved and acknowledged
+- resolved automatically
+
+Acknowledging a fault must not silently mark it resolved.
+
+
+18. Transient vs Persistent Classification
+
+Aegis should classify faults by expected persistence behavior where known.
+
+Potential classifications include:
+
+- Transient
+- Persistent
+- Permanent
+- Unknown
+- RequiresIntervention
+
+This classification should influence retry, escalation, notification, and recovery policy.
+
+
+19. Safe-Mode Support
+
+Aegis should support requesting degraded application modes when continuing normal operation would be unsafe.
+
+Potential safe modes include:
+
+- ReadOnly
+- Offline
+- FeatureDisabled
+- DiagnosticsOnly
+- RestrictedOperation
+
+Aegis may request or recommend a safe mode.
+
+SDE remains responsible for determining whether the corresponding state transition is legal.
+
+
+20. Startup Fault Boundary
+
+Aegis must work during application startup before full application state is available.
+
+A minimal bootstrap mode should support fault reporting for failures involving:
+
+- configuration loading
+- authentication initialization
+- Limen startup
+- schema loading
+- integration initialization
+- repository connection
+- state hydration
+
+Bootstrap diagnostics should later be promotable into the normal Aegis runtime when initialization succeeds.
+
+
+21. Shutdown Fault Boundary
+
+Aegis should support reporting failures that occur during controlled shutdown.
+
+Examples:
+
+- pending diagnostic flush failed
+- state finalization failed
+- final repository write failed
+- integration disposal failed
+
+Shutdown reporting must avoid recursive or indefinite shutdown loops.
+
+
+22. Unhandled Top-Level Boundary
+
+Every application should have one final Aegis boundary around its top-level execution surface.
+
+Examples:
+
+- application command loop
+- startup entry point
+- integration processor
+- top-level UI event dispatcher
+
+This top-level boundary should be the last line of defense, not the primary error-handling strategy.
+
+
+23. Integration Contract Tests
+
+Every integration assembly should have contract tests proving that known external failures are translated into standard typed integration failures and Aegis-compatible faults.
+
+Examples:
+
+- HTTP 401 becomes AuthenticationFailed
+- HTTP 404 becomes RepositoryNotFound where appropriate
+- HTTP 429 becomes RateLimited
+- timeout becomes NetworkUnavailable or Timeout
+- malformed response becomes InvalidResponse
+
+Raw technology exceptions such as HttpRequestException or JsonException should not leak across defined integration boundaries except where explicitly documented.
+
+
+24. Schema Migration Awareness
+
+Aegis should distinguish storage and payload migration failures from generic deserialization failures.
+
+Potential fault codes or categories should include:
+
+- MigrationRequired
+- MigrationFailed
+- UnsupportedVersion
+- SchemaMismatch
+- ForwardVersionUnsupported
+- BackwardCompatibilityViolation
+
+This makes recovery significantly clearer than reporting only a serialization exception.
+
+
+25. User Notification Policy
+
+Aegis should provide presentation intent without directly rendering UI.
+
+Potential presentation intents include:
+
+- Silent
+- Inline
+- Notification
+- Banner
+- Blocking
+
+Limen remains responsible for how that intent is rendered.
+
+Not every persisted fault should create a visible user notification.
+
+
+26. UI Noise Rate Limiting
+
+Repeated faults should not overwhelm the user with duplicate notifications.
+
+Aegis should support rate limiting or suppression metadata for presentation purposes.
+
+Example:
+
+A network failure occurring 50 times may generate:
+
+- 50 diagnostic occurrences
+- 1 active aggregated fault
+- 1 visible notification
+
+Diagnostic fidelity should be preserved even when presentation is throttled.
+
+
+27. Privacy Classification for Context
+
+Aegis context values should optionally carry privacy or sensitivity classification.
+
+Example:
+
+type ContextValue =
+    | Public of string
+    | Internal of string
+    | Sensitive of string
+    | Secret of string
+
+The classification should influence:
+
+- persistence eligibility
+- redaction
+- diagnostic bundle export
+- UI presentation
+- remote telemetry
+- agent access
+
+Secret values should normally never be persisted.
+
+
+28. Machine-Remediation Hooks
+
+Aegis should support machine-readable recovery capabilities.
+
+An agent or automated component may inspect a fault and determine which recovery actions are legally available.
+
+Example recovery capabilities:
+
+- Retry
+- Reauthenticate
+- Reload
+- Quarantine
+- Reprocess
+- OpenReadOnly
+- RestoreSink
+
+Automated recovery must occur through declared capabilities and SDE-approved transitions.
+
+Agents must not bypass application state rules.
+
+
+29. Fault Lifecycle
+
+Aegis should model the lifecycle of an operational fault rather than only the moment an exception occurs.
+
+A representative lifecycle is:
+
+Detected
+    |
+    v
+Classified
+    |
+    v
+Recorded
+    |
+    v
+Presented or Suppressed
+    |
+    v
+Recovery Requested
+    |
+    v
+Recovery Attempted
+    |
+    v
+Recovery Verified
+    |
+    v
+Resolved
+
+Optional branches may include:
+
+- Escalated
+- Quarantined
+- DeadLettered
+- Acknowledged
+- Deferred
+- Superseded
+- Reopened
+
+
+30. Fault Immutability
+
+Fault records should generally be immutable once created.
+
+Changes in lifecycle state should preferably be represented as new Aegis events rather than mutating historical records.
+
+Example:
+
+FaultRecorded
+FaultAcknowledged
+RecoveryAttempted
+RecoverySucceeded
+FaultResolved
+
+This preserves auditability and event history.
+
+
+31. Active Fault Projection
+
+Although the underlying event history should remain append-oriented, Aegis should be able to derive a current active-fault projection.
+
+The projection may answer:
+
+- Which faults are currently active?
+- Which are acknowledged?
+- Which are unresolved?
+- Which are escalated?
+- Which obligations remain?
+- Which recovery actions are available?
+
+The projection should be derivable from event history where practical.
+
+
+32. Fault Resolution
+
+A fault should have an explicit resolution concept.
+
+Resolution metadata may include:
+
+- resolved timestamp
+- resolution type
+- recovery action
+- verification result
+- resolving event
+- whether resolution was automatic or manual
+
+Resolution should not erase the original fault history.
+
+
+33. Fault Reopening
+
+A previously resolved fault may need to reopen if the same failure condition returns.
+
+Reopening should be explicit.
+
+Aegis should distinguish:
+
+- a new unrelated occurrence
+- a recurrence of a known fault
+- a reopened active condition
+
+Fault fingerprinting may help determine which case applies.
+
+
+34. Fault Supersession
+
+A fault may become obsolete because a newer fault better describes the actual condition.
+
+Aegis should support supersession relationships.
+
+Example:
+
+NetworkUnavailable
+
+may later be superseded by:
+
+AuthenticationProviderUnavailable
+
+when more precise information becomes available.
+
+Supersession must preserve the original history.
+
+
+35. Repeated Transient Faults
+
+Aegis should define behavior for repeated transient failures.
+
+The system should avoid treating each transient occurrence as an unrelated permanent fault.
+
+Useful aggregate information includes:
+
+- first seen
+- last seen
+- occurrence count
+- consecutive failure count
+- recovery count
+- most recent success
+- current escalation state
+
+
+36. Fault Escalation Lifecycle
+
+Escalation should be represented as a lifecycle event.
+
+Example:
+
+FaultRecorded
+    ->
+FaultRepeated
+    ->
+FaultEscalated
+
+Escalation history should be preserved.
+
+Severity should not simply be overwritten without historical evidence.
+
+
+37. Recovery Attempts
+
+Every recovery attempt should be recordable.
+
+Useful metadata includes:
+
+- recovery action
+- attempt number
+- initiating actor
+- timestamp
+- correlation ID
+- expected result
+- actual result
+- verification result
+
+This makes automated remediation auditable.
+
+
+38. Recovery Actors
+
+Aegis should distinguish who or what initiated recovery.
+
+Potential actors include:
+
+- User
+- Application
+- Agent
+- ScheduledProcess
+- Integration
+- Operator
+
+This metadata should not require identifying a specific individual unless necessary.
+
+
+39. Manual Intervention
+
+Aegis should explicitly represent when a fault cannot be safely recovered automatically.
+
+Examples:
+
+- corrupt financial data
+- ambiguous merge conflict
+- unsupported schema migration
+- repeated failed authentication
+- unknown state invariant violation
+
+Such faults should be able to create a manual intervention obligation.
+
+
+40. Diagnostic Export Safety
+
+Diagnostic export must apply redaction after all context aggregation and before output.
+
+A diagnostic bundle must not become a mechanism that accidentally bypasses normal sink redaction.
+
+
+41. Fault Searchability
+
+Fault records should be searchable using stable structured fields rather than requiring text search of human-readable messages.
+
+Important searchable dimensions include:
+
+- code
+- fingerprint
+- application
+- subsystem
+- operation
+- severity
+- lifecycle state
+- correlation ID
+- build
+- commit SHA
+- first seen
+- last seen
+- occurrence count
+- recovery status
+
+
+42. Agent Diagnostic Guidance
+
+Known faults should be able to expose structured diagnostic guidance for agents.
+
+Guidance may include:
+
+- likely causes
+- evidence to inspect
+- safe commands or checks
+- prohibited recovery actions
+- expected state transitions
+- documentation references
+
+Diagnostic guidance must not allow an agent to bypass SDE, security, or capability rules.
+
+
+43. Failure Domains
+
+Aegis should support identifying the failure domain of a fault.
+
+Potential failure domains include:
+
+- LocalOperation
+- Feature
+- Integration
+- Repository
+- Application
+- Environment
+- ExternalDependency
+
+Failure domain should help determine blast radius and appropriate recovery behavior.
+
+
+44. Blast-Radius Metadata
+
+A fault should be able to indicate its likely operational impact.
+
+Examples:
+
+- one item
+- one operation
+- one feature
+- one repository
+- one user session
+- entire application
+
+This should complement the existing FaultImpact model.
+
+
+45. Dependency Relationship
+
+Aegis should be able to associate faults with affected dependencies.
+
+Example:
+
+Chrona
+    ->
+GitHub Integration
+    ->
+GitHub API
+
+This can help determine whether multiple application faults share the same root dependency failure.
+
+
+46. Root-Cause Grouping
+
+Aegis should support grouping multiple visible faults under a likely common cause.
+
+Example:
+
+Chrona load failed
+Summa save failed
+Follow-up sync failed
+
+may all relate to:
+
+GitHubUnavailable
+
+The system should preserve individual application faults while allowing shared-cause analysis.
+
+
+47. Configuration Validation
+
+Aegis should validate its own configuration at startup.
+
+Examples:
+
+- duplicate sink identifiers
+- invalid retention policy
+- missing required GitHub repository configuration
+- incompatible sink options
+- invalid redaction configuration
+
+Configuration errors should be reported through bootstrap diagnostics without causing recursive Aegis initialization failure.
+
+
+48. Sink Capability Metadata
+
+Sinks should advertise relevant capabilities.
+
+Examples:
+
+- SupportsBatch
+- SupportsQuery
+- SupportsDurableWrite
+- SupportsRetention
+- SupportsOfflineQueue
+- SupportsIdempotency
+- SupportsTransactions
+
+Aegis should not assume every sink supports the same behavior.
+
+
+49. Graceful Degradation
+
+Aegis should degrade gracefully when optional diagnostic features are unavailable.
+
+Example:
+
+If remote telemetry is unavailable but local memory and GitHub sinks remain healthy, Aegis should continue using the available sinks.
+
+Required sinks should be explicitly distinguishable from optional sinks.
+
+
+50. Required vs Optional Sinks
+
+Sink configuration should support requirement level.
+
+Potential values:
+
+- Required
+- Preferred
+- Optional
+
+Failure of a Required sink may affect application operating mode.
+
+Failure of an Optional sink should normally not block primary application behavior.
+
+
+51. Health Projection
+
+Aegis should maintain a structured projection of its own operational health.
+
+Potential state includes:
+
+- Healthy
+- Degraded
+- PersistenceUnavailable
+- QueueBacklogged
+- BootstrapOnly
+- CriticalFailure
+
+This state may be consumed by SDE and Limen.
+
+
+52. Retention and Aggregation Interaction
+
+Aggregation must not accidentally destroy retention requirements.
+
+If individual occurrences are required for audit reasons, Aegis may aggregate presentation while still retaining underlying occurrence events.
+
+
+53. Policy Separation
+
+Aegis should clearly separate:
+
+- detection
+- classification
+- persistence
+- presentation intent
+- recovery capability
+- recovery policy
+- state transition
+- UI rendering
+
+No one component should silently own all of these decisions.
+
+
+54. Architectural Principle
+
+Aegis should own the lifecycle of operational failure, not merely exception capture.
+
+The intended responsibility split should remain:
+
+Integration assembly knows WHAT failed.
+
+Aegis knows HOW the fault is represented, recorded, correlated, and tracked through its lifecycle.
+
+SDE knows WHAT STATE transitions are legal.
+
+Limen knows HOW fault and recovery state are shown.
+
+ROS knows HOW development work and architectural compliance are organized.
+
+Applications retain ownership of domain rules and business meaning.

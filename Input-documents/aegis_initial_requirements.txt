@@ -1,0 +1,845 @@
+Aegis Initial Requirements
+
+0. Architectural Rule
+
+Aegis must make failure handling simpler without making failure invisible.
+
+The architecture must avoid both extremes:
+
+- Result<Result<Result<...>>> propagation throughout unrelated application code.
+- Catch-everything behavior that logs something and continues without preserving correctness.
+
+Aegis must preserve the explicitness that makes SDE valuable while removing plumbing that adds no domain information.
+
+
+1. Purpose
+
+Aegis shall provide a standard mechanism for handling, classifying, recording, propagating, and recovering from unexpected application faults across Echelon applications.
+
+Aegis shall reduce the need to manually thread operational error types through application method signatures.
+
+Aegis shall not replace normal domain modeling, validation, or typed business outcomes.
+
+Aegis shall integrate with SDE and Limen rather than creating a parallel application-state model.
+
+
+2. Core Distinction Between Failures
+
+Aegis shall distinguish at minimum between:
+
+type FailureCategory =
+    | DomainFailure
+    | InfrastructureFailure
+    | IntegrationFailure
+    | DataFailure
+    | ConfigurationFailure
+    | SecurityFailure
+    | ProgrammingDefect
+    | UnknownFailure
+
+Expected domain failures shall normally remain explicit in the domain model.
+
+Examples:
+
+- InvoiceAlreadyPaid
+- TimeEntryAlreadyApproved
+- MissingRequiredEvidence
+- IllegalStateTransition
+
+These should normally use discriminated unions, Result, or SDE state transitions rather than Aegis exception capture.
+
+Unexpected operational failures shall be handled by Aegis.
+
+Examples:
+
+- GitHub unavailable
+- HTTP timeout
+- Serialization failure
+- Browser interop failure
+- Unexpected repository structure
+- Integration assembly failure
+- Unhandled exception
+
+
+3. Standard Fault Model
+
+Every Aegis fault shall have a common representation.
+
+Example:
+
+type Fault =
+    {
+        Id: FaultId
+        CorrelationId: CorrelationId
+        Timestamp: DateTimeOffset
+
+        Application: string
+        ApplicationVersion: string option
+        Operation: string
+
+        Category: FailureCategory
+        Code: FaultCode
+        Severity: FaultSeverity
+
+        Message: string
+        TechnicalDetails: string option
+
+        Source: FaultSource
+        Context: Map<string,string>
+
+        Recovery: RecoveryPolicy
+
+        Cause: FaultCause option
+    }
+
+The representation should be extensible without requiring breaking changes.
+
+
+4. Stable Fault Codes
+
+Every recognized fault should have a stable machine-readable identifier.
+
+Examples:
+
+AEGIS.GITHUB.AUTHENTICATION_FAILED
+AEGIS.GITHUB.RATE_LIMITED
+AEGIS.NETWORK.UNAVAILABLE
+AEGIS.DATA.DESERIALIZATION_FAILED
+AEGIS.LIMEN.INTEROP_FAILED
+AEGIS.STATE.INVARIANT_VIOLATION
+
+Human-readable messages may change.
+
+Fault codes should not.
+
+Stable fault codes are required to support:
+
+- diagnostics
+- automation
+- tests
+- agents
+- telemetry
+- recovery rules
+- documentation
+- searching historical faults
+
+
+5. Capture API
+
+Aegis shall expose a deliberately small public API.
+
+At minimum:
+
+Aegis.capture
+Aegis.captureAsync
+Aegis.report
+
+Potential additions may include:
+
+Aegis.guard
+Aegis.translate
+Aegis.withContext
+Aegis.scope
+
+The API should not expand until a concrete requirement justifies it.
+
+Typical usage:
+
+Aegis.captureAsync
+    "Chrona.TimeEntry.Load"
+    (fun () ->
+        repository.load entryId)
+
+
+6. Architectural Boundaries
+
+Aegis shall primarily be used at architectural boundaries.
+
+Examples include:
+
+- HTTP
+- GitHub API
+- filesystem
+- browser APIs
+- Limen interop
+- serialization/deserialization
+- persistent storage
+- external services
+- integration assemblies
+- authentication providers
+- top-level application commands
+- startup
+- shutdown
+- scheduled/background-like application processing
+- import/export
+
+Aegis documentation shall discourage arbitrary try/with blocks throughout domain code.
+
+
+7. No Silent Swallowing
+
+Aegis shall not silently consume unexpected faults by default.
+
+This shall be considered invalid:
+
+try
+    doSomething ()
+with _ ->
+    ()
+
+This shall also be considered invalid:
+
+try
+    Some(load ())
+with _ ->
+    None
+
+unless failure is explicitly modeled as an acceptable outcome.
+
+Every intercepted unexpected failure must result in one of:
+
+- propagation
+- recovery
+- state transition
+- explicit suppression according to a declared policy
+
+Suppression itself must be observable.
+
+
+8. Recovery Policy
+
+Faults shall be able to describe allowable recovery behavior.
+
+Example:
+
+type RecoveryPolicy =
+    | Retry
+    | RetryWithBackoff
+    | Reauthenticate
+    | Reload
+    | Refresh
+    | Continue
+    | AbortOperation
+    | RestartApplication
+    | ManualIntervention
+    | NoRecovery
+
+Aegis itself should not automatically decide every recovery action.
+
+SDE/application policy should determine whether an action is legal in the current state.
+
+
+9. SDE Integration
+
+Aegis faults shall be capable of producing or requesting SDE transitions.
+
+Example:
+
+RepositoryLoading
+        |
+        | GitHubAuthenticationFailed
+        v
+AuthenticationRequired
+
+Aegis shall not bypass SDE transition rules.
+
+A fault may propose:
+
+AuthenticationRequired
+
+but SDE determines whether that transition is valid from the current state.
+
+Aegis must not become a separate state-management framework.
+
+
+10. Limen Integration
+
+Limen shall be able to consume a standardized fault presentation model.
+
+Example:
+
+type FaultPresentation =
+    {
+        Title: string
+        Message: string
+        Severity: Severity
+        Actions: RecoveryAction list
+        CorrelationId: string option
+    }
+
+Aegis shall not generate HTML directly.
+
+Limen shall render the appropriate UI.
+
+Example presentation:
+
+Unable to load time entries.
+
+GitHub could not be reached.
+
+[Retry] [Work Offline]
+
+Reference: AG-7F82A
+
+
+11. User-Facing vs Technical Information
+
+Aegis shall distinguish between:
+
+- UserMessage
+- TechnicalMessage
+- DiagnosticData
+
+Users should not normally see:
+
+- stack traces
+- raw exceptions
+- authentication tokens
+- internal repository details
+- HTTP headers
+- secrets
+- internal filesystem paths
+
+Developers and agents should have access to richer diagnostics where authorized.
+
+
+12. Sensitive-Data Handling
+
+Aegis shall have explicit redaction rules.
+
+It must never accidentally record:
+
+- GitHub tokens
+- passwords
+- API keys
+- authorization headers
+- session tokens
+- cookies
+- private keys
+- access credentials
+
+Applications shall be able to register additional redaction rules.
+
+Sensitive-data protection shall be foundational rather than optional.
+
+
+13. Context
+
+Aegis shall allow faults to carry structured context.
+
+Example:
+
+Aegis.withContext [
+    "repository", repo.Name
+    "operation", "LoadTimeEntries"
+    "entryId", string entryId
+]
+
+Context should remain structured instead of being embedded entirely into prose.
+
+Bad:
+
+Could not load entry 123 from repo foo.
+
+Better:
+
+Code: CHR.TIME_ENTRY.LOAD_FAILED
+
+Context:
+entryId = 123
+repository = foo
+
+Structured context must be designed for both human and agent consumption.
+
+
+14. Correlation IDs
+
+Aegis shall support correlation IDs across related operations.
+
+Example:
+
+User clicks Refresh
+   |
+   v
+Chrona command
+   |
+   v
+Chrona integration assembly
+   |
+   v
+GitHub API
+   |
+   v
+JSON parsing
+
+Every resulting diagnostic event should be traceable to the same operation.
+
+This is especially important when applications exchange integration messages.
+
+
+15. Fault Causality
+
+Aegis should preserve causal chains.
+
+Example:
+
+ChronaEntryLoadFailed
+    caused by
+GitHubFileLoadFailed
+    caused by
+HttpTimeout
+
+Aegis shall not flatten every error into a generic message such as:
+
+Something went wrong.
+
+Aegis shall also avoid exposing raw nested exception trees directly to consumers.
+
+
+16. Translation
+
+Integration assemblies should translate low-level technology exceptions into meaningful faults.
+
+Example:
+
+HttpRequestException
+
+should not escape the GitHub integration boundary.
+
+Instead:
+
+GitHubFailure.NetworkUnavailable
+
+Similarly:
+
+JsonException
+
+might become:
+
+Chrona.TimeEntry.InvalidStoredRepresentation
+
+when appropriate.
+
+
+17. Exception Preservation
+
+Translation must not destroy the original exception information.
+
+Aegis should preserve:
+
+- exception type
+- message
+- stack trace
+- inner exception
+- original source
+
+for diagnostics.
+
+These details should be separated from the public/domain-facing fault representation.
+
+
+18. Severity
+
+Aegis shall provide standardized severity classifications.
+
+Example:
+
+type FaultSeverity =
+    | Diagnostic
+    | Warning
+    | Error
+    | Critical
+
+Aegis should avoid an unnecessarily large number of severity levels.
+
+
+19. Programming Defects
+
+Programming defects must be distinguishable from runtime or environmental failures.
+
+Examples:
+
+- impossible union case reached
+- invalid invariant
+- null where prohibited
+- invalid internal state
+- unexpected pattern
+
+These should generally fail loudly.
+
+Aegis must not convert a programming defect into a harmless user warning and allow the application to continue in potentially corrupt state.
+
+
+20. Data Integrity Faults
+
+Data integrity failures should receive special treatment.
+
+Examples:
+
+- Invalid persisted state
+- Unrecognized schema version
+- Missing required relationship
+- Hash mismatch
+- Unexpected repository structure
+
+Recovery should generally avoid mutating data until correctness is established.
+
+Aegis should support concepts such as:
+
+ReadOnlyRecovery
+
+where appropriate.
+
+
+21. Retry Behavior
+
+Retries shall never happen invisibly without policy.
+
+Aegis should know:
+
+- Is retry allowed?
+- What is the maximum number of attempts?
+- What backoff policy applies?
+- Is the operation idempotent?
+
+Example:
+
+RetryPolicy {
+    Attempts = 3
+    Backoff = Exponential
+}
+
+Automatic retry must only be used when the operation is safe to repeat.
+
+A failed GET and a partially completed payment submission must be treated differently.
+
+
+22. Fault History
+
+Applications should optionally maintain a bounded in-memory fault history.
+
+Example:
+
+last 50 faults
+
+Fault history must not grow without limit.
+
+Persistent storage of faults should be handled through configured sinks rather than assuming every application stores them locally.
+
+
+23. Fault Sinks
+
+Aegis should support configurable destinations.
+
+Examples:
+
+- Console
+- Browser console
+- Application state
+- File
+- GitHub artifact
+- Remote telemetry
+- Test collector
+- No-op sink
+
+The core package should not depend directly on any particular telemetry vendor.
+
+
+24. Multiple Sinks
+
+A fault may need to go to multiple destinations.
+
+Example:
+
+Aegis
+  |- application state
+  |- diagnostic logger
+  `- development console
+
+Sink failure must not recursively crash Aegis.
+
+
+25. Aegis Must Survive Its Own Failures
+
+The error system itself needs a last-resort failure path.
+
+Example:
+
+Fault occurs
+-> telemetry sink throws
+-> Aegis catches sink failure
+-> fallback sink receives minimal fault
+
+There must be a hard limit to prevent recursive failure loops.
+
+
+26. Initialization
+
+Applications should configure Aegis once.
+
+Example:
+
+Aegis.configure {
+    Application = "Chrona"
+    Version = version
+    Environment = environment
+    Sinks = [...]
+    Redaction = [...]
+}
+
+Application methods should not repeatedly pass this configuration.
+
+
+27. Testability
+
+Aegis must be designed for deterministic testing.
+
+Tests should be able to replace sinks.
+
+Example:
+
+let collector = TestFaultCollector()
+
+Aegis.configure {
+    Sink = collector
+}
+
+Then tests should be able to assert expected faults.
+
+Example:
+
+collector.Faults
+|> shouldContainFault "AEGIS.GITHUB.AUTHENTICATION_FAILED"
+
+Tests should not need to inspect console output.
+
+
+28. Unit-Test Requirements
+
+The Aegis package itself should have thorough tests around:
+
+- classification
+- translation
+- propagation
+- recovery policy
+- retries
+- redaction
+- nested faults
+- sink failure
+- correlation
+- async operations
+- cancellation
+- programming defects
+- serialization of faults
+- backwards compatibility
+
+
+29. Cancellation Is Not Necessarily a Fault
+
+Cancellation must be distinguished from failure.
+
+For example:
+
+OperationCanceledException
+
+may simply mean:
+
+- user navigated away
+- application shut down
+- newer request superseded old request
+
+Aegis should not automatically report normal cancellation as an error.
+
+
+30. Agent-Readable Diagnostics
+
+Fault information should be intentionally structured so an agent can diagnose it.
+
+Example:
+
+{
+  "code": "CHRONA.GITHUB.LOAD_FAILED",
+  "operation": "Chrona.TimeEntry.Load",
+  "category": "IntegrationFailure",
+  "recoverability": "Retry",
+  "correlationId": "...",
+  "context": {
+    "entryId": "123"
+  }
+}
+
+This is especially important for ROS/SDE-driven development.
+
+
+31. Human-Readable Diagnostics
+
+The same fault should have a useful human representation.
+
+Example:
+
+Chrona could not load time entry 123.
+
+Cause:
+GitHub could not be reached.
+
+Suggested action:
+Retry when connectivity is restored.
+
+Correlation ID:
+AG-01KH...
+
+The agent and human views should derive from the same underlying fault rather than being separately maintained.
+
+
+32. Integration Assembly Responsibility
+
+Every Echelon integration assembly should expose its own typed integration failure model and translate technology-specific failures.
+
+Example:
+
+type GitHubFailure =
+    | AuthenticationFailed
+    | RepositoryNotFound
+    | RateLimited
+    | Conflict
+    | NetworkUnavailable
+    | InvalidResponse
+
+Aegis then normalizes those into the shared application fault model.
+
+The intended responsibility split is:
+
+Integration assembly knows WHAT failed.
+
+Aegis knows HOW failures are handled.
+
+SDE knows WHAT STATE may follow.
+
+Limen knows HOW IT IS SHOWN.
+
+
+33. ROS Integration
+
+ROS should require projects using Aegis to define their fault boundaries.
+
+Example work-item declaration:
+
+Fault boundaries:
+- GitHub storage
+- JSON deserialization
+- Limen initialization
+- integration message processing
+
+Architecture checks could eventually flag obvious unguarded boundaries.
+
+Static enforcement should not be required in the first implementation, but the architecture should leave room for it.
+
+
+34. Documentation Requirement
+
+Aegis documentation should explicitly teach:
+
+- When to use Aegis
+- When NOT to use Aegis
+- Where capture boundaries belong
+- How to create a typed fault
+- How to translate infrastructure exceptions
+- How recovery works
+- How SDE interacts with faults
+- How Limen presents faults
+- How to test fault behavior
+
+Examples should use real application scenarios rather than generic FooException examples.
+
+
+35. Dependency Constraints
+
+Aegis should:
+
+- be F# first
+- have minimal dependencies
+- avoid reflection unless strongly justified
+- avoid a dependency on a logging framework
+- avoid requiring dependency injection frameworks
+- avoid vendor telemetry dependencies
+- work independently of a specific web framework
+
+Ideally the core should remain a very small assembly.
+
+
+36. Compatibility
+
+Aegis should be usable from C# even if F# is the primary interface.
+
+Public types should avoid unnecessary F# constructs that are painful to consume cross-language where reasonable.
+
+The F# design should not be compromised merely to create a perfect C# API.
+
+A thin interop layer may be added later.
+
+
+37. Schema and Versioning
+
+Serialized Aegis faults should include a schema version.
+
+Example:
+
+{
+    "schema": "aegis/fault/v1"
+}
+
+This prevents future tooling from depending implicitly on whatever the current object happens to look like.
+
+
+38. Observability Without Telemetry Dependency
+
+Aegis produces structured diagnostic information.
+
+Telemetry systems consume it.
+
+Aegis is not itself a telemetry platform.
+
+Aegis must not gradually become logging, tracing, analytics, metrics, alerting, and monitoring all in one package.
+
+
+39. Application Availability
+
+Aegis should help applications determine whether they can safely continue.
+
+Example:
+
+type FaultImpact =
+    | OperationOnly
+    | FeatureUnavailable
+    | DegradedApplication
+    | ApplicationUnsafe
+
+A GitHub timeout may affect one operation.
+
+A corrupted root state file could make the application unsafe to continue.
+
+That distinction should be first class.
+
+
+40. Future Design Questions
+
+The next requirements pass should define the fault lifecycle and its relationship with state.
+
+Important unresolved questions include:
+
+- Should an Aegis fault itself always be immutable?
+- How is a fault acknowledged?
+- Can faults become obligations?
+- How are retry and recovery transitions represented in SDE?
+- What constitutes an active fault versus historical diagnostic information?
+- When is a fault considered resolved?
+- Should resolution be modeled as a state transition?
+- Can one fault supersede another?
+- How should duplicate faults be collapsed or grouped?
+- How should repeated transient faults be represented?
+- How should fault escalation work?
+- How should Aegis behave during application startup before full state exists?
+- How should Aegis behave during shutdown?
+- How should faults be exported for diagnostics or agent analysis?
+- How should offline applications queue or persist diagnostic events?
+- How should fault schemas evolve without breaking agents or integration consumers?
