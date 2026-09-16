@@ -160,6 +160,7 @@
 | AEG-LOG-046 | ROS integration for persistence declarations | captured | requirement, aegis-logging, integration-ros, epic-e14 | low |
 | AEG-LOG-047 | Recommended architectural principle for persistence | captured | requirement, aegis-logging, principle, epic-e00 | high |
 | AEG-LOG-048 | Scope constraint on persistence | captured | requirement, aegis-logging, principle, constraints, epic-e00 | high |
+| AEG-SLICE-001 | Vertical slice: fault model, redaction, capture, in-memory sink | complete | slice, implementation | high |
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |

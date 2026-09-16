@@ -3043,6 +3043,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-SLICE-001",
+      "title": "Vertical slice: fault model, redaction, capture, in-memory sink",
+      "description": "First end-to-end slice of Aegis per DF-AEGIS-2026-0CA3: fault model and classification vocabulary (E01), redaction core (E02), capture API and scopes (E03), versioned event model (E05), sink fan-out with failure containment and a test sink (E06), with deterministic tests (E13).",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:36:30Z",
+      "updatedAt": "2026-09-16T23:41:05Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

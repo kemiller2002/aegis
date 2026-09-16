@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE351EA8-4309-4B38-B1C6-70B135CED96E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aegis.Core", "src\Aegis.Core\Aegis.Core.fsproj", "{230365F2-664F-41ED-AF1A-D25CCBAE2DDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{52AF1783-8547-4C9F-9344-CF68720494E1}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aegis.Core.Tests", "tests\Aegis.Core.Tests\Aegis.Core.Tests.fsproj", "{70BDD67C-DDD3-41EE-9E04-395349E657A7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{230365F2-664F-41ED-AF1A-D25CCBAE2DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{230365F2-664F-41ED-AF1A-D25CCBAE2DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{230365F2-664F-41ED-AF1A-D25CCBAE2DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{230365F2-664F-41ED-AF1A-D25CCBAE2DDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70BDD67C-DDD3-41EE-9E04-395349E657A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BDD67C-DDD3-41EE-9E04-395349E657A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BDD67C-DDD3-41EE-9E04-395349E657A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BDD67C-DDD3-41EE-9E04-395349E657A7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{230365F2-664F-41ED-AF1A-D25CCBAE2DDE} = {AE351EA8-4309-4B38-B1C6-70B135CED96E}
+		{70BDD67C-DDD3-41EE-9E04-395349E657A7} = {52AF1783-8547-4C9F-9344-CF68720494E1}
+	EndGlobalSection
+EndGlobal

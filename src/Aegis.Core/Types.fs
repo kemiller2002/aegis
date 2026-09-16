@@ -1,0 +1,165 @@
+namespace Aegis
+
+open System
+
+/// Schema identifiers. Serialized payloads carry these so tooling never
+/// depends implicitly on whatever the current shape happens to be.
+/// Requirements: core 37, logging 12.
+module Schema =
+    [<Literal>]
+    let Fault = "aegis/fault/v1"
+
+    [<Literal>]
+    let Event = "aegis/event/v1"
+
+/// Sortable, unique identifiers. Time-ordered prefix plus random suffix gives
+/// uniqueness and lexicographic time ordering, so file names and event
+/// sequences sort naturally. Requirements: logging 8, 24, 33.
+module Id =
+    let private alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+
+    let private encode (value: int64) (width: int) =
+        let rec loop v n acc =
+            if n = 0 then acc
+            else loop (v / 32L) (n - 1) (string alphabet.[int (v % 32L)] + acc)
+        loop value width ""
+
+    /// 26-character sortable identifier: 10 chars of timestamp, 16 of randomness.
+    let generate (now: DateTimeOffset) (randomness: int64 * int64) =
+        let hi, lo = randomness
+        encode (now.ToUnixTimeMilliseconds()) 10 + encode (abs hi) 8 + encode (abs lo) 8
+
+type FaultId =
+    | FaultId of string
+
+    member this.Value = match this with FaultId v -> v
+
+type EventId =
+    | EventId of string
+
+    member this.Value = match this with EventId v -> v
+
+type CorrelationId =
+    | CorrelationId of string
+
+    member this.Value = match this with CorrelationId v -> v
+
+/// Stable machine-readable fault identity. Human-readable messages may change;
+/// codes must not. Requirement: core 4.
+type FaultCode =
+    | FaultCode of string
+
+    member this.Value = match this with FaultCode v -> v
+
+/// Requirement: core 2. Domain failures stay in the domain model; these
+/// describe unexpected operational failures Aegis handles.
+type FailureCategory =
+    | DomainFailure
+    | InfrastructureFailure
+    | IntegrationFailure
+    | DataFailure
+    | ConfigurationFailure
+    | SecurityFailure
+    | ProgrammingDefect
+    | UnknownFailure
+
+/// Requirement: core 18. Deliberately few levels.
+type FaultSeverity =
+    | Diagnostic
+    | Warning
+    | Error
+    | Critical
+
+/// Requirement: core 39. Whether the application can safely continue.
+type FaultImpact =
+    | OperationOnly
+    | FeatureUnavailable
+    | DegradedApplication
+    | ApplicationUnsafe
+
+/// Requirement: additional 18. Influences retry, escalation and notification.
+type Persistence =
+    | Transient
+    | Persistent
+    | Permanent
+    | UnknownPersistence
+    | RequiresIntervention
+
+/// Requirement: core 8. Aegis describes allowable recovery; SDE decides
+/// whether a transition is legal from the current state.
+type RecoveryPolicy =
+    | Retry of attempts: int * backoff: Backoff
+    | Reauthenticate
+    | Reload
+    | Refresh
+    | Continue
+    | AbortOperation
+    | RestartApplication
+    | ManualIntervention
+    | NoRecovery
+
+and Backoff =
+    | Immediate
+    | Fixed of TimeSpan
+    | Exponential of initial: TimeSpan
+
+/// Requirement: additional 27. Classification drives persistence eligibility,
+/// redaction, export and agent access. Secret values are never persisted.
+type ContextValue =
+    | Public of string
+    | Internal of string
+    | Sensitive of string
+    | Secret of string
+
+    member this.Raw =
+        match this with
+        | Public v
+        | Internal v
+        | Sensitive v
+        | Secret v -> v
+
+/// Preserved original exception detail, kept separate from the domain-facing
+/// fault representation. Requirement: core 17.
+type ExceptionDetail =
+    { ExceptionType: string
+      Message: string
+      StackTrace: string option
+      Inner: ExceptionDetail option }
+
+/// Requirement: core 15. Causal chain, not a flattened message.
+type FaultCause =
+    | CausedByFault of Fault
+    | CausedByException of ExceptionDetail
+
+/// The common fault representation. Requirement: core 3.
+and Fault =
+    { Id: FaultId
+      CorrelationId: CorrelationId
+      Timestamp: DateTimeOffset
+      Application: string
+      ApplicationVersion: string option
+      Operation: string
+      Category: FailureCategory
+      Code: FaultCode
+      Severity: FaultSeverity
+      Impact: FaultImpact
+      Persistence: Persistence
+      Owner: string option
+      UserMessage: string
+      TechnicalDetails: string option
+      Context: Map<string, ContextValue>
+      Recovery: RecoveryPolicy
+      Cause: FaultCause option }
+
+/// Persisted lifecycle events, not only the originating fault.
+/// Requirement: logging 5.
+type AegisEvent =
+    | FaultRecorded of Fault
+    | FaultSuppressed of Fault * reason: string
+    | SinkFailed of sinkName: string * code: FaultCode * message: string
+
+    member this.Fault =
+        match this with
+        | FaultRecorded f
+        | FaultSuppressed (f, _) -> Some f
+        | SinkFailed _ -> None
