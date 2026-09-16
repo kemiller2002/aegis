@@ -1,4 +1,4 @@
-module Aegis.Tests
+module Aegis.Tests.Core
 
 open System
 open Xunit

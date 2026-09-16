@@ -58,7 +58,36 @@ module Serialization =
         function
         | FaultRecorded _ -> "FaultRecorded"
         | FaultSuppressed _ -> "FaultSuppressed"
+        | FaultRepeated _ -> "FaultRepeated"
+        | FaultAcknowledged _ -> "FaultAcknowledged"
+        | RecoveryStarted _ -> "RecoveryStarted"
+        | RecoveryConcluded _ -> "RecoveryConcluded"
+        | FaultEscalated _ -> "FaultEscalated"
+        | FaultResolved _ -> "FaultResolved"
+        | FaultReopened _ -> "FaultReopened"
+        | FaultSuperseded _ -> "FaultSuperseded"
         | SinkFailed _ -> "SinkFailed"
+
+    let private actorName =
+        function
+        | User -> "User"
+        | Application -> "Application"
+        | Agent -> "Agent"
+        | ScheduledProcess -> "ScheduledProcess"
+        | Integration -> "Integration"
+        | Operator -> "Operator"
+
+    let private outcomeName =
+        function
+        | Succeeded -> "Succeeded"
+        | FailedWith _ -> "Failed"
+        | AwaitingVerification -> "AwaitingVerification"
+
+    let private resolutionKindName =
+        function
+        | ResolvedAutomatically -> "Automatic"
+        | ResolvedManually -> "Manual"
+        | NoLongerApplies -> "NoLongerApplies"
 
     /// UTC is canonical. Requirement: logging 25.
     let private timestamp (t: DateTimeOffset) =
@@ -152,6 +181,55 @@ module Serialization =
                 writer.WritePropertyName "cause"
                 writeCause writer rules cause
             | None -> ()
+
+        // Lifecycle events reference the fault by id rather than repeating the
+        // whole record, so history stays append-oriented and compact.
+        // Requirements: logging 23; additional 30.
+        | FaultRepeated (id, at) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteString("timestamp", timestamp at)
+        | FaultAcknowledged (id, actor, at) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteString("acknowledgedBy", actorName actor)
+            writer.WriteString("timestamp", timestamp at)
+        | RecoveryStarted (id, attempt) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteString("correlationId", attempt.CorrelationId.Value)
+            writer.WriteString("timestamp", timestamp attempt.Timestamp)
+            writer.WriteString("recoveryAction", recoveryName attempt.Action)
+            writer.WriteNumber("attemptNumber", attempt.AttemptNumber)
+            writer.WriteString("actor", actorName attempt.Actor)
+            writer.WriteString("outcome", outcomeName attempt.Outcome)
+        | RecoveryConcluded (id, attemptNumber, outcome, at) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteNumber("attemptNumber", attemptNumber)
+            writer.WriteString("outcome", outcomeName outcome)
+            writer.WriteString("timestamp", timestamp at)
+            match outcome with
+            | FailedWith reason -> writer.WriteString("reason", reason)
+            | Succeeded
+            | AwaitingVerification -> ()
+        | FaultEscalated (id, previous, current, at) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteString("previousSeverity", severityName previous)
+            writer.WriteString("severity", severityName current)
+            writer.WriteString("timestamp", timestamp at)
+        | FaultResolved (id, resolution) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteString("resolutionKind", resolutionKindName resolution.Kind)
+            writer.WriteBoolean("verified", resolution.Verified)
+            writer.WriteString("timestamp", timestamp resolution.Timestamp)
+            match resolution.Action with
+            | Some action -> writer.WriteString("recoveryAction", recoveryName action)
+            | None -> ()
+        | FaultReopened (id, at, reason) ->
+            writer.WriteString("faultId", id.Value)
+            writer.WriteString("reason", reason)
+            writer.WriteString("timestamp", timestamp at)
+        | FaultSuperseded (superseded, by, at) ->
+            writer.WriteString("faultId", superseded.Value)
+            writer.WriteString("supersededBy", by.Value)
+            writer.WriteString("timestamp", timestamp at)
 
         writer.WriteEndObject()
         writer.Flush()

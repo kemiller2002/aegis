@@ -151,15 +151,92 @@ and Fault =
       Recovery: RecoveryPolicy
       Cause: FaultCause option }
 
-/// Persisted lifecycle events, not only the originating fault.
-/// Requirement: logging 5.
+/// Stable identity for "is this the same underlying problem as before?".
+/// Deliberately excludes timestamps, correlation ids and secrets, since those
+/// make every occurrence unique. Requirement: additional 4.
+type Fingerprint =
+    | Fingerprint of string
+
+    member this.Value = match this with Fingerprint v -> v
+
+/// Who or what initiated a recovery. Requirement: additional 38.
+type RecoveryActor =
+    | User
+    | Application
+    | Agent
+    | ScheduledProcess
+    | Integration
+    | Operator
+
+/// A recovery operation returning without throwing is not success: where
+/// verification is possible, recovery counts only once verified.
+/// Requirement: additional 15.
+type RecoveryOutcome =
+    | Succeeded
+    | FailedWith of string
+    | AwaitingVerification
+
+/// Requirement: additional 37. Makes automated remediation auditable.
+type RecoveryAttempt =
+    { Action: RecoveryPolicy
+      AttemptNumber: int
+      Actor: RecoveryActor
+      Timestamp: DateTimeOffset
+      CorrelationId: CorrelationId
+      Outcome: RecoveryOutcome }
+
+/// Requirement: additional 32. Resolution never erases the original history.
+type ResolutionKind =
+    | ResolvedAutomatically
+    | ResolvedManually
+    | NoLongerApplies
+
+type Resolution =
+    { Timestamp: DateTimeOffset
+      Kind: ResolutionKind
+      Action: RecoveryPolicy option
+      Verified: bool }
+
+/// Persisted lifecycle events, not only the originating fault. Lifecycle
+/// changes are new events, never mutations of history.
+/// Requirements: logging 5; additional 29, 30.
 type AegisEvent =
     | FaultRecorded of Fault
     | FaultSuppressed of Fault * reason: string
+    /// A further occurrence of a fault already recorded. Requirement: additional 35.
+    | FaultRepeated of FaultId * at: DateTimeOffset
+    /// Acknowledgement is not resolution. Requirement: additional 17.
+    | FaultAcknowledged of FaultId * by: RecoveryActor * at: DateTimeOffset
+    | RecoveryStarted of FaultId * RecoveryAttempt
+    | RecoveryConcluded of FaultId * attemptNumber: int * RecoveryOutcome * at: DateTimeOffset
+    /// Severity is never overwritten without historical evidence. Requirement: additional 36.
+    | FaultEscalated of FaultId * previous: FaultSeverity * current: FaultSeverity * at: DateTimeOffset
+    | FaultResolved of FaultId * Resolution
+    /// Reopening is explicit. Requirement: additional 33.
+    | FaultReopened of FaultId * at: DateTimeOffset * reason: string
+    /// A newer fault describes the condition better. Requirement: additional 34.
+    | FaultSuperseded of superseded: FaultId * by: FaultId * at: DateTimeOffset
     | SinkFailed of sinkName: string * code: FaultCode * message: string
 
+    /// The fault this event concerns, where it carries the whole record.
     member this.Fault =
         match this with
         | FaultRecorded f
         | FaultSuppressed (f, _) -> Some f
+        | _ -> None
+
+    /// The fault identity this event concerns, for reconstructing one fault's
+    /// history from the event stream. Requirement: logging 23.
+    member this.FaultId =
+        match this with
+        | FaultRecorded f
+        | FaultSuppressed (f, _) -> Some f.Id
+        | FaultRepeated (id, _)
+        | FaultAcknowledged (id, _, _)
+        | RecoveryStarted (id, _)
+        | RecoveryConcluded (id, _, _, _)
+        | FaultEscalated (id, _, _, _)
+        | FaultResolved (id, _)
+        | FaultReopened (id, _, _)
+        | FaultSuperseded (id, _, _) -> Some id
         | SinkFailed _ -> None

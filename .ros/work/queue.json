@@ -3060,6 +3060,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-002",
+      "title": "Lifecycle events, recovery records and offline queue",
+      "description": "Complete the event model and sink runtime per DF-AEGIS-2026-0CA3: full AegisEvent lifecycle vocabulary (acknowledge, resolve, recovery attempted/succeeded/failed, escalate, supersede), the active-fault projection derived from event history, and a deferred-delivery queue preserving identity, order and redaction state.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:45:38Z",
+      "updatedAt": "2026-09-16T23:49:49Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

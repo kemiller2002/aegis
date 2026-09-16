@@ -15,6 +15,8 @@
     <Compile Include="Types.fs" />
     <Compile Include="Redaction.fs" />
     <Compile Include="Serialization.fs" />
+    <Compile Include="Lifecycle.fs" />
+    <Compile Include="Offline.fs" />
     <Compile Include="Sinks.fs" />
     <Compile Include="Capture.fs" />
   </ItemGroup>

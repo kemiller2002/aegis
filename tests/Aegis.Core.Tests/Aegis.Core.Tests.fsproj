@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="Tests.fs" />
+    <Compile Include="LifecycleTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free
