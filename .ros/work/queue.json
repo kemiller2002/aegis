@@ -19,6 +19,23 @@
       "createdBy": "claude",
       "source": "sde-init",
       "sourceReference": null
+    },
+    {
+      "id": "REQ-INTAKE-001",
+      "title": "Attribute pre-ROS Aegis requirements documents",
+      "description": "Record work-item attribution for the three Input-documents/ requirements files added in commit 1b28383, which predates the ROS installation introduced by this branch. Content is not modified.",
+      "tags": [
+        "documentation",
+        "attribution"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T20:54:30Z",
+      "updatedAt": "2026-09-16T20:54:40Z",
+      "createdBy": "claude",
+      "source": "ros-validation",
+      "sourceReference": null
     }
   ]
 }
