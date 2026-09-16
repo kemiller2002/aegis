@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "protocolVersion": "1.0.0",
   "repository": "aegis",
-  "actor": "ros-bootstrap",
+  "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-16T17:42:10.734Z",
+  "updatedAt": "2026-09-16T17:46:29Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -20,6 +20,23 @@
       ],
       "updatedAt": "2026-09-16T17:42:10.734Z",
       "completedAt": "2026-09-16T17:42:10.734Z"
+    },
+    {
+      "id": "SDE-INSTALL-1-2-0",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "installation",
+          "path": ".echelon/sde.json"
+        }
+      ],
+      "updatedAt": "2026-09-16T17:46:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T174553349Z-a7d2cf20"
+      ],
+      "completedAt": "2026-09-16T17:46:29Z"
     }
   ]
 }

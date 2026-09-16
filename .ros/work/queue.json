@@ -2,5 +2,23 @@
   "schemaVersion": "1.0.0",
   "repository": "aegis",
   "nextSeq": 1,
-  "items": []
+  "items": [
+    {
+      "id": "SDE-INSTALL-1-2-0",
+      "title": "Install SDE 1.2.0 method documentation",
+      "description": "Scaffold .sde/ method, architecture, reference and template documentation via 'sde init' (SDE v1.2.0).",
+      "tags": [
+        "sde",
+        "scaffold"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T17:45:52Z",
+      "updatedAt": "2026-09-16T17:46:29Z",
+      "createdBy": "claude",
+      "source": "sde-init",
+      "sourceReference": null
+    }
+  ]
 }
