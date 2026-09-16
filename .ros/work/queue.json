@@ -76,7 +76,7 @@
     {
       "id": "AEG-CORE-002",
       "title": "Core distinction between domain and operational failures",
-      "description": "Define FailureCategory with at minimum DomainFailure, InfrastructureFailure, IntegrationFailure, DataFailure, ConfigurationFailure, SecurityFailure, ProgrammingDefect and UnknownFailure. Expected domain failures (e.g. InvoiceAlreadyPaid, IllegalStateTransition) stay explicit in the domain model via DUs/Result/SDE transitions; unexpected operational failures (GitHub unavailable, HTTP timeout, serialization failure, interop failure, unhandled exception) are handled by Aegis.",
+      "description": "Define FailureCategory with at minimum DomainFailure, InfrastructureFailure, IntegrationFailure, DataFailure, ConfigurationFailure, SecurityFailure, ProgrammingDefect and UnknownFailure. Expected domain failures stay explicit in the domain model via DUs/Result/SDE transitions -- examples given are InvoiceAlreadyPaid, TimeEntryAlreadyApproved, MissingRequiredEvidence and IllegalStateTransition. Unexpected operational failures are handled by Aegis: GitHub unavailable, HTTP timeout, serialization failure, browser interop failure, unexpected repository structure, integration assembly failure and unhandled exception.",
       "tags": [
         "requirement",
         "aegis-core",
@@ -86,7 +86,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#2"
@@ -112,7 +112,7 @@
     {
       "id": "AEG-CORE-004",
       "title": "Stable machine-readable fault codes",
-      "description": "Every recognized fault gets a stable machine-readable code (e.g. AEGIS.GITHUB.RATE_LIMITED, AEGIS.DATA.DESERIALIZATION_FAILED). Human-readable messages may change; codes must not. Codes underpin diagnostics, automation, tests, agents, telemetry, recovery rules, documentation and historical fault search.",
+      "description": "Every recognized fault gets a stable machine-readable code. Examples given: AEGIS.GITHUB.AUTHENTICATION_FAILED, AEGIS.GITHUB.RATE_LIMITED, AEGIS.NETWORK.UNAVAILABLE, AEGIS.DATA.DESERIALIZATION_FAILED, AEGIS.LIMEN.INTEROP_FAILED and AEGIS.STATE.INVARIANT_VIOLATION. Human-readable messages may change; codes must not. Codes underpin diagnostics, automation, tests, agents, telemetry, recovery rules, documentation and historical fault search.",
       "tags": [
         "requirement",
         "aegis-core",
@@ -122,7 +122,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#4"
@@ -130,7 +130,7 @@
     {
       "id": "AEG-CORE-005",
       "title": "Deliberately small capture API",
-      "description": "Expose a small public API: Aegis.capture, Aegis.captureAsync and Aegis.report at minimum, with possible later additions (guard, translate, withContext, scope). The API must not expand until a concrete requirement justifies it.",
+      "description": "Expose a small public API: Aegis.capture, Aegis.captureAsync and Aegis.report at minimum, with possible later additions (guard, translate, withContext, scope). Typical usage wraps a boundary call, e.g. Aegis.captureAsync \"Chrona.TimeEntry.Load\" (fun () -> repository.load entryId). The API must not expand until a concrete requirement justifies it.",
       "tags": [
         "requirement",
         "aegis-core",
@@ -140,7 +140,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#5"
@@ -274,7 +274,7 @@
     {
       "id": "AEG-CORE-013",
       "title": "Structured fault context",
-      "description": "Faults carry structured context (e.g. Aegis.withContext with repository/operation/entryId pairs) rather than prose-embedded detail, designed for both human and agent consumption.",
+      "description": "Faults carry structured context (e.g. Aegis.withContext with repository/operation/entryId pairs) rather than prose-embedded detail. The document contrasts a bad prose message with a better structured form: code CHR.TIME_ENTRY.LOAD_FAILED plus context entryId=123, repository=foo. Structured context must serve both human and agent consumption.",
       "tags": [
         "requirement",
         "aegis-core",
@@ -284,7 +284,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#13"
@@ -526,7 +526,7 @@
     {
       "id": "AEG-CORE-027",
       "title": "Deterministic testability with replaceable sinks",
-      "description": "Aegis must be designed for deterministic testing: tests replace sinks with a collector (e.g. TestFaultCollector) and assert expected faults by code, without inspecting console output.",
+      "description": "Aegis must be designed for deterministic testing: tests replace sinks with a collector (e.g. TestFaultCollector configured via Aegis.configure) and assert expected faults by code, e.g. collector.Faults |> shouldContainFault \"AEGIS.GITHUB.AUTHENTICATION_FAILED\". Tests must not need to inspect console output.",
       "tags": [
         "requirement",
         "aegis-core",
@@ -536,7 +536,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#27"
@@ -580,7 +580,7 @@
     {
       "id": "AEG-CORE-030",
       "title": "Agent-readable structured diagnostics",
-      "description": "Fault information must be structured so an agent can diagnose it (code, operation, category, recoverability, correlationId, context as machine-readable data), which is especially important for ROS/SDE-driven development.",
+      "description": "Fault information must be structured so an agent can diagnose it. The worked example is a JSON object carrying code CHRONA.GITHUB.LOAD_FAILED, operation Chrona.TimeEntry.Load, category IntegrationFailure, recoverability Retry, a correlationId and a context map. This is especially important for ROS/SDE-driven development.",
       "tags": [
         "requirement",
         "aegis-core",
@@ -590,7 +590,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_initial_requirements.txt#30"
@@ -778,7 +778,7 @@
     {
       "id": "AEG-ADD-001",
       "title": "Fault scopes establishing shared diagnostic context",
-      "description": "Support contextual scopes (Aegis.scope with an operation name and context pairs) so faults and diagnostic events created inside the scope inherit its context unless explicitly overridden, reducing repetitive context plumbing through method signatures.",
+      "description": "Support contextual scopes -- e.g. Aegis.scope \"Chrona.Entry.Save\" with repository and entryId context pairs wrapping the operation -- so faults and diagnostic events created inside the scope inherit its context unless explicitly overridden, reducing repetitive context plumbing through method signatures.",
       "tags": [
         "requirement",
         "aegis-additional",
@@ -788,7 +788,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#1"
@@ -796,7 +796,7 @@
     {
       "id": "AEG-ADD-002",
       "title": "Bounded breadcrumb trail",
-      "description": "Support a bounded in-memory breadcrumb trail of meaningful application actions leading up to a fault (repository loaded, parsed N entries, transition requested/accepted, calling GitHub, writing state). Breadcrumbs should be structured where practical, bounded to avoid unbounded memory growth, and attachable to a fault -- especially valuable for agent diagnostics where a stack trace alone does not explain the sequence.",
+      "description": "Support a bounded in-memory breadcrumb trail of meaningful application actions leading up to a fault. Examples given: repository loaded, parsed 42 entries, transition requested, transition accepted, calling GitHub, processing integration message, writing state. Breadcrumbs should be structured where practical, bounded to avoid unbounded memory growth, and attachable to a fault -- especially valuable for agent diagnostics where a stack trace alone does not explain the operational sequence.",
       "tags": [
         "requirement",
         "aegis-additional",
@@ -806,7 +806,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#2"
@@ -1826,13 +1826,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "model"
+        "model",
+        "lifecycle"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#5"
@@ -1966,17 +1967,18 @@
     {
       "id": "AEG-LOG-013",
       "title": "Standard serialized event shape",
-      "description": "Define the storage-independent serialized event shape carrying schema, eventId, faultId, correlationId, timestamp, application, operation, eventType, code, severity and context. The exact schema may evolve but must remain storage independent.",
+      "description": "Define the storage-independent serialized event shape. The representative example carries schema aegis/event/v1, eventId, faultId, correlationId, timestamp, application Chrona, operation Chrona.TimeEntry.Load, eventType FaultRecorded, code CHRONA.GITHUB.LOAD_FAILED, severity Error and a context map. The exact schema may evolve but must remain storage independent.",
       "tags": [
         "requirement",
         "aegis-logging",
-        "schema"
+        "schema",
+        "model"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#13"
@@ -2600,13 +2602,14 @@
       "tags": [
         "requirement",
         "aegis-logging",
-        "principle"
+        "principle",
+        "constraints"
       ],
       "priority": "high",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-09-16T21:00:25Z",
-      "updatedAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-16T22:29:25Z",
       "createdBy": "claude",
       "source": "requirements-intake",
       "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#48"

@@ -101,7 +101,7 @@
 | AEG-LOG-002 | Standard sink abstraction | captured | requirement, aegis-logging, sinks | high |
 | AEG-LOG-003 | Standard store abstraction | captured | requirement, aegis-logging, storage | high |
 | AEG-LOG-004 | Storage adapters outside the core | captured | requirement, aegis-logging, storage | high |
-| AEG-LOG-005 | Persist more than faults: the lifecycle event model | captured | requirement, aegis-logging, model | high |
+| AEG-LOG-005 | Persist more than faults: the lifecycle event model | captured | requirement, aegis-logging, model, lifecycle | high |
 | AEG-LOG-006 | Append-oriented immutable storage | captured | requirement, aegis-logging, storage | high |
 | AEG-LOG-007 | GitHub storage model: one immutable file per event | captured | requirement, aegis-logging, github | high |
 | AEG-LOG-008 | GitHub file naming with sortable unique identifiers | captured | requirement, aegis-logging, github | high |
@@ -109,7 +109,7 @@
 | AEG-LOG-010 | Database storage with efficient lookup | captured | requirement, aegis-logging, database | high |
 | AEG-LOG-011 | Storage schema consistency across sinks | captured | requirement, aegis-logging, schema | high |
 | AEG-LOG-012 | Versioned event schema | captured | requirement, aegis-logging, schema | high |
-| AEG-LOG-013 | Standard serialized event shape | captured | requirement, aegis-logging, schema | high |
+| AEG-LOG-013 | Standard serialized event shape | captured | requirement, aegis-logging, schema, model | high |
 | AEG-LOG-014 | Simultaneous logging to multiple sinks | captured | requirement, aegis-logging, sinks | high |
 | AEG-LOG-015 | Sink independence on failure | captured | requirement, aegis-logging, sinks | high |
 | AEG-LOG-016 | Bounded sink failure handling with re-entry guard | captured | requirement, aegis-logging, resilience | high |
@@ -144,7 +144,7 @@
 | AEG-LOG-045 | Limen integration for persistence state | captured | requirement, aegis-logging, integration-limen | medium |
 | AEG-LOG-046 | ROS integration for persistence declarations | captured | requirement, aegis-logging, integration-ros | low |
 | AEG-LOG-047 | Recommended architectural principle for persistence | captured | requirement, aegis-logging, principle | high |
-| AEG-LOG-048 | Scope constraint on persistence | captured | requirement, aegis-logging, principle | high |
+| AEG-LOG-048 | Scope constraint on persistence | captured | requirement, aegis-logging, principle, constraints | high |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |
 | SDE-INSTALL-1-2-0 | Install SDE 1.2.0 method documentation | complete | sde, scaffold | medium |
