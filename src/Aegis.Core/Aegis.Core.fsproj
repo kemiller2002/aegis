@@ -17,6 +17,7 @@
     <Compile Include="Serialization.fs" />
     <Compile Include="Lifecycle.fs" />
     <Compile Include="Offline.fs" />
+    <Compile Include="Store.fs" />
     <Compile Include="Sinks.fs" />
     <Compile Include="Capture.fs" />
   </ItemGroup>

@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="Tests.fs" />
     <Compile Include="LifecycleTests.fs" />
+    <Compile Include="GitHubStoreTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free
@@ -22,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Aegis.Core/Aegis.Core.fsproj" />
+    <ProjectReference Include="../../src/Aegis.Store.GitHub/Aegis.Store.GitHub.fsproj" />
   </ItemGroup>
 
 </Project>
