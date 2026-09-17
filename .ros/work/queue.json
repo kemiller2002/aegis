@@ -3162,6 +3162,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-008",
+      "title": "Diagnostics surface: breadcrumbs, bundles, catalog and containment",
+      "description": "E12: bounded structured breadcrumbs, environment and deployment metadata, state snapshot references, diagnostic bundles with redaction applied after aggregation, the known-fault catalog with agent guidance, and the containment behaviours (circuit-breaker state, quarantine, dead-letter).",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:21:56Z",
+      "updatedAt": "2026-09-17T00:25:17Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

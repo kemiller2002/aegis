@@ -22,6 +22,9 @@
     <Compile Include="Recovery.fs" />
     <Compile Include="Escalation.fs" />
     <Compile Include="Presentation.fs" />
+    <Compile Include="Diagnostics.fs" />
+    <Compile Include="Catalog.fs" />
+    <Compile Include="Containment.fs" />
     <Compile Include="Sinks.fs" />
     <Compile Include="Capture.fs" />
     <Compile Include="Bootstrap.fs" />
