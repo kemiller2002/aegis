@@ -3367,6 +3367,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-GOV-001",
+      "title": "Accept the implementation-sequencing decision record",
+      "description": "Promote DF-AEGIS-2026-0CA3 from review to accepted. The build order it proposes has been executed end to end; leaving it in review misrepresents the repository's own history.",
+      "tags": [
+        "governance",
+        "decision"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:27:33Z",
+      "updatedAt": "2026-09-17T07:28:15Z",
+      "createdBy": "claude",
+      "source": "user-request",
+      "sourceReference": null
     }
   ]
 }

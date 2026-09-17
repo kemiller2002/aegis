@@ -115,6 +115,7 @@
 | AEG-EPIC-E14 | E14: Documentation and ROS compliance | captured | epic, aegis-synthesis, wave-7 | high |
 | AEG-FIX-001 | Unpin FSharp.Core in the C# test project | complete | fix | high |
 | AEG-FIX-002 | Stop FaultSeverity shadowing Result.Error | complete | fix, api | medium |
+| AEG-GOV-001 | Accept the implementation-sequencing decision record | complete | governance, decision | medium |
 | AEG-LOG-001 | Purpose: storage-independent persistence of faults and lifecycle events | captured | requirement, aegis-logging, purpose, epic-e00 | high |
 | AEG-LOG-002 | Standard sink abstraction | captured | requirement, aegis-logging, sinks, epic-e06 | high |
 | AEG-LOG-003 | Standard store abstraction | captured | requirement, aegis-logging, storage, epic-e07 | high |

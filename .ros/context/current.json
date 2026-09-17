@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T07:08:47Z",
+  "updatedAt": "2026-09-17T07:28:15Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -418,6 +418,27 @@
         "EXE-20260917T070847326Z-f1294247"
       ],
       "completedAt": "2026-09-17T07:08:47Z"
+    },
+    {
+      "id": "AEG-GOV-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "document",
+          "path": "research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md"
+        },
+        {
+          "type": "registry",
+          "path": "registries/decisions.json"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:28:15Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T072743237Z-97e1fc63"
+      ],
+      "completedAt": "2026-09-17T07:28:15Z"
     }
   ]
 }

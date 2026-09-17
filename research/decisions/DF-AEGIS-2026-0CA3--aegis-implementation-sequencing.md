@@ -1,9 +1,10 @@
 ---
 id: DF-AEGIS-2026-0CA3
 title: Aegis implementation sequencing
-status: review
-version: 1.0.0
+status: accepted
+version: 1.1.0
 created: 2026-09-17
+updated: 2026-09-17
 owners:
   - repository-governance
 tags: [aegis, sequencing, requirements, synthesis]
@@ -18,8 +19,10 @@ superseded_by: []
 
 # Decision Record: Aegis implementation sequencing
 
-**Status: review.** This record proposes a build order and is awaiting review. It does not change any
-requirement, and adopting a different order does not invalidate the intake.
+**Status: accepted.** The build order this record proposes was executed end to end; the
+epics below and the wave ordering are the sequence the repository was actually built in, so the
+record now describes history rather than a proposal. It changes no requirement, and the intake it
+partitions stands independently of it.
 
 ## Context
 
@@ -393,9 +396,29 @@ The teaching documentation the requirements mandate, the declared fault boundari
   retrieval and are kept, but they overlap by design and so cannot express a
   build order.
 
-## Open questions
+## Resolved at acceptance
 
-- Does the wave ordering match the intended delivery sequence, or should a
-  thinner vertical slice (fault model, capture, one sink) precede breadth?
-- Should coarse items be split before execution begins, or when their epic
-  starts?
+The two questions this record left open were settled by executing it, and are
+recorded here rather than left open behind an accepted status.
+
+- **Wave ordering versus a thinner vertical slice.** A vertical slice went
+  first. Execution did not follow the waves breadth-first: `AEG-SLICE-001`
+  delivered the fault model, redaction, capture and one in-memory sink across
+  E01, E02, E03 and E06 before any of those epics was complete, and the
+  remaining slices widened from there. The wave *dependencies* held -- no slice
+  needed an epic its predecessors had not reached -- but the delivery unit was
+  the slice, not the wave. The dependency graph is what this record
+  contributes; the wave numbering is a consequence of it, not a schedule.
+- **When to split coarse items.** When their epic starts. `AEG-CORE-028` and
+  `AEG-LOG-040` were never split as backlog items; their enumerated test areas
+  became the acceptance criteria of `AEG-SLICE-009`, which closed the gaps the
+  enumeration exposed. Splitting them up front would have produced 28 items
+  that no one planned against.
+
+## Follow-up validation
+
+The partition property was re-verified against the backlog after execution:
+143 requirement items, each carrying exactly one `epic-eNN` tag, no item
+unassigned and none tagged twice. Per-item delivery status is tracked in
+[`docs/aegis/REQUIREMENTS-STATUS.md`](../../docs/aegis/REQUIREMENTS-STATUS.md),
+not here, so this record does not need to change as items close.
