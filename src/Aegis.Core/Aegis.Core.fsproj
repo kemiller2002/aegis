@@ -19,6 +19,7 @@
     <Compile Include="Offline.fs" />
     <Compile Include="Store.fs" />
     <Compile Include="Translation.fs" />
+    <Compile Include="Recovery.fs" />
     <Compile Include="Sinks.fs" />
     <Compile Include="Capture.fs" />
     <Compile Include="Bootstrap.fs" />

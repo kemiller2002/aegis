@@ -3128,6 +3128,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-006",
+      "title": "Recovery execution, obligations and safe-mode requests",
+      "description": "Recovery with authorization injected so Aegis proposes and an external authority decides, bounded retry that respects idempotency, verification before recovery counts as successful, machine-readable recovery capabilities for agents, obligations for faults that cannot be recovered automatically, and safe-mode recommendations.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:12:37Z",
+      "updatedAt": "2026-09-17T00:14:24Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

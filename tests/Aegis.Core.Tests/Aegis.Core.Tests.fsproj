@@ -13,6 +13,7 @@
     <Compile Include="GitHubStoreTests.fs" />
     <Compile Include="BootstrapTests.fs" />
     <Compile Include="TranslationTests.fs" />
+    <Compile Include="RecoveryTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free
