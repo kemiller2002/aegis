@@ -3094,6 +3094,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-004",
+      "title": "Configuration validation, bootstrap and shutdown boundaries",
+      "description": "Validate Aegis configuration at startup without recursive initialization failure, support a minimal bootstrap mode that reports faults before full state exists and promotes those diagnostics into the normal runtime, and report shutdown failures without recursive or indefinite loops.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:03:09Z",
+      "updatedAt": "2026-09-17T00:04:50Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }
