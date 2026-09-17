@@ -3111,6 +3111,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-005",
+      "title": "Translation, integration failure models and contract tests",
+      "description": "Generic translation from a typed integration failure model into the shared fault model, data-integrity and schema-migration taxonomies, and a worked GitHub integration assembly with contract tests proving technology exceptions never cross the boundary.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:08:04Z",
+      "updatedAt": "2026-09-17T00:10:58Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

@@ -13,6 +13,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aegis.Core.Tests", "tests\A
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aegis.Store.GitHub", "src\Aegis.Store.GitHub\Aegis.Store.GitHub.fsproj", "{FB678519-3EB7-42EA-8024-225B253ABF9C}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aegis.Integration.GitHub", "src\Aegis.Integration.GitHub\Aegis.Integration.GitHub.fsproj", "{CF1F4112-27D4-40CB-8257-95822622D0AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +36,15 @@ Global
 		{FB678519-3EB7-42EA-8024-225B253ABF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB678519-3EB7-42EA-8024-225B253ABF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB678519-3EB7-42EA-8024-225B253ABF9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF1F4112-27D4-40CB-8257-95822622D0AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF1F4112-27D4-40CB-8257-95822622D0AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF1F4112-27D4-40CB-8257-95822622D0AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF1F4112-27D4-40CB-8257-95822622D0AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{230365F2-664F-41ED-AF1A-D25CCBAE2DDE} = {AE351EA8-4309-4B38-B1C6-70B135CED96E}
 		{70BDD67C-DDD3-41EE-9E04-395349E657A7} = {52AF1783-8547-4C9F-9344-CF68720494E1}
 		{FB678519-3EB7-42EA-8024-225B253ABF9C} = {AE351EA8-4309-4B38-B1C6-70B135CED96E}
+		{CF1F4112-27D4-40CB-8257-95822622D0AF} = {AE351EA8-4309-4B38-B1C6-70B135CED96E}
 	EndGlobalSection
 EndGlobal

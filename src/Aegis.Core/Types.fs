@@ -96,6 +96,9 @@ type RecoveryPolicy =
     | AbortOperation
     | RestartApplication
     | ManualIntervention
+    /// Recover without mutating data, for integrity faults where correctness
+    /// has not yet been established. Requirement: core 20.
+    | ReadOnlyRecovery
     | NoRecovery
 
 and Backoff =

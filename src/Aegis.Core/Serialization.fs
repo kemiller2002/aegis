@@ -52,6 +52,7 @@ module Serialization =
         | AbortOperation -> "AbortOperation"
         | RestartApplication -> "RestartApplication"
         | ManualIntervention -> "ManualIntervention"
+        | ReadOnlyRecovery -> "ReadOnlyRecovery"
         | NoRecovery -> "NoRecovery"
 
     let eventTypeName =

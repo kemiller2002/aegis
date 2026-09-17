@@ -12,6 +12,7 @@
     <Compile Include="LifecycleTests.fs" />
     <Compile Include="GitHubStoreTests.fs" />
     <Compile Include="BootstrapTests.fs" />
+    <Compile Include="TranslationTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free
@@ -25,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Aegis.Core/Aegis.Core.fsproj" />
     <ProjectReference Include="../../src/Aegis.Store.GitHub/Aegis.Store.GitHub.fsproj" />
+    <ProjectReference Include="../../src/Aegis.Integration.GitHub/Aegis.Integration.GitHub.fsproj" />
   </ItemGroup>
 
 </Project>
