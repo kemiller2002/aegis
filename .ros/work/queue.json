@@ -3441,6 +3441,24 @@
       "createdBy": "claude",
       "source": "ros-validation",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-PKG-001",
+      "title": "Package Aegis for NuGet and set up trusted-publishing CI",
+      "description": "Add NuGet packaging metadata (PackageId, version, license, README) to Aegis.Core, Aegis.Store.GitHub and Aegis.Integration.GitHub; add a LICENSE (Apache-2.0); add a publish workflow using NuGet.org Trusted Publishing (OIDC) with a preflight that refuses a release before burning versions; write consumer and agent-integration documentation.",
+      "tags": [
+        "packaging",
+        "nuget",
+        "documentation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T21:11:04Z",
+      "updatedAt": "2026-09-17T21:16:20Z",
+      "createdBy": "claude",
+      "source": "user-request",
+      "sourceReference": null
     }
   ]
 }

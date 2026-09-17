@@ -164,6 +164,7 @@
 | AEG-LOG-046 | ROS integration for persistence declarations | complete | requirement, aegis-logging, integration-ros, epic-e14 | low |
 | AEG-LOG-047 | Recommended architectural principle for persistence | complete | requirement, aegis-logging, principle, epic-e00 | high |
 | AEG-LOG-048 | Scope constraint on persistence | complete | requirement, aegis-logging, principle, constraints, epic-e00 | high |
+| AEG-PKG-001 | Package Aegis for NuGet and set up trusted-publishing CI | complete | packaging, nuget, documentation | high |
 | AEG-SCOPE-001 | Scope this repository to the core, the GitHub adapter and the GitHub integration | complete | governance, decision, scope | high |
 | AEG-SCOPE-002 | Attribute the scope decision record and record its follow-up validation | complete | governance, decision | high |
 | AEG-SLICE-001 | Vertical slice: fault model, redaction, capture, in-memory sink | complete | slice, implementation | high |

@@ -2,12 +2,15 @@
 id: GV-AEGIS-001
 title: Using Aegis
 status: draft
-version: 1.0.0
+version: 1.1.0
 owners:
   - repository-governance
 created: 2026-09-17
+updated: 2026-09-17
 related_documents:
   - docs/aegis/REQUIREMENTS-STATUS.md
+  - docs/aegis/AGENT-INTEGRATION.md
+  - docs/aegis/PUBLISHING.md
   - Input-documents/aegis_initial_requirements.txt
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
   - aegis-boundaries.json
@@ -20,6 +23,19 @@ Aegis handles **unexpected operational failure**: the GitHub call that times out
 the stored file that will not parse, the interop bridge that disappears. It
 exists so that handling those failures does not mean threading an error type
 through every method signature, and so that swallowing them is not an option.
+
+## Install
+
+```
+dotnet add package EchelonFoundry.Aegis.Core
+```
+
+Add `EchelonFoundry.Aegis.Store.GitHub` if you store events in GitHub, and
+`EchelonFoundry.Aegis.Integration.GitHub` if you also call the GitHub API
+directly. An AI agent adding Aegis to a codebase should read
+[`AGENT-INTEGRATION.md`](AGENT-INTEGRATION.md) instead of this document —
+it is a mechanical runbook rather than a design explanation. How these
+packages are built and released is in [`PUBLISHING.md`](PUBLISHING.md).
 
 Every example below is a real scenario from this repository or from Chrona.
 There is no `FooException` anywhere in this document, deliberately.

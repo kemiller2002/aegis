@@ -6,10 +6,18 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <Description>GitHub integration failure model and translation into the Aegis fault model.</Description>
+    <PackageId>EchelonFoundry.Aegis.Integration.GitHub</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>fault-handling;aegis;github;fsharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="GitHubFailure.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

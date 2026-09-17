@@ -1,0 +1,148 @@
+name: Publish Aegis to NuGet
+
+# Publishes EchelonFoundry.Aegis.Core, EchelonFoundry.Aegis.Store.GitHub and
+# EchelonFoundry.Aegis.Integration.GitHub together, at the same version, on a
+# push to a `aegis-v*` tag or on manual dispatch. Uses nuget.org's Trusted
+# Publishing (OIDC) -- no NUGET_API_KEY secret is stored in this repository.
+# The workflow requests a GitHub OIDC token (`id-token: write` below) and
+# exchanges it for a short-lived nuget.org API key via NuGet/login@v1,
+# provided a Trusted Publishing policy on nuget.org names this exact
+# repository and this exact workflow file.
+#
+# PREREQUISITE, one-time, done outside this workflow: see
+# docs/aegis/PUBLISHING.md for the exact nuget.org steps. In short: create a
+# Trusted Publishing policy for the `EchelonFoundry.Aegis*` package pattern
+# naming kemiller2002/aegis and publish-nuget.yml. If nuget.org refuses a
+# policy scoped to packages that do not exist yet, the documented fallback
+# is one manual `dotnet nuget push --api-key` for the first version, after
+# which the policy can be attached to the now-existing packages.
+#
+# All three packages are versioned in lockstep and published together in one
+# run: Aegis.Store.GitHub and Aegis.Integration.GitHub each depend on an
+# exact version of Aegis.Core, so a partial release would leave a dependent
+# package pointing at a Core version that was never published.
+
+on:
+  push:
+    tags:
+      - "aegis-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Semantic version to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-aegis-nuget
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build, test and pack
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Resolve release version
+        id: version
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            VERSION="${INPUT_VERSION#aegis-v}"
+          else
+            VERSION="${REF_NAME#aegis-v}"
+          fi
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::Version must be semantic: $VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore Aegis.sln
+
+      - name: Build
+        run: dotnet build Aegis.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test Aegis.sln --no-build --configuration Release --verbosity normal
+
+      - name: Pack
+        run: |
+          mkdir -p dist
+          for proj in \
+            src/Aegis.Core/Aegis.Core.fsproj \
+            src/Aegis.Store.GitHub/Aegis.Store.GitHub.fsproj \
+            src/Aegis.Integration.GitHub/Aegis.Integration.GitHub.fsproj; do
+            dotnet pack "$proj" \
+              --no-build \
+              --configuration Release \
+              -p:Version="${{ steps.version.outputs.version }}" \
+              -p:ContinuousIntegrationBuild=true \
+              -o dist
+          done
+
+      - name: Upload packed packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: aegis-nuget-packages
+          path: dist/
+          retention-days: 7
+
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download packed packages
+        uses: actions/download-artifact@v4
+        with:
+          name: aegis-nuget-packages
+          path: dist
+
+      - name: Preflight the release
+        run: |
+          chmod +x scripts/preflight-nuget-publish.sh
+          scripts/preflight-nuget-publish.sh "${{ needs.build.outputs.version }}" dist
+
+      - name: NuGet login (OIDC -> short-lived API key)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: kevin.m.miller
+
+      - name: Push packages
+        run: |
+          published=""
+          for nupkg in dist/*.nupkg; do
+            name="$(basename "$nupkg")"
+            echo "Pushing $name"
+            if dotnet nuget push "$nupkg" \
+              --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate; then
+              published="$published $name"
+            else
+              echo "::error::Pushing $name failed. Already published in this run:${published:- none}. Those versions are permanently taken, so re-run this release under a new version rather than retrying this one."
+              exit 1
+            fi
+          done
