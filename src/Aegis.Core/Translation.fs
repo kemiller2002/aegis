@@ -79,6 +79,9 @@ module Integrity =
 
     /// Requirement: core 20.
     type IntegrityFailure =
+        /// A stored payload could not be read at all, as distinct from one
+        /// that needs migrating. Requirements: core 4, 20; additional 24.
+        | DeserializationFailed of detail: string
         | InvalidPersistedState of detail: string
         | MissingRequiredRelationship of detail: string
         | HashMismatch of expected: string * actual: string
@@ -87,6 +90,7 @@ module Integrity =
 
     let code =
         function
+        | DeserializationFailed _ -> FaultCode "AEGIS.DATA.DESERIALIZATION_FAILED"
         | InvalidPersistedState _ -> FaultCode "AEGIS.DATA.INVALID_PERSISTED_STATE"
         | MissingRequiredRelationship _ -> FaultCode "AEGIS.DATA.MISSING_RELATIONSHIP"
         | HashMismatch _ -> FaultCode "AEGIS.DATA.HASH_MISMATCH"
@@ -102,6 +106,7 @@ module Integrity =
     /// established, so nothing here proposes a write. Requirement: core 20.
     let recovery =
         function
+        | DeserializationFailed _
         | InvalidPersistedState _
         | UnexpectedRepositoryStructure _
         | HashMismatch _ -> ReadOnlyRecovery
@@ -120,7 +125,8 @@ module Integrity =
         | HashMismatch _
         | InvalidPersistedState _ -> ApplicationUnsafe
         | UnexpectedRepositoryStructure _
-        | MissingRequiredRelationship _ -> DegradedApplication
+        | MissingRequiredRelationship _
+        | DeserializationFailed _ -> DegradedApplication
         | Migration _ -> FeatureUnavailable
 
     let mapping: Translation.Mapping<IntegrityFailure> =

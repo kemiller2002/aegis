@@ -3196,6 +3196,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-010",
+      "title": "SDE transition proposals, fault boundary declarations and documentation",
+      "description": "E14: proposed SDE transitions for faults and persistence state, declared fault boundaries with a check that the declaration stays honest, the teaching documentation core 34 mandates, and traceability closing the initial pass's open design questions.",
+      "tags": [
+        "slice",
+        "documentation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:29:28Z",
+      "updatedAt": "2026-09-17T00:32:53Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

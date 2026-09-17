@@ -1,0 +1,89 @@
+{
+  "$comment": "Declared fault boundaries for this repository. ROS should require projects using Aegis to declare these, and architecture checks may later flag unguarded boundaries. Requirements: core 33; logging 46.",
+  "schema": "aegis/boundaries/v1",
+  "application": "Aegis",
+  "boundaries": [
+    {
+      "name": "GitHub storage",
+      "kind": "persistent-storage",
+      "owner": "Aegis.Store.GitHub",
+      "codes": ["AEGIS.GITHUB.CONFLICT", "AEGIS.NETWORK.UNAVAILABLE"],
+      "guarded": true
+    },
+    {
+      "name": "GitHub API integration",
+      "kind": "external-service",
+      "owner": "Aegis.Integration.GitHub",
+      "codes": [
+        "AEGIS.GITHUB.AUTHENTICATION_FAILED",
+        "AEGIS.GITHUB.REPOSITORY_NOT_FOUND",
+        "AEGIS.GITHUB.RATE_LIMITED",
+        "AEGIS.GITHUB.INVALID_RESPONSE",
+        "AEGIS.NETWORK.TIMEOUT"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Event serialization and deserialization",
+      "kind": "serialization",
+      "owner": "Aegis.Core",
+      "codes": ["AEGIS.DATA.DESERIALIZATION_FAILED"],
+      "guarded": true
+    },
+    {
+      "name": "Persisted state integrity",
+      "kind": "data-integrity",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.DATA.INVALID_PERSISTED_STATE",
+        "AEGIS.DATA.HASH_MISMATCH",
+        "AEGIS.DATA.MISSING_RELATIONSHIP",
+        "AEGIS.DATA.UNEXPECTED_STRUCTURE"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Schema migration",
+      "kind": "migration",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.SCHEMA.MISMATCH",
+        "AEGIS.SCHEMA.MIGRATION_REQUIRED",
+        "AEGIS.SCHEMA.MIGRATION_FAILED",
+        "AEGIS.SCHEMA.UNSUPPORTED_VERSION",
+        "AEGIS.SCHEMA.FORWARD_VERSION_UNSUPPORTED",
+        "AEGIS.SCHEMA.BACKWARD_COMPATIBILITY_VIOLATION"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Configuration and startup",
+      "kind": "startup",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.CONFIG.MISSING_APPLICATION",
+        "AEGIS.CONFIG.NO_SINKS",
+        "AEGIS.CONFIG.DUPLICATE_SINK",
+        "AEGIS.CONFIG.REQUIRED_SINK_NOT_DURABLE",
+        "AEGIS.CONFIG.UNNAMED_REDACTION_RULE",
+        "AEGIS.CONFIG.INVALID_QUEUE_CAPACITY"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Diagnostic sink delivery",
+      "kind": "sink",
+      "owner": "Aegis.Core",
+      "codes": ["AEGIS.SINK.WRITE_FAILED"],
+      "guarded": true
+    },
+    {
+      "name": "Limen interop",
+      "kind": "ui-interop",
+      "owner": "not-yet-implemented",
+      "codes": ["AEGIS.LIMEN.INTEROP_FAILED"],
+      "guarded": false,
+      "$comment": "Declared but unguarded: Limen does not exist in this repository yet. Recorded so the gap is visible rather than forgotten."
+    }
+  ]
+}
