@@ -3300,6 +3300,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-014",
+      "title": "Persist quarantine and dead-letter records; verify C# consumability",
+      "description": "AEG-ADD-007 and AEG-ADD-008: make quarantine and dead-letter records persistent through the same event, redaction and retention path as everything else, rather than types held only in memory. AEG-CORE-036: verify the public API is usable from C# with a real test project.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:55:02Z",
+      "updatedAt": "2026-09-17T06:59:48Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

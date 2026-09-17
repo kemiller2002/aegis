@@ -266,14 +266,14 @@ let ``circuit state is derived from history so it is reproducible`` () =
 // -------------------------------------------------------------------- quarantine
 
 let private quarantined =
-    { Containment.SourceId = "entry-123"
-      Containment.PayloadReference = "aegis/quarantine/entry-123.json"
-      Containment.FaultId = fault.Id
-      Containment.Code = FaultCode "AEGIS.DATA.INVALID_PERSISTED_STATE"
-      Containment.Reason = "unparseable entry"
-      Containment.At = at
-      Containment.RetryEligible = false
-      Containment.Released = None }
+    { SourceId = "entry-123"
+      PayloadReference = "aegis/quarantine/entry-123.json"
+      FaultId = fault.Id
+      Code = FaultCode "AEGIS.DATA.INVALID_PERSISTED_STATE"
+      Reason = "unparseable entry"
+      At = at
+      RetryEligible = false
+      Released = None }
 
 [<Fact>]
 let ``quarantined data is not processed again`` () =
@@ -347,3 +347,115 @@ let ``a dead letter needing a human says so`` () =
     let letter = Containment.deadLetter at "entry-9" "ref" corrupt [] "cannot be recovered automatically"
     Assert.True letter.RequiresManualIntervention
     Assert.False letter.Reprocessable
+
+// ------------------------------------------- persisted quarantine and dead letters
+
+let private serializeItem ev = Serialization.event Redaction.defaultRules (EventId "01E1") ev
+
+[<Fact>]
+let ``quarantining is an event, so it persists like anything else`` () =
+    // Requirement: additional 7 -- previously types held only in memory.
+    let payload = serializeItem (Containment.quarantinedEvent quarantined)
+    Assert.Contains("\"eventType\":\"ItemQuarantined\"", payload)
+    Assert.Contains("\"sourceId\":\"entry-123\"", payload)
+    Assert.Contains("\"faultId\":\"01HXYZABCDE\"", payload)
+
+[<Fact>]
+let ``a persisted quarantine record holds a reference, never the payload`` () =
+    // Requirement: additional 7 -- quarantine storage follows the same
+    // sensitive-data rules as everything else.
+    let payload = serializeItem (Containment.quarantinedEvent quarantined)
+    Assert.Contains("\"payloadReference\":\"aegis/quarantine/entry-123.json\"", payload)
+    Assert.DoesNotContain("unparseable entry content", payload)
+
+[<Fact>]
+let ``quarantined data is audit material rather than disposable`` () =
+    // Requirement: logging 26 -- it is held precisely so it can be examined.
+    Assert.Contains("\"retention\":\"AuditRequired\"", serializeItem (Containment.quarantinedEvent quarantined))
+
+[<Fact>]
+let ``the quarantine survives a restart by replaying history`` () =
+    // Requirement: additional 7 -- known-bad data must not be reprocessed
+    // just because the process restarted.
+    let history =
+        [ Containment.quarantinedEvent quarantined
+          Containment.quarantinedEvent { quarantined with SourceId = "entry-456" } ]
+
+    let rebuilt = Containment.fromHistory history
+    Assert.True(Containment.isQuarantined "entry-123" rebuilt)
+    Assert.True(Containment.isQuarantined "entry-456" rebuilt)
+    Assert.Equal(2, List.length (Containment.held rebuilt))
+
+[<Fact>]
+let ``a release recorded in history is honoured on replay`` () =
+    let history =
+        [ Containment.quarantinedEvent quarantined
+          Containment.releasedEvent "entry-123" (at.AddHours 3.) ]
+
+    let rebuilt = Containment.fromHistory history
+    Assert.False(Containment.isQuarantined "entry-123" rebuilt)
+    Assert.Empty(Containment.held rebuilt)
+
+[<Fact>]
+let ``a release for something never quarantined is ignored`` () =
+    let rebuilt = Containment.fromHistory [ Containment.releasedEvent "never-seen" at ]
+    Assert.Empty rebuilt
+
+[<Fact>]
+let ``dead-lettering is an event carrying what a decision needs`` () =
+    // Requirement: additional 8.
+    let letter =
+        Containment.deadLetter at "entry-123" "aegis/deadletter/entry-123.json" fault [ failedAttempt 1; failedAttempt 2 ] "retries exhausted"
+
+    let payload = serializeItem (Containment.deadLetteredEvent letter)
+    Assert.Contains("\"eventType\":\"ItemDeadLettered\"", payload)
+    Assert.Contains("\"itemId\":\"entry-123\"", payload)
+    Assert.Contains("\"finalReason\":\"retries exhausted\"", payload)
+    Assert.Contains("\"attempts\":2", payload)
+    Assert.Contains("\"reprocessable\":true", payload)
+
+[<Fact>]
+let ``dead letters are recoverable from history for a reprocessing pass`` () =
+    // Requirement: additional 8 -- "reprocess the item later if appropriate".
+    let transient = Containment.deadLetter at "a" "ref-a" fault [] "gave up"
+
+    let manual =
+        Containment.deadLetter at "b" "ref-b" { fault with Recovery = ManualIntervention; Persistence = RequiresIntervention } [] "needs a human"
+
+    let history =
+        [ Containment.deadLetteredEvent transient
+          Containment.deadLetteredEvent manual ]
+
+    let letters = Containment.deadLettersFromHistory history
+    Assert.Equal(2, List.length letters)
+
+    // Only the one that can be retried without a human is offered up.
+    let candidates = Containment.reprocessable letters
+    Assert.Single candidates |> ignore
+    Assert.Equal("a", candidates.Head.ItemId)
+
+[<Fact>]
+let ``containment events do not invent fault lifecycle state`` () =
+    // The projection tracks a fault's own lifecycle; containment concerns an
+    // item, so these events must not fabricate fault state.
+    let projection =
+        Lifecycle.project
+            [ FaultRecorded fault
+              Containment.quarantinedEvent quarantined
+              Containment.deadLetteredEvent (Containment.deadLetter at "x" "ref" fault [] "gave up") ]
+
+    let projected = projection.[fault.Id.Value]
+    Assert.Equal(Lifecycle.Active, projected.State)
+    Assert.Equal(1, projected.Occurrences)
+
+[<Fact>]
+let ``a persisted containment event can be indexed and queried`` () =
+    // Requirement: logging 27 -- the same query model covers these records.
+    let payload = serializeItem (Containment.quarantinedEvent quarantined)
+
+    match Store.index payload with
+    | Ok indexed ->
+        Assert.Equal("ItemQuarantined", indexed.EventType)
+        Assert.Equal(Some(FaultId "01HXYZABCDE"), indexed.FaultId)
+        Assert.True(Store.matches { Store.anyEvent with EventType = Some "ItemQuarantined" } indexed)
+    | Result.Error e -> failwith $"{e}"

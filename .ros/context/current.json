@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T06:54:11Z",
+  "updatedAt": "2026-09-17T06:59:48Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -352,6 +352,27 @@
         "EXE-20260917T065055636Z-fdf9166f"
       ],
       "completedAt": "2026-09-17T06:54:11Z"
+    },
+    {
+      "id": "AEG-SLICE-014",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        }
+      ],
+      "updatedAt": "2026-09-17T06:59:48Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T065502963Z-923c0478"
+      ],
+      "completedAt": "2026-09-17T06:59:48Z"
     }
   ]
 }

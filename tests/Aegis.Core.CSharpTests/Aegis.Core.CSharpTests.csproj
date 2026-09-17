@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>annotations</Nullable>
+    <LangVersion>latest</LangVersion>
+    <!-- Verification of core 36: the F#-first API must be consumable here. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="FSharp.Core" Version="8.0.400" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Aegis.Core/Aegis.Core.fsproj" />
+  </ItemGroup>
+
+</Project>

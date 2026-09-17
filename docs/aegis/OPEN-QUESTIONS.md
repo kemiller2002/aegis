@@ -42,6 +42,27 @@ where each was answered and where it is implemented, which is the work item
 All fifteen are answered by the later passes, so nothing from section 40
 remains open as a requirement.
 
+## Implementation status
+
+Measured against the 143 requirement items, not asserted:
+
+| | Count |
+| --- | --- |
+| Fully implemented and tested | 137 |
+| Partial | 4 |
+| Not implemented | 2 |
+
+Everything still short of complete traces to one of two causes: the blocked
+store-adapter decision, or a dependency that does not exist in this
+repository yet.
+
+- `AEG-LOG-010`, `AEG-LOG-037`, `AEG-LOG-004` and the enforcement half of
+  `AEG-ADD-052` are all waiting on `AEG-STORE-ADAPTERS-001`.
+- `AEG-LOG-044` has the SDE proposals; there is no SDE here to consume them.
+- `AEG-CORE-033` has the declaration and the tests that keep it honest, but
+  ROS itself does not yet require or validate a fault-boundary declaration.
+  That is upstream of this repository.
+
 ## What is genuinely still open
 
 These are not from section 40; they are decisions this implementation reached

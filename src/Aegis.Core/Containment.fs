@@ -39,19 +39,6 @@ module Containment =
         | HalfOpen -> true
         | Open _ -> false
 
-    /// Requirement: additional 7.
-    type Quarantined =
-        { SourceId: string
-          /// A reference to the payload, not the payload, so quarantine
-          /// storage follows the same sensitive-data rules as everything else.
-          PayloadReference: string
-          FaultId: FaultId
-          Code: FaultCode
-          Reason: string
-          At: DateTimeOffset
-          RetryEligible: bool
-          Released: DateTimeOffset option }
-
     type Quarantine = Map<string, Quarantined>
 
     let noQuarantine: Quarantine = Map.empty
@@ -72,20 +59,6 @@ module Containment =
 
     let held (store: Quarantine) =
         store |> Map.toList |> List.map snd |> List.filter (fun i -> i.Released.IsNone)
-
-    /// Requirement: additional 8. Carries enough to identify the item,
-    /// understand why it failed, see what was tried, and decide whether a
-    /// human is needed.
-    type DeadLettered =
-        { ItemId: string
-          PayloadReference: string
-          FaultId: FaultId
-          Code: FaultCode
-          Attempts: RecoveryAttempt list
-          FinalReason: string
-          At: DateTimeOffset
-          RequiresManualIntervention: bool
-          Reprocessable: bool }
 
     /// Dead-lettering is deterministic and policy-driven: an item is
     /// dead-lettered exactly when its recovery budget is spent.
@@ -122,3 +95,41 @@ module Containment =
             | Persistent
             | Permanent
             | RequiresIntervention -> false }
+
+    /// Quarantining an item is an event, so it persists through the same
+    /// sinks, redaction and retention path as any other record.
+    /// Requirement: additional 7.
+    let quarantinedEvent (item: Quarantined) = ItemQuarantined item
+
+    let releasedEvent (sourceId: string) (at: DateTimeOffset) = ItemReleased(sourceId, at)
+
+    /// Requirement: additional 8.
+    let deadLetteredEvent (item: DeadLettered) = ItemDeadLettered item
+
+    /// Rebuild the quarantine from persisted history, so what is held aside
+    /// survives a restart instead of living only in memory.
+    /// Requirement: additional 7.
+    let fromHistory (events: AegisEvent list) =
+        events
+        |> List.fold
+            (fun store ev ->
+                match ev with
+                | ItemQuarantined item -> Map.add item.SourceId item store
+                | ItemReleased (sourceId, at) ->
+                    match Map.tryFind sourceId store with
+                    | Some item -> Map.add sourceId { item with Released = Some at } store
+                    | None -> store
+                | _ -> store)
+            noQuarantine
+
+    /// Dead letters recovered from persisted history, for a reprocessing pass.
+    /// Requirement: additional 8.
+    let deadLettersFromHistory (events: AegisEvent list) =
+        events
+        |> List.choose (function
+            | ItemDeadLettered item -> Some item
+            | _ -> None)
+
+    /// Which dead letters may be reprocessed without a human.
+    let reprocessable (letters: DeadLettered list) =
+        letters |> List.filter (fun l -> l.Reprocessable && not l.RequiresManualIntervention)

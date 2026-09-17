@@ -67,6 +67,9 @@ module Serialization =
         | FaultResolved _ -> "FaultResolved"
         | FaultReopened _ -> "FaultReopened"
         | FaultSuperseded _ -> "FaultSuperseded"
+        | ItemQuarantined _ -> "ItemQuarantined"
+        | ItemReleased _ -> "ItemReleased"
+        | ItemDeadLettered _ -> "ItemDeadLettered"
         | SinkFailed _ -> "SinkFailed"
 
     let private actorName =
@@ -335,6 +338,32 @@ module Serialization =
             writer.WriteString("faultId", superseded.Value)
             writer.WriteString("supersededBy", by.Value)
             writer.WriteString("timestamp", timestamp at)
+        | ItemQuarantined item ->
+            // A reference, never the payload. Requirement: additional 7.
+            writer.WriteString("faultId", item.FaultId.Value)
+            writer.WriteString("code", item.Code.Value)
+            writer.WriteString("sourceId", item.SourceId)
+            writer.WriteString("payloadReference", item.PayloadReference)
+            writer.WriteString("reason", item.Reason)
+            writer.WriteBoolean("retryEligible", item.RetryEligible)
+            writer.WriteString("timestamp", timestamp item.At)
+            // Quarantined data is held for investigation, so it is audit
+            // material rather than disposable. Requirement: logging 26.
+            writer.WriteString("retention", retentionName AuditRequired)
+        | ItemReleased (sourceId, at) ->
+            writer.WriteString("sourceId", sourceId)
+            writer.WriteString("timestamp", timestamp at)
+        | ItemDeadLettered item ->
+            writer.WriteString("faultId", item.FaultId.Value)
+            writer.WriteString("code", item.Code.Value)
+            writer.WriteString("itemId", item.ItemId)
+            writer.WriteString("payloadReference", item.PayloadReference)
+            writer.WriteString("finalReason", item.FinalReason)
+            writer.WriteNumber("attempts", List.length item.Attempts)
+            writer.WriteBoolean("requiresManualIntervention", item.RequiresManualIntervention)
+            writer.WriteBoolean("reprocessable", item.Reprocessable)
+            writer.WriteString("timestamp", timestamp item.At)
+            writer.WriteString("retention", retentionName AuditRequired)
 
         writer.WriteEndObject()
         writer.Flush()

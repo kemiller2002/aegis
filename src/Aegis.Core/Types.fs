@@ -301,6 +301,33 @@ module FaultDefaults =
           SchemaVersion = None
           ComponentVersions = Map.empty }
 
+/// Data that could not be processed, held aside so it is not retried
+/// endlessly. Carries a reference to the payload rather than the payload, so
+/// quarantine storage follows the same sensitive-data rules as everything
+/// else. Requirement: additional 7.
+type Quarantined =
+    { SourceId: string
+      PayloadReference: string
+      FaultId: FaultId
+      Code: FaultCode
+      Reason: string
+      At: DateTimeOffset
+      RetryEligible: bool
+      Released: DateTimeOffset option }
+
+/// Work that could not be completed after its recovery budget was spent.
+/// Requirement: additional 8.
+type DeadLettered =
+    { ItemId: string
+      PayloadReference: string
+      FaultId: FaultId
+      Code: FaultCode
+      Attempts: RecoveryAttempt list
+      FinalReason: string
+      At: DateTimeOffset
+      RequiresManualIntervention: bool
+      Reprocessable: bool }
+
 /// Persisted lifecycle events, not only the originating fault. Lifecycle
 /// changes are new events, never mutations of history.
 /// Requirements: logging 5; additional 29, 30.
@@ -320,6 +347,11 @@ type AegisEvent =
     | FaultReopened of FaultId * at: DateTimeOffset * reason: string
     /// A newer fault describes the condition better. Requirement: additional 34.
     | FaultSuperseded of superseded: FaultId * by: FaultId * at: DateTimeOffset
+    /// Requirement: additional 7 -- quarantine is persisted, not just held.
+    | ItemQuarantined of Quarantined
+    | ItemReleased of sourceId: string * at: DateTimeOffset
+    /// Requirement: additional 8 -- dead-lettering is persisted too.
+    | ItemDeadLettered of DeadLettered
     | SinkFailed of sinkName: string * code: FaultCode * message: string
 
     /// The fault this event concerns, where it carries the whole record.
@@ -343,4 +375,7 @@ type AegisEvent =
         | FaultResolved (id, _)
         | FaultReopened (id, _, _)
         | FaultSuperseded (id, _, _) -> Some id
+        | ItemQuarantined item -> Some item.FaultId
+        | ItemDeadLettered item -> Some item.FaultId
+        | ItemReleased _
         | SinkFailed _ -> None

@@ -155,6 +155,11 @@ module Lifecycle =
                 { p with
                     State = Superseded
                     SupersededBy = Some by })
+        | ItemQuarantined _
+        | ItemReleased _
+        | ItemDeadLettered _
+        // Containment concerns an item rather than the fault's own lifecycle
+        // state; Containment.fromHistory projects those.
         | SinkFailed _ -> state
 
     /// Project a whole event history. Requirement: additional 31.
