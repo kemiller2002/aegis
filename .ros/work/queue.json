@@ -3213,6 +3213,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "TSWK-INSTALL-001",
+      "title": "Install typescript-wasm-kernel scaffolding",
+      "description": "Run 'npx @echelon-foundry/typescript-wasm-kernel init' and record its changes under attribution.",
+      "tags": [
+        "scaffold",
+        "install"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:24:48Z",
+      "updatedAt": "2026-09-17T06:26:43Z",
+      "createdBy": "claude",
+      "source": "tswk-init",
+      "sourceReference": null
     }
   ]
 }
