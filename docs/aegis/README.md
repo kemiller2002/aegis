@@ -186,6 +186,14 @@ let presented = Presentation.present "Unable to load time entries" fault
 Limen renders it. Repeated faults are throttled by fingerprint, so fifty
 network failures produce fifty diagnostic occurrences and one notification.
 
+Limen is a reference consumer, not a dependency. Nothing in this repository
+imports it, and `Presentation.present` is tested against the intent it
+returns, not against a renderer. `aegis-boundaries.json` declares the
+`Limen interop` boundary with `guarded: false` for exactly that reason: the
+far side of the boundary is not here, and a declaration that says so is worth
+more than a check that cannot fail. See
+[`DF-AEGIS-2026-DBBD`](../../research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md).
+
 ## How to test fault behaviour
 
 Replace the sinks and assert on what was collected. Never inspect console
@@ -219,3 +227,13 @@ Aegis produces structured diagnostic events. Telemetry systems consume them.
 Aegis is not a logging framework, a metrics platform, a tracing product, an
 analytics system or a monitoring tool, and its core takes no third-party
 dependency at all. Storage lives in adapters you opt into.
+
+This repository ships one of them. `Aegis.Store.GitHub` is the reference
+adapter -- it takes injected operations rather than a client library, so it
+keeps `Store.T` honest without bringing a dependency into the solution.
+Database adapters (Postgres, SQL Server, SQLite) are written against the same
+contract *outside* this repository, where the driver belongs; that is a
+packaging decision, recorded in
+[`DF-AEGIS-2026-DBBD`](../../research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md),
+and it is what keeps the core dependency-free by construction rather than by
+discipline.

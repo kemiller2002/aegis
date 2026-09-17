@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T07:28:15Z",
+  "updatedAt": "2026-09-17T07:36:24Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -439,6 +439,144 @@
         "EXE-20260917T072743237Z-97e1fc63"
       ],
       "completedAt": "2026-09-17T07:28:15Z"
+    },
+    {
+      "id": "AEG-SCOPE-001",
+      "type": "decision",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        },
+        {
+          "type": "document",
+          "path": "docs/aegis/OPEN-QUESTIONS.md"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:36:24Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T072906412Z-54aa9d93"
+      ],
+      "completedAt": "2026-09-17T07:36:24Z"
+    },
+    {
+      "id": "AEG-STORE-ADAPTERS-001",
+      "type": "decision",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        },
+        {
+          "type": "declaration",
+          "path": "aegis-boundaries.json"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:36:17Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073143637Z-42ae3334"
+      ],
+      "completedAt": "2026-09-17T07:36:17Z"
+    },
+    {
+      "id": "AEG-EPIC-E13",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073340823Z-4c230a9f"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-CORE-027",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073340963Z-87fbb67e"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-CORE-028",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073341065Z-c978d6a8"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-LOG-040",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073341211Z-0b032604"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
     }
   ]
 }

@@ -92,7 +92,7 @@
         "AEGIS.LIMEN.INTEROP_FAILED"
       ],
       "guarded": false,
-      "$comment": "Declared but unguarded: Limen does not exist in this repository yet. Recorded so the gap is visible rather than forgotten."
+      "$comment": "Declared but unguarded: Limen is a reference consumer, not a dependency of this repository. The presentation model is shaped for a UI layer of that kind and is tested here; nothing verifies the far side of the boundary because the far side is not here. Recorded so the gap is visible rather than forgotten. See DF-AEGIS-2026-DBBD."
     }
   ],
   "persistence": {
@@ -139,11 +139,11 @@
     "$requiredDurableStorageComment": "No sink is declared Required yet, so no operating mode depends on persistence. Additional 50 governs this once one is.",
     "fallbackBehaviour": "A sink failure is contained, summarised once to the configured fallback, and never retried recursively. Requirements: core 25; logging 16.",
     "offlineBehaviour": "Events for an unavailable durable sink are queued in a bounded Offline.Queue preserving identity, order and redaction state, and drained in sequence. Requirement: logging 20.",
-    "retentionPolicy": "Retention intent travels on each event as Retention; enforcement belongs to the storage adapter and is undecided. See AEG-STORE-ADAPTERS-001.",
+    "retentionPolicy": "Retention intent travels on each event as Retention; enforcement belongs to the storage adapter, which is outside this repository. Requirement: logging 26. See DF-AEGIS-2026-DBBD.",
     "databaseAdapters": {
-      "status": "undecided",
-      "workItem": "AEG-STORE-ADAPTERS-001",
-      "$comment": "Logging 4 names Postgres, SQL Server and SQLite. Blocked on a decision; see docs/aegis/OPEN-QUESTIONS.md."
+      "status": "out-of-scope",
+      "decision": "DF-AEGIS-2026-DBBD",
+      "$comment": "Logging 4 names Postgres, SQL Server and SQLite. Decided: database adapters are built against Store.T outside this repository, where the driver dependency belongs and logging 42 is satisfied structurally. The GitHub adapter stays as the reference implementation that keeps the contract honest."
     }
   }
 }

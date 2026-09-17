@@ -83,8 +83,8 @@
 | AEG-CORE-024 | Multiple simultaneous sinks | captured | requirement, aegis-core, sinks, epic-e06 | high |
 | AEG-CORE-025 | Aegis must survive its own failures | captured | requirement, aegis-core, resilience, epic-e06 | high |
 | AEG-CORE-026 | Configure Aegis once at initialization | captured | requirement, aegis-core, configuration, epic-e08 | high |
-| AEG-CORE-027 | Deterministic testability with replaceable sinks | captured | requirement, aegis-core, testing, epic-e13 | high |
-| AEG-CORE-028 | Unit-test coverage for the Aegis package | captured | requirement, aegis-core, testing, epic-e13 | high |
+| AEG-CORE-027 | Deterministic testability with replaceable sinks | complete | requirement, aegis-core, testing, epic-e13 | high |
+| AEG-CORE-028 | Unit-test coverage for the Aegis package | complete | requirement, aegis-core, testing, epic-e13 | high |
 | AEG-CORE-029 | Cancellation is not necessarily a fault | captured | requirement, aegis-core, policy, epic-e03 | medium |
 | AEG-CORE-030 | Agent-readable structured diagnostics | captured | requirement, aegis-core, diagnostics, epic-e06 | high |
 | AEG-CORE-031 | Human-readable diagnostics derived from the same fault | captured | requirement, aegis-core, diagnostics, epic-e06 | high |
@@ -111,7 +111,7 @@
 | AEG-EPIC-E10 | E10: Fault lifecycle and projections | captured | epic, aegis-synthesis, wave-5 | high |
 | AEG-EPIC-E11 | E11: Presentation intent | captured | epic, aegis-synthesis, wave-6 | high |
 | AEG-EPIC-E12 | E12: Diagnostics and agent surface | captured | epic, aegis-synthesis, wave-6 | high |
-| AEG-EPIC-E13 | E13: Test strategy | captured | epic, aegis-synthesis, wave-6 | high |
+| AEG-EPIC-E13 | E13: Test strategy | complete | epic, aegis-synthesis, wave-6 | high |
 | AEG-EPIC-E14 | E14: Documentation and ROS compliance | captured | epic, aegis-synthesis, wave-7 | high |
 | AEG-FIX-001 | Unpin FSharp.Core in the C# test project | complete | fix | high |
 | AEG-FIX-002 | Stop FaultSeverity shadowing Result.Error | complete | fix, api | medium |
@@ -155,7 +155,7 @@
 | AEG-LOG-037 | Database transaction behaviour for batches | captured | requirement, aegis-logging, database, epic-e07 | high |
 | AEG-LOG-038 | Sink health and diagnostics | captured | requirement, aegis-logging, health, epic-e06 | medium |
 | AEG-LOG-039 | Declare sinks once in configuration | captured | requirement, aegis-logging, configuration, epic-e08 | high |
-| AEG-LOG-040 | Deterministic tests per sink implementation | captured | requirement, aegis-logging, testing, epic-e13 | high |
+| AEG-LOG-040 | Deterministic tests per sink implementation | complete | requirement, aegis-logging, testing, epic-e13 | high |
 | AEG-LOG-041 | In-memory test sink | captured | requirement, aegis-logging, testing, epic-e06 | high |
 | AEG-LOG-042 | Minimal core dependencies | captured | requirement, aegis-logging, constraints, epic-e00 | high |
 | AEG-LOG-043 | Integration assemblies may provide sinks | captured | requirement, aegis-logging, integration, epic-e07 | medium |
@@ -164,6 +164,7 @@
 | AEG-LOG-046 | ROS integration for persistence declarations | captured | requirement, aegis-logging, integration-ros, epic-e14 | low |
 | AEG-LOG-047 | Recommended architectural principle for persistence | captured | requirement, aegis-logging, principle, epic-e00 | high |
 | AEG-LOG-048 | Scope constraint on persistence | captured | requirement, aegis-logging, principle, constraints, epic-e00 | high |
+| AEG-SCOPE-001 | Scope this repository to the core, the GitHub adapter and the GitHub integration | complete | governance, decision, scope | high |
 | AEG-SLICE-001 | Vertical slice: fault model, redaction, capture, in-memory sink | complete | slice, implementation | high |
 | AEG-SLICE-002 | Lifecycle events, recovery records and offline queue | complete | slice, implementation | high |
 | AEG-SLICE-003 | Store contract and GitHub storage adapter | complete | slice, implementation | high |
@@ -178,7 +179,7 @@
 | AEG-SLICE-012 | Attach diagnostics to faults; failure domain, blast radius, retention | complete | slice, implementation | high |
 | AEG-SLICE-013 | Console, file and no-op sinks; top-level boundary | complete | slice, implementation | high |
 | AEG-SLICE-014 | Persist quarantine and dead-letter records; verify C# consumability | complete | slice, implementation | high |
-| AEG-STORE-ADAPTERS-001 | Decide how to build the remaining store adapters | blocked | storage, decision-needed, blocked | medium |
+| AEG-STORE-ADAPTERS-001 | Decide how to build the remaining store adapters | complete | storage, decision, scope | medium |
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |

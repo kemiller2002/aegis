@@ -2,14 +2,17 @@
 id: GV-AEGIS-002
 title: Initial-pass open questions, closed out
 status: draft
-version: 1.0.0
+version: 1.1.0
 owners:
   - repository-governance
 created: 2026-09-17
+updated: 2026-09-17
 related_documents:
   - Input-documents/aegis_initial_requirements.txt
   - Input-documents/aegis_additional_requirements_and_design_ideas.txt
   - Input-documents/aegis_persistent_logging_requirements.txt
+  - research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md
+  - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
 tags: [aegis, traceability]
 ---
 
@@ -52,12 +55,17 @@ Measured against the 143 requirement items, not asserted:
 | Partial | 4 |
 | Not implemented | 2 |
 
-Everything still short of complete traces to one of two causes: the blocked
-store-adapter decision, or a dependency that does not exist in this
-repository yet.
+Everything still short of complete traces to one of two causes: work that is
+deliberately outside this repository's scope, or a dependency that does not
+exist in this repository yet. Neither is unfinished effort.
 
 - `AEG-LOG-010`, `AEG-LOG-037`, `AEG-LOG-004` and the enforcement half of
-  `AEG-ADD-052` are all waiting on `AEG-STORE-ADAPTERS-001`.
+  `AEG-ADD-052` are out of scope here per
+  [`DF-AEGIS-2026-DBBD`](../../research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md):
+  database adapters are built against `Store.T` where the driver dependency
+  belongs. They are blocked against that record, not abandoned -- the
+  requirements stay true of Aegis as a system, and an adapter repository
+  satisfies them.
 - `AEG-LOG-044` has the SDE proposals; there is no SDE here to consume them.
 - `AEG-CORE-033` has the declaration and the tests that keep it honest, but
   ROS itself does not yet require or validate a fault-boundary declaration.
@@ -72,44 +80,31 @@ and deliberately left to a human.
    qualify it as `FaultSeverity.Error`. Renaming the case would remove the
    collision but changes vocabulary that core 18 names explicitly, so it is a
    deliberate API decision rather than a cleanup.
-2. **Limen interop is declared but unguarded.** `aegis-boundaries.json`
-   records it as `guarded: false` because Limen does not exist in this
-   repository. The declaration keeps the gap visible.
-3. **Only the GitHub store adapter exists**, and building the rest is blocked
-   on a decision rather than on effort. Tracked as
-   `AEG-STORE-ADAPTERS-001` (status `blocked`), covering `AEG-LOG-004`,
-   `AEG-LOG-010`, `AEG-LOG-037` and the enforcement halves of `AEG-LOG-026`
-   and `AEG-ADD-052`. `Store.T` and the query model already exist and are
-   exercised by the GitHub adapter, so the contract is not the question.
-   What needs deciding:
-
-   - **Ownership.** Do these adapters live in this repository, or in the
-     integration assembly that already owns each engine's client? Logging 43
-     gives GitHub API code to the integration layer for exactly this reason,
-     and the same argument applies to a database driver.
-   - **Engines.** Logging 4 names Postgres, SQL Server and SQLite. Supporting
-     three means three schema definitions, three dialects and three test
-     matrices. One engine plus the contract may serve better until a second
-     consumer exists.
-   - **Dependency shape.** A driver dependency (Npgsql, Microsoft.Data.Sqlite)
-     is the normal answer, but logging 42 requires the *core* to stay free of
-     them, so each adapter becomes its own package. Alternatively the adapter
-     takes injected command execution, the way the GitHub adapter takes
-     injected repository operations, and carries no driver at all.
-   - **Schema ownership and migration.** Who owns the table definition, who
-     runs migrations, and how does that interact with the migration faults
-     Aegis itself raises (additional 24)?
-   - **Transaction behaviour.** Logging 37 requires the adapter to document
-     whether a failed batch rolls back wholly, persists valid events
-     independently, or quarantines the failures. That is a per-engine
-     decision and it is observable, so it cannot be left implicit.
-   - **Retention enforcement.** Logging 26 lets the adapter enforce retention.
-     Deciding that here also settles how `AEG-ADD-052` keeps aggregation from
-     destroying audit-required occurrences.
-4. **The sequencing decision record is still `review`.** `DF-AEGIS-2026-0CA3`
-   proposed the build order that was then followed under standing
-   authorization. Moving it to `accepted` makes it immutable, which is a
-   judgement for the repository owner.
-5. **Circuit-breaker state is exposed, not enforced.** Additional 6 says Aegis
+2. **Circuit-breaker state is exposed, not enforced.** Additional 6 says Aegis
    need not become a resilience framework; `Containment.circuit` supplies the
    state for an adapter to act on, and no adapter does yet.
+
+## Closed since the first pass
+
+Three entries that were open here have been decided. They are kept, rather
+than deleted, so a reader can see what was decided and not just what is left.
+
+- **Store adapters beyond GitHub**, and their six sub-questions (ownership,
+  engines, dependency shape, schema ownership and migration, transaction
+  behaviour, retention enforcement). Answered by
+  [`DF-AEGIS-2026-DBBD`](../../research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md),
+  which puts database adapters outside this repository, against `Store.T`,
+  where the driver dependency belongs. Each of the six is answered
+  individually in that record. `AEG-STORE-ADAPTERS-001` is closed by it.
+- **The Limen install.** The tooling
+  (`@echelon-foundry/typescript-wasm-kernel`) was removed: this repository has
+  no TypeScript and no WASM, and the install's verification could only pass
+  with both boundary lists emptied. Limen is retained as a *reference
+  consumer* -- `aegis-boundaries.json` still declares the `Limen interop`
+  boundary as `guarded: false`, the presentation model is shaped for a UI
+  layer of that kind, and [`README.md`](README.md) still explains how faults
+  reach it. Core 10 and logging 45 are satisfied without the package.
+- **The sequencing decision record's status.** `DF-AEGIS-2026-0CA3` is now
+  `accepted` at version 1.1.0, with its own two open questions answered from
+  what execution showed rather than frozen unanswered behind an immutable
+  status.

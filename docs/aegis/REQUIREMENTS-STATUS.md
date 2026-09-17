@@ -2,13 +2,15 @@
 id: GV-AEGIS-003
 title: Requirement traceability and status
 status: draft
-version: 1.0.0
+version: 1.1.0
 owners:
   - repository-governance
 created: 2026-09-17
+updated: 2026-09-17
 related_documents:
   - docs/aegis/OPEN-QUESTIONS.md
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
+  - research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md
   - aegis-boundaries.json
 tags: [aegis, traceability, status]
 ---
@@ -29,9 +31,11 @@ resolution: a requirement is delivered by a module and its tests, not by a
 single line. Paths are relative to `src/Aegis.Core/` and
 `tests/Aegis.Core.Tests/` unless stated otherwise.
 
-Nothing short of `done` is merely unfinished. Each is blocked on a decision or
-on a dependency that does not exist in this repository; the reason is in the
-note column and the detail is in [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md).
+Nothing short of `done` is merely unfinished. Each is either outside this
+repository's declared scope or waiting on a dependency that does not exist
+here; the reason is in the note column, the scope boundary is
+[`DF-AEGIS-2026-DBBD`](../../research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md)
+and the detail is in [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md).
 
 | Item | Source | Requirement | Status | Implemented in | Tested in | Note |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -86,7 +90,7 @@ note column and the detail is in [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md).
 | `AEG-ADD-049` | additional §49 | Graceful degradation of optional diagnostics | done | Sinks.fs, Offline.fs, Health.fs | AsyncDeliveryTests.fs, SinkTypesTests.fs |  |
 | `AEG-ADD-050` | additional §50 | Required vs optional sink requirement levels | done | Sinks.fs, Offline.fs, Health.fs | AsyncDeliveryTests.fs, SinkTypesTests.fs |  |
 | `AEG-ADD-051` | additional §51 | Aegis health projection | done | Sinks.fs, Offline.fs, Health.fs | AsyncDeliveryTests.fs, SinkTypesTests.fs |  |
-| `AEG-ADD-052` | additional §52 | Retention and aggregation interaction | partial | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | retention intent is represented; enforcement belongs to an adapter -- AEG-STORE-ADAPTERS-001 |
+| `AEG-ADD-052` | additional §52 | Retention and aggregation interaction | partial | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | retention intent is represented; enforcement belongs to an adapter outside this repository -- DF-AEGIS-2026-DBBD |
 | `AEG-ADD-053` | additional §53 | Policy separation across concerns | done | (architectural constraints) | BoundaryTests.fs |  |
 | `AEG-ADD-054` | additional §54 | Architectural principle: own the failure lifecycle | done | (architectural constraints) | BoundaryTests.fs |  |
 | `AEG-CORE-000` | core §0 | Architectural rule: simpler failure handling without invisible failure | done | (architectural constraints) | BoundaryTests.fs |  |
@@ -133,13 +137,13 @@ note column and the detail is in [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md).
 | `AEG-LOG-001` | logging §1 | Purpose: storage-independent persistence of faults and lifecycle events | done | (architectural constraints) | BoundaryTests.fs |  |
 | `AEG-LOG-002` | logging §2 | Standard sink abstraction | done | Sinks.fs, Offline.fs, Health.fs | AsyncDeliveryTests.fs, SinkTypesTests.fs |  |
 | `AEG-LOG-003` | logging §3 | Standard store abstraction | done | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs |  |
-| `AEG-LOG-004` | logging §4 | Storage adapters outside the core | partial | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | only the GitHub adapter of the four named |
+| `AEG-LOG-004` | logging §4 | Storage adapters outside the core | partial | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | the GitHub adapter is the reference implementation; the rest are out of scope here -- DF-AEGIS-2026-DBBD |
 | `AEG-LOG-005` | logging §5 | Persist more than faults: the lifecycle event model | done | Serialization.fs | LifecycleTests.fs |  |
 | `AEG-LOG-006` | logging §6 | Append-oriented immutable storage | done | Serialization.fs | LifecycleTests.fs |  |
 | `AEG-LOG-007` | logging §7 | GitHub storage model: one immutable file per event | done | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs |  |
 | `AEG-LOG-008` | logging §8 | GitHub file naming with sortable unique identifiers | done | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs |  |
 | `AEG-LOG-009` | logging §9 | GitHub repository configuration | done | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs |  |
-| `AEG-LOG-010` | logging §10 | Database storage with efficient lookup | not started | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | no database sink |
+| `AEG-LOG-010` | logging §10 | Database storage with efficient lookup | not started | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | out of scope here: database adapters are built against `Store.T` elsewhere -- DF-AEGIS-2026-DBBD |
 | `AEG-LOG-011` | logging §11 | Storage schema consistency across sinks | done | Serialization.fs | LifecycleTests.fs |  |
 | `AEG-LOG-012` | logging §12 | Versioned event schema | done | Serialization.fs | LifecycleTests.fs |  |
 | `AEG-LOG-013` | logging §13 | Standard serialized event shape | done | Serialization.fs | LifecycleTests.fs |  |
@@ -166,7 +170,7 @@ note column and the detail is in [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md).
 | `AEG-LOG-034` | logging §34 | Concurrent write tolerance | done | Sinks.fs, Offline.fs, Health.fs | AsyncDeliveryTests.fs, SinkTypesTests.fs |  |
 | `AEG-LOG-035` | logging §35 | GitHub commit strategy | done | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs |  |
 | `AEG-LOG-036` | logging §36 | GitHub conflict handling | done | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs |  |
-| `AEG-LOG-037` | logging §37 | Database transaction behaviour for batches | not started | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | no database transaction behaviour |
+| `AEG-LOG-037` | logging §37 | Database transaction behaviour for batches | not started | Store.fs, Aegis.Store.GitHub | GitHubStoreTests.fs | out of scope here: batch semantics are per adapter, documented by it -- DF-AEGIS-2026-DBBD |
 | `AEG-LOG-038` | logging §38 | Sink health and diagnostics | done | Sinks.fs, Offline.fs, Health.fs | AsyncDeliveryTests.fs, SinkTypesTests.fs |  |
 | `AEG-LOG-039` | logging §39 | Declare sinks once in configuration | done | Bootstrap.fs | BootstrapTests.fs |  |
 | `AEG-LOG-040` | logging §40 | Deterministic tests per sink implementation | done | (the suite itself) | CompatibilityTests.fs |  |

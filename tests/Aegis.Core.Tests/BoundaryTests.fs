@@ -195,8 +195,25 @@ let ``the declaration states fallback, offline and retention behaviour`` () =
         Assert.False(String.IsNullOrWhiteSpace value, $"{field} is empty")
 
 [<Fact>]
-let ``an undecided adapter decision names the work item tracking it`` () =
-    // An open decision stays visible rather than being quietly omitted.
+let ``the adapter posture is traceable to a work item or a decision`` () =
+    // The posture stays visible rather than being quietly omitted: while it is
+    // open it names the work item tracking it, and once decided it names the
+    // record that decided it. A status with neither is an assertion nobody can
+    // check. Requirement: logging 4; decision DF-AEGIS-2026-DBBD.
     let adapters = persistence.GetProperty "databaseAdapters"
-    Assert.Equal("undecided", adapters.GetProperty("status").GetString())
-    Assert.Equal("AEG-STORE-ADAPTERS-001", adapters.GetProperty("workItem").GetString())
+    let status = adapters.GetProperty("status").GetString()
+
+    let reference (field: string) =
+        match adapters.TryGetProperty field with
+        | true, (value: JsonElement) -> Some(value.GetString())
+        | _ -> None
+
+    let expected =
+        match status with
+        | "undecided" -> "workItem"
+        | "out-of-scope" -> "decision"
+        | other -> failwith $"unknown adapter status '{other}'"
+
+    match reference expected with
+    | Some traced when not (String.IsNullOrWhiteSpace traced) -> ()
+    | _ -> failwith $"adapter status '{status}' must name its '{expected}'"
