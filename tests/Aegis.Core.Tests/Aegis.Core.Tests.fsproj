@@ -16,6 +16,7 @@
     <Compile Include="RecoveryTests.fs" />
     <Compile Include="PresentationTests.fs" />
     <Compile Include="DiagnosticsTests.fs" />
+    <Compile Include="CompatibilityTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free

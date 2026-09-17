@@ -3179,6 +3179,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-009",
+      "title": "Close enumerated test-coverage gaps",
+      "description": "Audit the test suite against the areas core 28 and logging 40 enumerate, and add tests for whatever is genuinely uncovered.",
+      "tags": [
+        "slice",
+        "testing"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:26:05Z",
+      "updatedAt": "2026-09-17T00:28:07Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

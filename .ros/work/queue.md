@@ -168,6 +168,7 @@
 | AEG-SLICE-006 | Recovery execution, obligations and safe-mode requests | complete | slice, implementation | high |
 | AEG-SLICE-007 | Escalation policy, dependency grouping and presentation intent | complete | slice, implementation | high |
 | AEG-SLICE-008 | Diagnostics surface: breadcrumbs, bundles, catalog and containment | complete | slice, implementation | high |
+| AEG-SLICE-009 | Close enumerated test-coverage gaps | complete | slice, testing | high |
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |
