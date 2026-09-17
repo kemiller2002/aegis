@@ -165,6 +165,7 @@
 | AEG-LOG-047 | Recommended architectural principle for persistence | complete | requirement, aegis-logging, principle, epic-e00 | high |
 | AEG-LOG-048 | Scope constraint on persistence | complete | requirement, aegis-logging, principle, constraints, epic-e00 | high |
 | AEG-SCOPE-001 | Scope this repository to the core, the GitHub adapter and the GitHub integration | complete | governance, decision, scope | high |
+| AEG-SCOPE-002 | Attribute the scope decision record and record its follow-up validation | complete | governance, decision | high |
 | AEG-SLICE-001 | Vertical slice: fault model, redaction, capture, in-memory sink | complete | slice, implementation | high |
 | AEG-SLICE-002 | Lifecycle events, recovery records and offline queue | complete | slice, implementation | high |
 | AEG-SLICE-003 | Store contract and GitHub storage adapter | complete | slice, implementation | high |

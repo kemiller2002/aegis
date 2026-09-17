@@ -2,8 +2,9 @@
 id: DF-AEGIS-2026-DBBD
 title: Aegis repository scope
 status: accepted
-version: 1.0.0
+version: 1.1.0
 created: 2026-09-17
+updated: 2026-09-17
 owners:
   - repository-governance
 tags: [aegis, scope, adapters, tooling]
@@ -134,6 +135,31 @@ Consequently:
   reinstates the tooling, and a database adapter can be added to this solution
   later by superseding this record. Nothing in the core changes either way,
   which is the point -- scope is a packaging decision, not an architectural one.
+
+## Follow-up validation
+
+The decision is checked rather than trusted, because a scope boundary that
+only exists in prose drifts.
+
+- `aegis-boundaries.json` records `databaseAdapters.status` as `out-of-scope`
+  naming this record, and `BoundaryTests.fs` requires any adapter status to
+  name its traceability -- the work item while the question is open, the
+  decision record once it is closed. That test failed the moment the status
+  changed, which is what a declaration check is for; it was generalised rather
+  than retargeted at the new literal, so neither posture can be committed
+  without a reference nobody can follow.
+- `Aegis.Core.fsproj` has no `PackageReference`. That is the machine-checkable
+  form of decision (1): the core cannot acquire a driver dependency from an
+  adapter that is not in the solution.
+- The removal is complete rather than partial: nothing under this repository
+  references `limen.config.json`, `limen-verify` or
+  `@echelon-foundry/typescript-wasm-kernel` except this record,
+  `docs/aegis/OPEN-QUESTIONS.md` and the ROS work log that records the
+  install having happened -- all three of which are meant to. CI runs two
+  workflows where it ran three.
+- `AEG-LOG-004`, `AEG-LOG-010`, `AEG-LOG-037` and `AEG-ADD-052` are `blocked`
+  against this record in the ROS backlog, with the reason on each item, so the
+  scope boundary is queryable from the backlog and not only readable here.
 
 ## Alternatives considered
 

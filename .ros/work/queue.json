@@ -3424,6 +3424,23 @@
       "createdBy": "claude",
       "source": "user-request",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SCOPE-002",
+      "title": "Attribute the scope decision record and record its follow-up validation",
+      "description": "CI validation against main found research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md with no work-item attribution: the file was committed before AEG-SCOPE-001 completed, so the completion recorded only the paths still dirty at that moment. Attribute the path, and use the same window to add the follow-up validation section the Engineering Standards asks a decision record to carry.",
+      "tags": [
+        "governance",
+        "decision"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:45:14Z",
+      "updatedAt": "2026-09-17T07:45:44Z",
+      "createdBy": "claude",
+      "source": "ros-validation",
+      "sourceReference": null
     }
   ]
 }

@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T07:41:38Z",
+  "updatedAt": "2026-09-17T07:45:44Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4638,6 +4638,23 @@
         "EXE-20260917T074114960Z-fb9bac47"
       ],
       "completedAt": "2026-09-17T07:41:38Z"
+    },
+    {
+      "id": "AEG-SCOPE-002",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:45:44Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074515203Z-d51cfb94"
+      ],
+      "completedAt": "2026-09-17T07:45:44Z"
     }
   ]
 }
