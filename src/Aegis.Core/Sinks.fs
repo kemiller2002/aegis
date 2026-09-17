@@ -173,6 +173,63 @@ module Sinks =
                     let start = i + marker.Length
                     Some(e.Substring(start, e.IndexOf('"', start) - start)))
 
+    /// Writes each event to standard output. Requirements: core 23; logging 2.
+    let console =
+        { Name = "console"
+          Level = Optional
+          Capabilities = []
+          WriteBatch = None
+          Write = fun payload -> async { Console.Out.WriteLine payload } }
+
+    /// Writes each event to standard error, for a host that keeps diagnostics
+    /// off the normal output stream.
+    let standardError =
+        { Name = "stderr"
+          Level = Optional
+          Capabilities = []
+          WriteBatch = None
+          Write = fun payload -> async { Console.Error.WriteLine payload } }
+
+    /// Appends each event to a file, one JSON object per line, so the result
+    /// stays readable without tooling and appendable without rewriting.
+    /// Writes are serialized through a semaphore because a file handle is not
+    /// safe to append to concurrently. Requirements: core 23; logging 2, 6, 30, 34.
+    let file (path: string) =
+        let gate = new Threading.SemaphoreSlim(1, 1)
+
+        let append (payloads: string list) =
+            async {
+                do! gate.WaitAsync() |> Async.AwaitTask
+
+                try
+                    let directory = IO.Path.GetDirectoryName path
+
+                    if not (String.IsNullOrEmpty directory) then
+                        IO.Directory.CreateDirectory directory |> ignore
+
+                    do!
+                        IO.File.AppendAllLinesAsync(path, payloads)
+                        |> Async.AwaitTask
+                finally
+                    gate.Release() |> ignore
+            }
+
+        { Name = "file"
+          Level = Optional
+          Capabilities = [ SupportsDurableWrite; SupportsBatch ]
+          WriteBatch = Some append
+          Write = fun payload -> append [ payload ] }
+
+    /// Accepts and discards. Useful where a sink is structurally required but
+    /// nothing should be recorded, e.g. a test that asserts on behaviour
+    /// rather than output. Requirement: core 23.
+    let noOp =
+        { Name = "no-op"
+          Level = Optional
+          Capabilities = []
+          WriteBatch = None
+          Write = fun _ -> async { return () } }
+
     /// A sink that always throws, for verifying containment.
     let failing name level =
         { Name = name

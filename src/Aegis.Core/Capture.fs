@@ -186,6 +186,48 @@ module Aegis =
                     return Result.Error fault
         }
 
+    /// The final boundary around an application's top-level execution
+    /// surface: a command loop, a startup entry point, an integration
+    /// processor, a UI event dispatcher.
+    ///
+    /// This is the last line of defence, not the primary error-handling
+    /// strategy, so it records whatever reaches it rather than letting the
+    /// process die unexplained. A programming defect is still re-raised after
+    /// being recorded, because core 19 requires defects to fail loudly and
+    /// swallowing one here would hide a corrupt state. Cancellation is
+    /// neither recorded nor re-raised: at the top level it means the
+    /// application is shutting down or the user navigated away.
+    /// Requirements: additional 22; core 7, 19, 29.
+    let guard config scope classify (operation: unit -> unit) =
+        try
+            operation ()
+        with ex ->
+            if isCancellation ex then
+                ()
+            else
+                let fault = classify scope ex
+                // Blocking here regardless of configuration: the process may
+                // be about to end, and a detached write would be lost.
+                report config (FaultRecorded fault) |> ignore
+
+                if isProgrammingDefect ex then reraise ()
+
+    /// Async form of the top-level boundary. Requirement: additional 22.
+    let guardAsync config scope classify (operation: unit -> Async<unit>) =
+        async {
+            try
+                do! operation ()
+            with ex ->
+                if isCancellation ex then
+                    return ()
+                else
+                    let fault = classify scope ex
+                    let! _ = reportAsync config (FaultRecorded fault)
+
+                    if isProgrammingDefect ex then
+                        return rethrow ex
+        }
+
     /// Suppression is permitted only under a declared policy, and is itself
     /// recorded. Requirement: core 7.
     let suppress config fault reason =

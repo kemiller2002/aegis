@@ -7,7 +7,10 @@
       "name": "GitHub storage",
       "kind": "persistent-storage",
       "owner": "Aegis.Store.GitHub",
-      "codes": ["AEGIS.GITHUB.CONFLICT", "AEGIS.NETWORK.UNAVAILABLE"],
+      "codes": [
+        "AEGIS.GITHUB.CONFLICT",
+        "AEGIS.NETWORK.UNAVAILABLE"
+      ],
       "guarded": true
     },
     {
@@ -27,7 +30,9 @@
       "name": "Event serialization and deserialization",
       "kind": "serialization",
       "owner": "Aegis.Core",
-      "codes": ["AEGIS.DATA.DESERIALIZATION_FAILED"],
+      "codes": [
+        "AEGIS.DATA.DESERIALIZATION_FAILED"
+      ],
       "guarded": true
     },
     {
@@ -74,16 +79,71 @@
       "name": "Diagnostic sink delivery",
       "kind": "sink",
       "owner": "Aegis.Core",
-      "codes": ["AEGIS.SINK.WRITE_FAILED"],
+      "codes": [
+        "AEGIS.SINK.WRITE_FAILED"
+      ],
       "guarded": true
     },
     {
       "name": "Limen interop",
       "kind": "ui-interop",
       "owner": "not-yet-implemented",
-      "codes": ["AEGIS.LIMEN.INTEROP_FAILED"],
+      "codes": [
+        "AEGIS.LIMEN.INTEROP_FAILED"
+      ],
       "guarded": false,
       "$comment": "Declared but unguarded: Limen does not exist in this repository yet. Recorded so the gap is visible rather than forgotten."
     }
-  ]
+  ],
+  "persistence": {
+    "$comment": "Declared persistence posture. Requirements: logging 46; core 33.",
+    "sinks": [
+      {
+        "name": "collector",
+        "kind": "memory",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "console",
+        "kind": "console",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "stderr",
+        "kind": "console",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "file",
+        "kind": "file",
+        "level": "optional",
+        "durable": true
+      },
+      {
+        "name": "no-op",
+        "kind": "discard",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "github",
+        "kind": "repository",
+        "level": "optional",
+        "durable": true
+      }
+    ],
+    "requiredDurableStorage": false,
+    "$requiredDurableStorageComment": "No sink is declared Required yet, so no operating mode depends on persistence. Additional 50 governs this once one is.",
+    "fallbackBehaviour": "A sink failure is contained, summarised once to the configured fallback, and never retried recursively. Requirements: core 25; logging 16.",
+    "offlineBehaviour": "Events for an unavailable durable sink are queued in a bounded Offline.Queue preserving identity, order and redaction state, and drained in sequence. Requirement: logging 20.",
+    "retentionPolicy": "Retention intent travels on each event as Retention; enforcement belongs to the storage adapter and is undecided. See AEG-STORE-ADAPTERS-001.",
+    "databaseAdapters": {
+      "status": "undecided",
+      "workItem": "AEG-STORE-ADAPTERS-001",
+      "$comment": "Logging 4 names Postgres, SQL Server and SQLite. Blocked on a decision; see docs/aegis/OPEN-QUESTIONS.md."
+    }
+  }
 }

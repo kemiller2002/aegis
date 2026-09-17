@@ -20,6 +20,7 @@
     <Compile Include="BoundaryTests.fs" />
     <Compile Include="AsyncDeliveryTests.fs" />
     <Compile Include="FaultDiagnosticsTests.fs" />
+    <Compile Include="SinkTypesTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free

@@ -3283,6 +3283,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-013",
+      "title": "Console, file and no-op sinks; top-level boundary",
+      "description": "AEG-CORE-023 and AEG-LOG-002: the sink types the requirements name that do not exist yet (console, file, no-op), and AEG-ADD-022: a guard for the application's top-level execution surface.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:50:54Z",
+      "updatedAt": "2026-09-17T06:54:11Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

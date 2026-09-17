@@ -145,3 +145,58 @@ let ``integrity and migration codes match what the code actually raises`` () =
     // Every code the integrity taxonomy can raise is declared. The declaration
     // may also list codes raised elsewhere, such as deserialization.
     Assert.Empty(Set.difference actual declared)
+
+// ------------------------------------------------- declared persistence posture
+
+let private persistence = declaration.RootElement.GetProperty "persistence"
+
+[<Fact>]
+let ``the declared sinks are the sinks that exist`` () =
+    // Requirements: core 33; logging 46 -- the declaration must track the code.
+    let declared =
+        persistence.GetProperty("sinks").EnumerateArray()
+        |> Seq.map (fun s -> s.GetProperty("name").GetString())
+        |> Set.ofSeq
+
+    let actual =
+        [ Sinks.console; Sinks.standardError; Sinks.noOp
+          Sinks.file "/tmp/aegis-declaration-check.jsonl"
+          Sinks.Collector().Sink() ]
+        |> List.map (fun s -> s.Name)
+        |> Set.ofList
+        // The GitHub sink lives in the adapter assembly and is declared too.
+        |> Set.add "github"
+
+    Assert.Equal<Set<string>>(actual, declared)
+
+[<Fact>]
+let ``a sink declared durable advertises durable writes`` () =
+    let durableNames =
+        persistence.GetProperty("sinks").EnumerateArray()
+        |> Seq.filter (fun s -> s.GetProperty("durable").GetBoolean())
+        |> Seq.map (fun s -> s.GetProperty("name").GetString())
+        |> Set.ofSeq
+
+    // The file sink is declared durable, so it must actually claim it.
+    Assert.Contains("file", durableNames)
+
+    let fileSink = Sinks.file "/tmp/aegis-declaration-check.jsonl"
+    Assert.Contains(Sinks.SupportsDurableWrite, fileSink.Capabilities)
+
+    // The console sink is not declared durable and must not claim it.
+    Assert.DoesNotContain("console", durableNames)
+    Assert.DoesNotContain(Sinks.SupportsDurableWrite, Sinks.console.Capabilities)
+
+[<Fact>]
+let ``the declaration states fallback, offline and retention behaviour`` () =
+    // Requirement: logging 46.
+    for field in [ "fallbackBehaviour"; "offlineBehaviour"; "retentionPolicy" ] do
+        let value = persistence.GetProperty(field).GetString()
+        Assert.False(String.IsNullOrWhiteSpace value, $"{field} is empty")
+
+[<Fact>]
+let ``an undecided adapter decision names the work item tracking it`` () =
+    // An open decision stays visible rather than being quietly omitted.
+    let adapters = persistence.GetProperty "databaseAdapters"
+    Assert.Equal("undecided", adapters.GetProperty("status").GetString())
+    Assert.Equal("AEG-STORE-ADAPTERS-001", adapters.GetProperty("workItem").GetString())
