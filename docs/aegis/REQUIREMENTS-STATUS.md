@@ -2,7 +2,7 @@
 id: GV-AEGIS-003
 title: Requirement traceability and status
 status: draft
-version: 1.1.0
+version: 1.2.0
 owners:
   - repository-governance
 created: 2026-09-17
@@ -36,6 +36,38 @@ repository's declared scope or waiting on a dependency that does not exist
 here; the reason is in the note column, the scope boundary is
 [`DF-AEGIS-2026-DBBD`](../../research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md)
 and the detail is in [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md).
+
+## How this maps onto the backlog
+
+The ROS backlog carried all 143 requirement items and the 15 epics of
+[`DF-AEGIS-2026-0CA3`](../../research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md)
+as `captured` long after the work was delivered, which made the backlog and
+this table two independent claims about the same repository. They are now one
+claim: every item was transitioned epic by epic against the status column
+below, so the two cannot drift without one of them being wrong.
+
+| This table | Backlog state | Count |
+| --- | --- | --- |
+| `done` | `complete`, with the epic's modules and tests as evidence | 137 |
+| `partial`, `not started` | `blocked`, with the reason on the item | 6 |
+| (epics) | `complete` | 15 |
+
+Two details are deliberate rather than tidy.
+
+`blocked`, not `abandoned`. Four items are outside this repository's scope
+(database adapters) and two wait on a dependency that does not exist here
+(ROS-side boundary enforcement; an SDE instance). None of them is a
+requirement anyone withdrew, so abandoning them would delete a true statement
+about Aegis. Each blocked item carries its reason, and the reason names the
+record or the dependency rather than restating the requirement.
+
+`E07` and `E14` are complete while holding blocked members. An epic groups
+items; it is not a gate over them. Both are complete for what this repository
+owns -- the `Store.T` contract and its reference adapter, the teaching
+documentation and the boundary declaration -- and the outstanding part stays
+visible at item granularity, where the reason can be specific. Recording the
+epics as blocked instead would imply pending work here, which is the less
+accurate of the two readings.
 
 | Item | Source | Requirement | Status | Implemented in | Tested in | Note |
 | --- | --- | --- | --- | --- | --- | --- |
