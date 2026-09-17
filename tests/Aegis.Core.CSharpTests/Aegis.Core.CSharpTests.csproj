@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>annotations</Nullable>
+    <LangVersion>latest</LangVersion>
+    <!-- Verification of core 36: the F#-first API must be consumable here. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <!-- FSharp.Core is deliberately NOT pinned here. Aegis.Core carries its
+         own implicit reference, and pinning a version in this project caused
+         NU1605 on any SDK whose FSharp.Core is newer than the pin: the local
+         SDK supplied 8.x while CI resolved 10.1.400. Let it flow
+         transitively so the version always matches the library. -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Aegis.Core/Aegis.Core.fsproj" />
+  </ItemGroup>
+
+</Project>

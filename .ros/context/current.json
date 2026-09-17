@@ -1,0 +1,4705 @@
+{
+  "schemaVersion": "1.0.0",
+  "protocolVersion": "1.0.0",
+  "repository": "aegis",
+  "actor": "claude",
+  "startedAt": "2026-09-16T17:42:10.734Z",
+  "updatedAt": "2026-09-17T21:16:20Z",
+  "baselineDirtyPaths": [],
+  "workItems": [
+    {
+      "id": "ROS-INSTALL-3-0-0",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "installation",
+          "path": ".ros/installation.json"
+        }
+      ],
+      "updatedAt": "2026-09-16T17:42:10.734Z",
+      "completedAt": "2026-09-16T17:42:10.734Z"
+    },
+    {
+      "id": "SDE-INSTALL-1-2-0",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "installation",
+          "path": ".echelon/sde.json"
+        }
+      ],
+      "updatedAt": "2026-09-16T17:46:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T174553349Z-a7d2cf20"
+      ],
+      "completedAt": "2026-09-16T17:46:29Z"
+    },
+    {
+      "id": "REQ-INTAKE-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [],
+      "updatedAt": "2026-09-16T20:54:40Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T205431543Z-5a6b0403"
+      ],
+      "completedAt": "2026-09-16T20:54:40Z"
+    },
+    {
+      "id": "AEG-SYNTH-001",
+      "type": "research",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "research-record",
+          "path": "research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md"
+        }
+      ],
+      "updatedAt": "2026-09-16T23:17:08Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T231446189Z-cb37a04f"
+      ],
+      "completedAt": "2026-09-16T23:17:08Z",
+      "conclusion": "143 requirement items partitioned into 15 dependency-ordered epics across 7 waves; partition and DAG verified; sequencing recorded as DF-AEGIS-2026-0CA3 (status review)."
+    },
+    {
+      "id": "AEG-SLICE-001",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-16T23:41:05Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T233631818Z-8510f374"
+      ],
+      "completedAt": "2026-09-16T23:41:05Z"
+    },
+    {
+      "id": "AEG-SLICE-002",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-16T23:49:49Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T234539655Z-9b59c326"
+      ],
+      "completedAt": "2026-09-16T23:49:49Z"
+    },
+    {
+      "id": "AEG-SLICE-003",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-16T23:58:31Z",
+      "telemetryExecutionIds": [
+        "EXE-20260916T235509471Z-380f6a56"
+      ],
+      "completedAt": "2026-09-16T23:58:31Z"
+    },
+    {
+      "id": "AEG-SLICE-004",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:04:50Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T000310636Z-c1e6604f"
+      ],
+      "completedAt": "2026-09-17T00:04:50Z"
+    },
+    {
+      "id": "AEG-SLICE-005",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:10:58Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T000806337Z-3170e82c"
+      ],
+      "completedAt": "2026-09-17T00:10:58Z"
+    },
+    {
+      "id": "AEG-SLICE-006",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:14:24Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T001238534Z-8bf23e04"
+      ],
+      "completedAt": "2026-09-17T00:14:24Z"
+    },
+    {
+      "id": "AEG-SLICE-007",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Presentation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:20:15Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T001524500Z-91c0ebf4"
+      ],
+      "completedAt": "2026-09-17T00:20:15Z"
+    },
+    {
+      "id": "AEG-SLICE-008",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:25:17Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T002157763Z-13c2afaf"
+      ],
+      "completedAt": "2026-09-17T00:25:17Z"
+    },
+    {
+      "id": "AEG-SLICE-009",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:28:07Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T002606142Z-c87f8a55"
+      ],
+      "completedAt": "2026-09-17T00:28:07Z"
+    },
+    {
+      "id": "AEG-SLICE-010",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T00:32:53Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T002929161Z-c1456159"
+      ],
+      "completedAt": "2026-09-17T00:32:53Z"
+    },
+    {
+      "id": "TSWK-INSTALL-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [],
+      "updatedAt": "2026-09-17T06:26:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T062450048Z-67437151"
+      ],
+      "completedAt": "2026-09-17T06:26:43Z"
+    },
+    {
+      "id": "AEG-SLICE-011",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T06:43:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T063432698Z-8cec5ec9"
+      ],
+      "completedAt": "2026-09-17T06:43:16Z"
+    },
+    {
+      "id": "AEG-SLICE-012",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T06:50:00Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T064444584Z-0b943fd6"
+      ],
+      "completedAt": "2026-09-17T06:50:00Z"
+    },
+    {
+      "id": "AEG-SLICE-013",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T06:54:11Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T065055636Z-fdf9166f"
+      ],
+      "completedAt": "2026-09-17T06:54:11Z"
+    },
+    {
+      "id": "AEG-SLICE-014",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        }
+      ],
+      "updatedAt": "2026-09-17T06:59:48Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T065502963Z-923c0478"
+      ],
+      "completedAt": "2026-09-17T06:59:48Z"
+    },
+    {
+      "id": "AEG-FIX-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [],
+      "updatedAt": "2026-09-17T07:02:08Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T070209186Z-8351d24e"
+      ],
+      "completedAt": "2026-09-17T07:02:08Z"
+    },
+    {
+      "id": "AEG-FIX-002",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:06:45Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T070350470Z-3707bb9f"
+      ],
+      "completedAt": "2026-09-17T07:06:45Z"
+    },
+    {
+      "id": "AEG-DOC-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [],
+      "updatedAt": "2026-09-17T07:08:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T070847326Z-f1294247"
+      ],
+      "completedAt": "2026-09-17T07:08:47Z"
+    },
+    {
+      "id": "AEG-GOV-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "document",
+          "path": "research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md"
+        },
+        {
+          "type": "registry",
+          "path": "registries/decisions.json"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:28:15Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T072743237Z-97e1fc63"
+      ],
+      "completedAt": "2026-09-17T07:28:15Z"
+    },
+    {
+      "id": "AEG-SCOPE-001",
+      "type": "decision",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        },
+        {
+          "type": "document",
+          "path": "docs/aegis/OPEN-QUESTIONS.md"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:36:24Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T072906412Z-54aa9d93"
+      ],
+      "completedAt": "2026-09-17T07:36:24Z"
+    },
+    {
+      "id": "AEG-STORE-ADAPTERS-001",
+      "type": "decision",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        },
+        {
+          "type": "declaration",
+          "path": "aegis-boundaries.json"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:36:17Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073143637Z-42ae3334"
+      ],
+      "completedAt": "2026-09-17T07:36:17Z"
+    },
+    {
+      "id": "AEG-EPIC-E13",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073340823Z-4c230a9f"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-CORE-027",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073340963Z-87fbb67e"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-CORE-028",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073341065Z-c978d6a8"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-LOG-040",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        },
+        {
+          "type": "test",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073341211Z-0b032604"
+      ],
+      "completedAt": "2026-09-17T07:33:52Z"
+    },
+    {
+      "id": "AEG-EPIC-E00",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073840356Z-33ec9577"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-ADD-053",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073840485Z-a25720b8"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-ADD-054",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073840609Z-4a9bd5d8"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-CORE-000",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073840773Z-39c1caae"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-CORE-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073840998Z-1af9c798"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-CORE-035",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073841128Z-c69e5f12"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-CORE-036",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073841270Z-a98a629f"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-CORE-038",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073841433Z-a9b8d2d0"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-LOG-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073841588Z-afd98104"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-LOG-028",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073841766Z-d833869e"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-LOG-042",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073841977Z-fc486f17"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-LOG-047",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073842193Z-0f099465"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-LOG-048",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073842437Z-38c1dcc3"
+      ],
+      "completedAt": "2026-09-17T07:38:42Z"
+    },
+    {
+      "id": "AEG-EPIC-E01",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073848619Z-4348a425"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-ADD-004",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073848784Z-096ad1f9"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-ADD-009",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073848971Z-c6cb9903"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-ADD-018",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073849088Z-50e6ba76"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-ADD-043",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073849228Z-e313bd35"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-ADD-044",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073849363Z-879c1244"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-ADD-045",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073849521Z-4aabb043"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-002",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073849689Z-81cd57fc"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-003",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073849845Z-0eb64622"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-004",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073850061Z-91fc2021"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-015",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073850298Z-c68ae113"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-017",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073850555Z-8b18cc50"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-018",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073850840Z-5ab861fa"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-037",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073851135Z-385b8c72"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-CORE-039",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073851344Z-9606c1e5"
+      ],
+      "completedAt": "2026-09-17T07:38:51Z"
+    },
+    {
+      "id": "AEG-EPIC-E02",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Redaction.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073855708Z-ee06f5a2"
+      ],
+      "completedAt": "2026-09-17T07:38:56Z"
+    },
+    {
+      "id": "AEG-ADD-027",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Redaction.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073855911Z-57c319ff"
+      ],
+      "completedAt": "2026-09-17T07:38:56Z"
+    },
+    {
+      "id": "AEG-ADD-040",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Redaction.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073856108Z-c728d8e4"
+      ],
+      "completedAt": "2026-09-17T07:38:56Z"
+    },
+    {
+      "id": "AEG-CORE-011",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Redaction.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073856324Z-d966896b"
+      ],
+      "completedAt": "2026-09-17T07:38:56Z"
+    },
+    {
+      "id": "AEG-CORE-012",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Redaction.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073856525Z-2ab4683e"
+      ],
+      "completedAt": "2026-09-17T07:38:56Z"
+    },
+    {
+      "id": "AEG-LOG-021",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Redaction.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073856737Z-2cf8a7e4"
+      ],
+      "completedAt": "2026-09-17T07:38:56Z"
+    },
+    {
+      "id": "AEG-EPIC-E03",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073906472Z-d258f8cf"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-ADD-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073906693Z-4df5e354"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-ADD-022",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073906888Z-d7592d5d"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-005",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073907059Z-889adedf"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-006",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073907278Z-5e160581"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-007",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073907503Z-a11166ac"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-013",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073907749Z-05558fa5"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-014",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073908035Z-c13ed72e"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-019",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073908329Z-c31504ff"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-CORE-029",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Tests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073908669Z-d94c6d4a"
+      ],
+      "completedAt": "2026-09-17T07:39:09Z"
+    },
+    {
+      "id": "AEG-EPIC-E04",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Translation.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073913246Z-026e8ab6"
+      ],
+      "completedAt": "2026-09-17T07:39:14Z"
+    },
+    {
+      "id": "AEG-ADD-023",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Translation.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073913487Z-60b50906"
+      ],
+      "completedAt": "2026-09-17T07:39:14Z"
+    },
+    {
+      "id": "AEG-ADD-024",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Translation.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073913688Z-5d934b76"
+      ],
+      "completedAt": "2026-09-17T07:39:14Z"
+    },
+    {
+      "id": "AEG-CORE-016",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Translation.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073913874Z-d5087caf"
+      ],
+      "completedAt": "2026-09-17T07:39:14Z"
+    },
+    {
+      "id": "AEG-CORE-020",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Translation.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073914108Z-94014688"
+      ],
+      "completedAt": "2026-09-17T07:39:14Z"
+    },
+    {
+      "id": "AEG-CORE-032",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Translation.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Integration.GitHub/GitHubFailure.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/TranslationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073914347Z-7f92c8ed"
+      ],
+      "completedAt": "2026-09-17T07:39:14Z"
+    },
+    {
+      "id": "AEG-EPIC-E05",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073918737Z-30c1cb9f"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-005",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073918998Z-d60a4398"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-006",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073919309Z-3a22864e"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-011",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073919695Z-b212f641"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-012",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073919943Z-12ae4dbb"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-013",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073920232Z-7e74dd7f"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-024",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073920549Z-f69d52b2"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-LOG-025",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073920904Z-74653d3f"
+      ],
+      "completedAt": "2026-09-17T07:39:21Z"
+    },
+    {
+      "id": "AEG-EPIC-E06",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073931034Z-7f82389d"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-ADD-048",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073931314Z-794849de"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-ADD-049",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073931551Z-0339fa4e"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-ADD-050",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073931764Z-3f25c03a"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-ADD-051",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073932009Z-f9708ad2"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-CORE-022",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073932253Z-6d1e6c26"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-CORE-023",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073932530Z-2efc575d"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-CORE-024",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073932776Z-7b553367"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-CORE-025",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073933091Z-882f58bd"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-CORE-030",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073933413Z-a4cdc1f1"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-CORE-031",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073933723Z-2826a606"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-002",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073934086Z-b8bb8aab"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-014",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073934475Z-7caac483"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-015",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073934881Z-cf6b4aa9"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-016",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073935391Z-3c44e53a"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-017",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073935854Z-58e7a5ad"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-018",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073936321Z-9183d5b0"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-019",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073936803Z-31ce17e0"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-020",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073937284Z-0be8e91a"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-022",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073937787Z-ba6f3f03"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-023",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073938201Z-e923c347"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-029",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073938721Z-00b03ac3"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-030",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073939266Z-99ca64b1"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-032",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073939886Z-938f5caf"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-033",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073940555Z-5c4a5101"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-034",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073941191Z-690960b4"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-038",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073941809Z-270390fd"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-LOG-041",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sinks.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Offline.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Health.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/AsyncDeliveryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/SinkTypesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073942437Z-9581544a"
+      ],
+      "completedAt": "2026-09-17T07:39:43Z"
+    },
+    {
+      "id": "AEG-EPIC-E07",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073954713Z-aafa9483"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-ADD-041",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073955052Z-db44a250"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-003",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073955312Z-f763e455"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-007",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073955535Z-4cd89cc8"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-008",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073955781Z-1f089520"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-009",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073956124Z-b4ab46ac"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-026",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073956494Z-8a1b18ef"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-027",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073956897Z-945e5a58"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-031",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073957304Z-ebfe2067"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-035",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073957699Z-3edb8cda"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-036",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073958225Z-02f8ed4b"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-LOG-043",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T073958649Z-71030f1a"
+      ],
+      "completedAt": "2026-09-17T07:39:59Z"
+    },
+    {
+      "id": "AEG-EPIC-E08",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074004559Z-79cddab5"
+      ],
+      "completedAt": "2026-09-17T07:40:06Z"
+    },
+    {
+      "id": "AEG-ADD-020",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074004900Z-9c7e874d"
+      ],
+      "completedAt": "2026-09-17T07:40:06Z"
+    },
+    {
+      "id": "AEG-ADD-021",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074005333Z-c3b23ab1"
+      ],
+      "completedAt": "2026-09-17T07:40:06Z"
+    },
+    {
+      "id": "AEG-ADD-047",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074005645Z-4b9eb0b2"
+      ],
+      "completedAt": "2026-09-17T07:40:06Z"
+    },
+    {
+      "id": "AEG-CORE-026",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074005940Z-8a579221"
+      ],
+      "completedAt": "2026-09-17T07:40:06Z"
+    },
+    {
+      "id": "AEG-LOG-039",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Bootstrap.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BootstrapTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074006353Z-1ac74e24"
+      ],
+      "completedAt": "2026-09-17T07:40:06Z"
+    },
+    {
+      "id": "AEG-EPIC-E09",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074012340Z-648de271"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-015",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074012735Z-720f6b51"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-016",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074012971Z-10b75ae0"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-019",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074013231Z-30b382ec"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-028",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074013547Z-db057a03"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-037",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074013905Z-a51b7232"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-038",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074014278Z-7c477452"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-ADD-039",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074014704Z-133d910c"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-CORE-008",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074015118Z-9c60deee"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-CORE-009",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074015552Z-87dcea3d"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-CORE-021",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Recovery.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/RecoveryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074016027Z-bb59c757"
+      ],
+      "completedAt": "2026-09-17T07:40:16Z"
+    },
+    {
+      "id": "AEG-EPIC-E10",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074023782Z-86fba6c9"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-003",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074024152Z-506b4f7e"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-005",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074024399Z-2e201769"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-017",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074024717Z-a4215035"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-029",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074025034Z-e6a6f015"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-030",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074025405Z-21b6baff"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-031",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074025750Z-a34ea491"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-032",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074026226Z-f80625c6"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-033",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074026634Z-aed32b68"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-034",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074027152Z-db7fda94"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-035",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074027660Z-06fa3b19"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-036",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074028214Z-8e83abb5"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-ADD-046",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Lifecycle.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Escalation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/LifecycleTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074028730Z-11ced32a"
+      ],
+      "completedAt": "2026-09-17T07:40:29Z"
+    },
+    {
+      "id": "AEG-EPIC-E11",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Presentation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074034759Z-d00bb288"
+      ],
+      "completedAt": "2026-09-17T07:40:36Z"
+    },
+    {
+      "id": "AEG-ADD-025",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Presentation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074035058Z-97b96ff0"
+      ],
+      "completedAt": "2026-09-17T07:40:36Z"
+    },
+    {
+      "id": "AEG-ADD-026",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Presentation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074035346Z-32972e1e"
+      ],
+      "completedAt": "2026-09-17T07:40:36Z"
+    },
+    {
+      "id": "AEG-CORE-010",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Presentation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074035670Z-c0c8e9da"
+      ],
+      "completedAt": "2026-09-17T07:40:36Z"
+    },
+    {
+      "id": "AEG-LOG-045",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Presentation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/PresentationTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074035989Z-16386f44"
+      ],
+      "completedAt": "2026-09-17T07:40:36Z"
+    },
+    {
+      "id": "AEG-EPIC-E12",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074042199Z-0b3f60ab"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-002",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074042572Z-49d32acb"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-006",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074042881Z-a8767ab9"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-007",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074043188Z-5ac334dd"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-008",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074043571Z-54ff8e00"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-010",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074043997Z-6d556cd0"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-011",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074044483Z-949a76dc"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-012",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074044877Z-29c855ec"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-013",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074045379Z-5f969a19"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-014",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074045929Z-60096eee"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-ADD-042",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Diagnostics.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Catalog.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Containment.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/DiagnosticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074046457Z-7fa9057b"
+      ],
+      "completedAt": "2026-09-17T07:40:47Z"
+    },
+    {
+      "id": "AEG-EPIC-E14",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "docs/aegis/README.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074053401Z-9a0079f8"
+      ],
+      "completedAt": "2026-09-17T07:40:54Z"
+    },
+    {
+      "id": "AEG-CORE-034",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "docs/aegis/README.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074053828Z-a555ca4b"
+      ],
+      "completedAt": "2026-09-17T07:40:54Z"
+    },
+    {
+      "id": "AEG-CORE-040",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "docs/aegis/README.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074054146Z-e4b4b71e"
+      ],
+      "completedAt": "2026-09-17T07:40:54Z"
+    },
+    {
+      "id": "AEG-LOG-046",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Sde.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "docs/aegis/README.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074054400Z-b5801822"
+      ],
+      "completedAt": "2026-09-17T07:40:54Z"
+    },
+    {
+      "id": "AEG-TRACE-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "document",
+          "path": "docs/aegis/REQUIREMENTS-STATUS.md"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:41:38Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074114960Z-fb9bac47"
+      ],
+      "completedAt": "2026-09-17T07:41:38Z"
+    },
+    {
+      "id": "AEG-SCOPE-002",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:45:44Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T074515203Z-d51cfb94"
+      ],
+      "completedAt": "2026-09-17T07:45:44Z"
+    },
+    {
+      "id": "AEG-PKG-001",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "Directory.Build.props"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "implementation",
+          "path": ".github/workflows/publish-nuget.yml"
+        },
+        {
+          "type": "implementation",
+          "path": "scripts/preflight-nuget-publish.sh"
+        },
+        {
+          "type": "document",
+          "path": "docs/aegis/PUBLISHING.md"
+        },
+        {
+          "type": "document",
+          "path": "docs/aegis/AGENT-INTEGRATION.md"
+        },
+        {
+          "type": "document",
+          "path": "README.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        }
+      ],
+      "updatedAt": "2026-09-17T21:16:20Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T211119899Z-2aaf84e2"
+      ],
+      "completedAt": "2026-09-17T21:16:20Z"
+    }
+  ]
+}

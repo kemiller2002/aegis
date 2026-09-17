@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Tests.fs" />
+    <Compile Include="LifecycleTests.fs" />
+    <Compile Include="GitHubStoreTests.fs" />
+    <Compile Include="BootstrapTests.fs" />
+    <Compile Include="TranslationTests.fs" />
+    <Compile Include="RecoveryTests.fs" />
+    <Compile Include="PresentationTests.fs" />
+    <Compile Include="DiagnosticsTests.fs" />
+    <Compile Include="CompatibilityTests.fs" />
+    <Compile Include="BoundaryTests.fs" />
+    <Compile Include="AsyncDeliveryTests.fs" />
+    <Compile Include="FaultDiagnosticsTests.fs" />
+    <Compile Include="SinkTypesTests.fs" />
+  </ItemGroup>
+
+  <!-- Test-only dependencies. The core itself stays dependency-free
+       (core 35, logging 42). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Aegis.Core/Aegis.Core.fsproj" />
+    <ProjectReference Include="../../src/Aegis.Store.GitHub/Aegis.Store.GitHub.fsproj" />
+    <ProjectReference Include="../../src/Aegis.Integration.GitHub/Aegis.Integration.GitHub.fsproj" />
+  </ItemGroup>
+
+</Project>

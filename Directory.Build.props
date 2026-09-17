@@ -1,0 +1,25 @@
+<Project>
+
+  <!-- Shared NuGet packaging metadata for every packable project in this repository.
+       Individual projects set PackageId, Version, Description, PackageTags and their
+       own README.md; everything a consumer needs regardless of which package they took
+       lives here once instead of three times. -->
+
+  <PropertyGroup>
+    <Authors>Echelon Foundry</Authors>
+    <Company>Echelon Foundry</Company>
+    <Copyright>Copyright Echelon Foundry</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/kemiller2002/aegis</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kemiller2002/aegis</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Set from CI (-p:ContinuousIntegrationBuild=true) so a local `dotnet pack` never
+         embeds a machine-specific source path into the package; unset here means off
+         by default for local builds. -->
+  </PropertyGroup>
+
+</Project>

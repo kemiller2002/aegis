@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <Description>GitHub integration failure model and translation into the Aegis fault model.</Description>
+    <PackageId>EchelonFoundry.Aegis.Integration.GitHub</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>fault-handling;aegis;github;fsharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GitHubFailure.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Aegis.Core/Aegis.Core.fsproj" />
+  </ItemGroup>
+
+</Project>

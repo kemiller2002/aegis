@@ -1,0 +1,55 @@
+[
+  {
+    "created": "2026-09-17",
+    "id": "DF-AEGIS-2026-0CA3",
+    "owners": [
+      "repository-governance"
+    ],
+    "path": "research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md",
+    "related_documents": [
+      "Input-documents/aegis_initial_requirements.txt",
+      "Input-documents/aegis_additional_requirements_and_design_ideas.txt",
+      "Input-documents/aegis_persistent_logging_requirements.txt",
+      "docs/00-governance/Engineering-Standards.md"
+    ],
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "aegis",
+      "sequencing",
+      "requirements",
+      "synthesis"
+    ],
+    "title": "Aegis implementation sequencing",
+    "updated": "2026-09-17",
+    "version": "1.1.0"
+  },
+  {
+    "created": "2026-09-17",
+    "id": "DF-AEGIS-2026-DBBD",
+    "owners": [
+      "repository-governance"
+    ],
+    "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md",
+    "related_documents": [
+      "Input-documents/aegis_persistent_logging_requirements.txt",
+      "Input-documents/aegis_initial_requirements.txt",
+      "research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md",
+      "docs/aegis/OPEN-QUESTIONS.md",
+      "aegis-boundaries.json"
+    ],
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "aegis",
+      "scope",
+      "adapters",
+      "tooling"
+    ],
+    "title": "Aegis repository scope",
+    "updated": "2026-09-17",
+    "version": "1.1.0"
+  }
+]

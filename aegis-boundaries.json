@@ -1,0 +1,149 @@
+{
+  "$comment": "Declared fault boundaries for this repository. ROS should require projects using Aegis to declare these, and architecture checks may later flag unguarded boundaries. Requirements: core 33; logging 46.",
+  "schema": "aegis/boundaries/v1",
+  "application": "Aegis",
+  "boundaries": [
+    {
+      "name": "GitHub storage",
+      "kind": "persistent-storage",
+      "owner": "Aegis.Store.GitHub",
+      "codes": [
+        "AEGIS.GITHUB.CONFLICT",
+        "AEGIS.NETWORK.UNAVAILABLE"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "GitHub API integration",
+      "kind": "external-service",
+      "owner": "Aegis.Integration.GitHub",
+      "codes": [
+        "AEGIS.GITHUB.AUTHENTICATION_FAILED",
+        "AEGIS.GITHUB.REPOSITORY_NOT_FOUND",
+        "AEGIS.GITHUB.RATE_LIMITED",
+        "AEGIS.GITHUB.INVALID_RESPONSE",
+        "AEGIS.NETWORK.TIMEOUT"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Event serialization and deserialization",
+      "kind": "serialization",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.DATA.DESERIALIZATION_FAILED"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Persisted state integrity",
+      "kind": "data-integrity",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.DATA.INVALID_PERSISTED_STATE",
+        "AEGIS.DATA.HASH_MISMATCH",
+        "AEGIS.DATA.MISSING_RELATIONSHIP",
+        "AEGIS.DATA.UNEXPECTED_STRUCTURE"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Schema migration",
+      "kind": "migration",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.SCHEMA.MISMATCH",
+        "AEGIS.SCHEMA.MIGRATION_REQUIRED",
+        "AEGIS.SCHEMA.MIGRATION_FAILED",
+        "AEGIS.SCHEMA.UNSUPPORTED_VERSION",
+        "AEGIS.SCHEMA.FORWARD_VERSION_UNSUPPORTED",
+        "AEGIS.SCHEMA.BACKWARD_COMPATIBILITY_VIOLATION"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Configuration and startup",
+      "kind": "startup",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.CONFIG.MISSING_APPLICATION",
+        "AEGIS.CONFIG.NO_SINKS",
+        "AEGIS.CONFIG.DUPLICATE_SINK",
+        "AEGIS.CONFIG.REQUIRED_SINK_NOT_DURABLE",
+        "AEGIS.CONFIG.UNNAMED_REDACTION_RULE",
+        "AEGIS.CONFIG.INVALID_QUEUE_CAPACITY"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Diagnostic sink delivery",
+      "kind": "sink",
+      "owner": "Aegis.Core",
+      "codes": [
+        "AEGIS.SINK.WRITE_FAILED"
+      ],
+      "guarded": true
+    },
+    {
+      "name": "Limen interop",
+      "kind": "ui-interop",
+      "owner": "not-yet-implemented",
+      "codes": [
+        "AEGIS.LIMEN.INTEROP_FAILED"
+      ],
+      "guarded": false,
+      "$comment": "Declared but unguarded: Limen is a reference consumer, not a dependency of this repository. The presentation model is shaped for a UI layer of that kind and is tested here; nothing verifies the far side of the boundary because the far side is not here. Recorded so the gap is visible rather than forgotten. See DF-AEGIS-2026-DBBD."
+    }
+  ],
+  "persistence": {
+    "$comment": "Declared persistence posture. Requirements: logging 46; core 33.",
+    "sinks": [
+      {
+        "name": "collector",
+        "kind": "memory",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "console",
+        "kind": "console",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "stderr",
+        "kind": "console",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "file",
+        "kind": "file",
+        "level": "optional",
+        "durable": true
+      },
+      {
+        "name": "no-op",
+        "kind": "discard",
+        "level": "optional",
+        "durable": false
+      },
+      {
+        "name": "github",
+        "kind": "repository",
+        "level": "optional",
+        "durable": true
+      }
+    ],
+    "requiredDurableStorage": false,
+    "$requiredDurableStorageComment": "No sink is declared Required yet, so no operating mode depends on persistence. Additional 50 governs this once one is.",
+    "fallbackBehaviour": "A sink failure is contained, summarised once to the configured fallback, and never retried recursively. Requirements: core 25; logging 16.",
+    "offlineBehaviour": "Events for an unavailable durable sink are queued in a bounded Offline.Queue preserving identity, order and redaction state, and drained in sequence. Requirement: logging 20.",
+    "retentionPolicy": "Retention intent travels on each event as Retention; enforcement belongs to the storage adapter, which is outside this repository. Requirement: logging 26. See DF-AEGIS-2026-DBBD.",
+    "databaseAdapters": {
+      "status": "out-of-scope",
+      "decision": "DF-AEGIS-2026-DBBD",
+      "$comment": "Logging 4 names Postgres, SQL Server and SQLite. Decided: database adapters are built against Store.T outside this repository, where the driver dependency belongs and logging 42 is satisfied structurally. The GitHub adapter stays as the reference implementation that keeps the contract honest."
+    }
+  }
+}

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <Description>GitHub storage adapter for Aegis. Repository operations are injected; this package contains no GitHub API client.</Description>
+    <PackageId>EchelonFoundry.Aegis.Store.GitHub</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>fault-handling;aegis;github;storage;fsharp</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GitHubStore.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Aegis.Core/Aegis.Core.fsproj" />
+  </ItemGroup>
+
+</Project>

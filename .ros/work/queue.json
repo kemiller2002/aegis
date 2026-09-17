@@ -1,0 +1,3464 @@
+{
+  "schemaVersion": "1.0.0",
+  "repository": "aegis",
+  "nextSeq": 1,
+  "items": [
+    {
+      "id": "SDE-INSTALL-1-2-0",
+      "title": "Install SDE 1.2.0 method documentation",
+      "description": "Scaffold .sde/ method, architecture, reference and template documentation via 'sde init' (SDE v1.2.0).",
+      "tags": [
+        "sde",
+        "scaffold"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T17:45:52Z",
+      "updatedAt": "2026-09-16T17:46:29Z",
+      "createdBy": "claude",
+      "source": "sde-init",
+      "sourceReference": null
+    },
+    {
+      "id": "REQ-INTAKE-001",
+      "title": "Attribute pre-ROS Aegis requirements documents",
+      "description": "Record work-item attribution for the three Input-documents/ requirements files added in commit 1b28383, which predates the ROS installation introduced by this branch. Content is not modified.",
+      "tags": [
+        "documentation",
+        "attribution"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T20:54:30Z",
+      "updatedAt": "2026-09-16T20:54:40Z",
+      "createdBy": "claude",
+      "source": "ros-validation",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-CORE-000",
+      "title": "Architectural rule: simpler failure handling without invisible failure",
+      "description": "Aegis must make failure handling simpler without making failure invisible, avoiding both Result<Result<...>> propagation through unrelated code and catch-everything behaviour that logs and continues without preserving correctness. Preserve SDE's explicitness while removing plumbing that adds no domain information.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "principle",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#0"
+    },
+    {
+      "id": "AEG-CORE-001",
+      "title": "Purpose: standard mechanism for handling and recovering from unexpected faults",
+      "description": "Provide a standard mechanism for handling, classifying, recording, propagating and recovering from unexpected application faults across Echelon applications, reducing manual threading of operational error types through method signatures. Must not replace domain modelling, validation or typed business outcomes, and must integrate with SDE and Limen rather than creating a parallel application-state model.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "purpose",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#1"
+    },
+    {
+      "id": "AEG-CORE-002",
+      "title": "Core distinction between domain and operational failures",
+      "description": "Define FailureCategory with at minimum DomainFailure, InfrastructureFailure, IntegrationFailure, DataFailure, ConfigurationFailure, SecurityFailure, ProgrammingDefect and UnknownFailure. Expected domain failures stay explicit in the domain model via DUs/Result/SDE transitions -- examples given are InvoiceAlreadyPaid, TimeEntryAlreadyApproved, MissingRequiredEvidence and IllegalStateTransition. Unexpected operational failures are handled by Aegis: GitHub unavailable, HTTP timeout, serialization failure, browser interop failure, unexpected repository structure, integration assembly failure and unhandled exception.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#2"
+    },
+    {
+      "id": "AEG-CORE-003",
+      "title": "Standard fault model",
+      "description": "Define a common Fault representation carrying Id, CorrelationId, Timestamp, Application, ApplicationVersion, Operation, Category, Code, Severity, Message, TechnicalDetails, Source, Context, Recovery and Cause. The representation must be extensible without requiring breaking changes.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#3"
+    },
+    {
+      "id": "AEG-CORE-004",
+      "title": "Stable machine-readable fault codes",
+      "description": "Every recognized fault gets a stable machine-readable code. Examples given: AEGIS.GITHUB.AUTHENTICATION_FAILED, AEGIS.GITHUB.RATE_LIMITED, AEGIS.NETWORK.UNAVAILABLE, AEGIS.DATA.DESERIALIZATION_FAILED, AEGIS.LIMEN.INTEROP_FAILED and AEGIS.STATE.INVARIANT_VIOLATION. Human-readable messages may change; codes must not. Codes underpin diagnostics, automation, tests, agents, telemetry, recovery rules, documentation and historical fault search.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#4"
+    },
+    {
+      "id": "AEG-CORE-005",
+      "title": "Deliberately small capture API",
+      "description": "Expose a small public API: Aegis.capture, Aegis.captureAsync and Aegis.report at minimum, with possible later additions (guard, translate, withContext, scope). Typical usage wraps a boundary call, e.g. Aegis.captureAsync \"Chrona.TimeEntry.Load\" (fun () -> repository.load entryId). The API must not expand until a concrete requirement justifies it.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "api",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#5"
+    },
+    {
+      "id": "AEG-CORE-006",
+      "title": "Use Aegis at architectural boundaries",
+      "description": "Aegis is primarily used at architectural boundaries: HTTP, GitHub API, filesystem, browser APIs, Limen interop, serialization, persistent storage, external services, integration assemblies, auth providers, top-level commands, startup, shutdown, background processing and import/export. Documentation must discourage arbitrary try/with blocks throughout domain code.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "boundaries",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#6"
+    },
+    {
+      "id": "AEG-CORE-007",
+      "title": "No silent swallowing of faults",
+      "description": "Aegis must not silently consume unexpected faults; `try ... with _ -> ()` and `try Some(load()) with _ -> None` are invalid unless failure is explicitly modelled as acceptable. Every intercepted unexpected failure must result in propagation, recovery, a state transition, or explicit suppression under a declared policy, and suppression itself must be observable.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "policy",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#7"
+    },
+    {
+      "id": "AEG-CORE-008",
+      "title": "Recovery policy model",
+      "description": "Faults describe allowable recovery behaviour via RecoveryPolicy (Retry, RetryWithBackoff, Reauthenticate, Reload, Refresh, Continue, AbortOperation, RestartApplication, ManualIntervention, NoRecovery). Aegis should not automatically decide every recovery action; SDE/application policy determines whether an action is legal in the current state.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "recovery",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#8"
+    },
+    {
+      "id": "AEG-CORE-009",
+      "title": "SDE integration: faults may propose transitions",
+      "description": "Faults must be able to produce or request SDE transitions (e.g. GitHubAuthenticationFailed proposing AuthenticationRequired), without bypassing SDE transition rules. SDE determines validity from the current state; Aegis must not become a separate state-management framework.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "integration-sde",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#9"
+    },
+    {
+      "id": "AEG-CORE-010",
+      "title": "Limen integration: standardized fault presentation model",
+      "description": "Provide a FaultPresentation model (Title, Message, Severity, Actions, CorrelationId) for Limen to consume. Aegis must not generate HTML directly; Limen renders the UI, including recovery actions and a reference identifier.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "integration-limen",
+        "epic-e11"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#10"
+    },
+    {
+      "id": "AEG-CORE-011",
+      "title": "Separate user-facing, technical and diagnostic information",
+      "description": "Distinguish UserMessage, TechnicalMessage and DiagnosticData. Users must not normally see stack traces, raw exceptions, tokens, internal repository details, HTTP headers, secrets or internal filesystem paths; developers and agents get richer diagnostics where authorized.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "privacy",
+        "epic-e02"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#11"
+    },
+    {
+      "id": "AEG-CORE-012",
+      "title": "Explicit redaction rules for sensitive data",
+      "description": "Aegis must never record GitHub tokens, passwords, API keys, authorization headers, session tokens, cookies, private keys or access credentials. Applications must be able to register additional redaction rules, and sensitive-data protection must be foundational rather than optional.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "privacy",
+        "epic-e02"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#12"
+    },
+    {
+      "id": "AEG-CORE-013",
+      "title": "Structured fault context",
+      "description": "Faults carry structured context (e.g. Aegis.withContext with repository/operation/entryId pairs) rather than prose-embedded detail. The document contrasts a bad prose message with a better structured form: code CHR.TIME_ENTRY.LOAD_FAILED plus context entryId=123, repository=foo. Structured context must serve both human and agent consumption.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "context",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#13"
+    },
+    {
+      "id": "AEG-CORE-014",
+      "title": "Correlation IDs across related operations",
+      "description": "Support correlation IDs so every diagnostic event in a chain (user action, command, integration assembly, GitHub API, JSON parsing) is traceable to the same operation, including across integration messages exchanged between applications.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "correlation",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#14"
+    },
+    {
+      "id": "AEG-CORE-015",
+      "title": "Preserve fault causal chains",
+      "description": "Preserve causality (e.g. ChronaEntryLoadFailed caused by GitHubFileLoadFailed caused by HttpTimeout) rather than flattening to 'Something went wrong', while avoiding exposure of raw nested exception trees to consumers.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#15"
+    },
+    {
+      "id": "AEG-CORE-016",
+      "title": "Translate low-level exceptions at integration boundaries",
+      "description": "Integration assemblies translate technology exceptions into meaningful faults: HttpRequestException must not escape the GitHub boundary (becoming e.g. GitHubFailure.NetworkUnavailable), and JsonException may become a domain-appropriate fault such as Chrona.TimeEntry.InvalidStoredRepresentation.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "translation",
+        "epic-e04"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#16"
+    },
+    {
+      "id": "AEG-CORE-017",
+      "title": "Preserve original exception information through translation",
+      "description": "Translation must not destroy exception type, message, stack trace, inner exception or original source; these diagnostics must be retained but kept separate from the public/domain-facing fault representation.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "translation",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#17"
+    },
+    {
+      "id": "AEG-CORE-018",
+      "title": "Standardized severity classifications",
+      "description": "Provide FaultSeverity (Diagnostic, Warning, Error, Critical) and avoid an unnecessarily large number of severity levels.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#18"
+    },
+    {
+      "id": "AEG-CORE-019",
+      "title": "Programming defects fail loudly",
+      "description": "Programming defects (impossible union case, invalid invariant, prohibited null, invalid internal state, unexpected pattern) must be distinguishable from runtime/environmental failures and should generally fail loudly. Aegis must not downgrade a defect to a harmless warning and continue in potentially corrupt state.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "policy",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#19"
+    },
+    {
+      "id": "AEG-CORE-020",
+      "title": "Special treatment for data integrity faults",
+      "description": "Data integrity failures (invalid persisted state, unrecognized schema version, missing required relationship, hash mismatch, unexpected repository structure) get special treatment: recovery should avoid mutating data until correctness is established, supporting concepts such as ReadOnlyRecovery.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "data-integrity",
+        "epic-e04"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#20"
+    },
+    {
+      "id": "AEG-CORE-021",
+      "title": "Retry only under explicit policy",
+      "description": "Retries must never happen invisibly. Aegis must know whether retry is allowed, the maximum attempts, the backoff policy and whether the operation is idempotent (e.g. RetryPolicy { Attempts = 3; Backoff = Exponential }). Automatic retry only where safe to repeat: a failed GET and a partially completed payment submission must be treated differently.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "recovery",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#21"
+    },
+    {
+      "id": "AEG-CORE-022",
+      "title": "Bounded in-memory fault history",
+      "description": "Applications may optionally maintain a bounded in-memory fault history (e.g. last 50 faults) that must not grow without limit. Persistent fault storage goes through configured sinks rather than assuming local storage.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "history",
+        "epic-e06"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#22"
+    },
+    {
+      "id": "AEG-CORE-023",
+      "title": "Configurable fault sinks",
+      "description": "Support configurable destinations: console, browser console, application state, file, GitHub artifact, remote telemetry, test collector and no-op sink. The core package must not depend directly on any particular telemetry vendor.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#23"
+    },
+    {
+      "id": "AEG-CORE-024",
+      "title": "Multiple simultaneous sinks",
+      "description": "A fault may be delivered to multiple destinations simultaneously (application state, diagnostic logger, development console), and sink failure must not recursively crash Aegis.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#24"
+    },
+    {
+      "id": "AEG-CORE-025",
+      "title": "Aegis must survive its own failures",
+      "description": "Provide a last-resort failure path: when a sink throws, Aegis catches the sink failure and a fallback sink receives a minimal fault. There must be a hard limit preventing recursive failure loops.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "resilience",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#25"
+    },
+    {
+      "id": "AEG-CORE-026",
+      "title": "Configure Aegis once at initialization",
+      "description": "Applications configure Aegis once (Application, Version, Environment, Sinks, Redaction) rather than repeatedly passing configuration through application methods.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "configuration",
+        "epic-e08"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#26"
+    },
+    {
+      "id": "AEG-CORE-027",
+      "title": "Deterministic testability with replaceable sinks",
+      "description": "Aegis must be designed for deterministic testing: tests replace sinks with a collector (e.g. TestFaultCollector configured via Aegis.configure) and assert expected faults by code, e.g. collector.Faults |> shouldContainFault \"AEGIS.GITHUB.AUTHENTICATION_FAILED\". Tests must not need to inspect console output.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "testing",
+        "epic-e13"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#27"
+    },
+    {
+      "id": "AEG-CORE-028",
+      "title": "Unit-test coverage for the Aegis package",
+      "description": "The package itself needs thorough tests for classification, translation, propagation, recovery policy, retries, redaction, nested faults, sink failure, correlation, async operations, cancellation, programming defects, fault serialization and backwards compatibility.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "testing",
+        "epic-e13"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#28"
+    },
+    {
+      "id": "AEG-CORE-029",
+      "title": "Cancellation is not necessarily a fault",
+      "description": "Distinguish cancellation from failure: OperationCanceledException may mean the user navigated away, the application shut down, or a newer request superseded an older one. Normal cancellation must not be automatically reported as an error.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "policy",
+        "epic-e03"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#29"
+    },
+    {
+      "id": "AEG-CORE-030",
+      "title": "Agent-readable structured diagnostics",
+      "description": "Fault information must be structured so an agent can diagnose it. The worked example is a JSON object carrying code CHRONA.GITHUB.LOAD_FAILED, operation Chrona.TimeEntry.Load, category IntegrationFailure, recoverability Retry, a correlationId and a context map. This is especially important for ROS/SDE-driven development.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "diagnostics",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#30"
+    },
+    {
+      "id": "AEG-CORE-031",
+      "title": "Human-readable diagnostics derived from the same fault",
+      "description": "The same fault must have a useful human representation (what failed, cause, suggested action, correlation ID). Agent and human views must derive from one underlying fault rather than being separately maintained.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "diagnostics",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#31"
+    },
+    {
+      "id": "AEG-CORE-032",
+      "title": "Integration assembly responsibility and typed failure models",
+      "description": "Every integration assembly exposes its own typed integration failure model (e.g. GitHubFailure with AuthenticationFailed, RepositoryNotFound, RateLimited, Conflict, NetworkUnavailable, InvalidResponse) and translates technology-specific failures; Aegis normalizes them into the shared fault model. Split: integration knows WHAT failed, Aegis HOW it is handled, SDE WHAT STATE may follow, Limen HOW it is shown.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "integration",
+        "epic-e04"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#32"
+    },
+    {
+      "id": "AEG-CORE-033",
+      "title": "ROS integration: declared fault boundaries",
+      "description": "ROS should require projects using Aegis to declare their fault boundaries (e.g. GitHub storage, JSON deserialization, Limen initialization, integration message processing). Static enforcement is not required in the first implementation, but the architecture must leave room for architecture checks that flag unguarded boundaries.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "integration-ros",
+        "epic-e14"
+      ],
+      "priority": "low",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:52Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#33",
+      "blockedReason": "Blocked upstream of this repository. The declaration exists in aegis-boundaries.json and BoundaryTests.fs keeps it honest against the code, but ROS itself does not yet require or validate a fault-boundary declaration, so the requirement cannot be fully met from inside this repository. The declaration keeps the gap visible rather than waiting for the enforcement to appear."
+    },
+    {
+      "id": "AEG-CORE-034",
+      "title": "Documentation requirement",
+      "description": "Documentation must explicitly teach when to use Aegis and when not to, where capture boundaries belong, how to create a typed fault, how to translate infrastructure exceptions, how recovery works, how SDE interacts with faults, how Limen presents faults and how to test fault behaviour, using real application scenarios rather than generic FooException examples.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "documentation",
+        "epic-e14"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#34"
+    },
+    {
+      "id": "AEG-CORE-035",
+      "title": "Dependency constraints",
+      "description": "Aegis should be F#-first with minimal dependencies: avoid reflection unless strongly justified, avoid logging-framework, DI-framework, vendor-telemetry and web-framework dependencies. The core should remain a very small assembly.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "constraints",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#35"
+    },
+    {
+      "id": "AEG-CORE-036",
+      "title": "C# consumability",
+      "description": "Aegis should be usable from C# even though F# is the primary interface: public types avoid F# constructs that are painful to consume cross-language where reasonable, without compromising the F# design. A thin interop layer may be added later.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "constraints",
+        "epic-e00"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#36"
+    },
+    {
+      "id": "AEG-CORE-037",
+      "title": "Schema version on serialized faults",
+      "description": "Serialized faults must include a schema version (e.g. \"schema\": \"aegis/fault/v1\") so future tooling does not implicitly depend on the current object shape.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "schema",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#37"
+    },
+    {
+      "id": "AEG-CORE-038",
+      "title": "Observability without telemetry dependency",
+      "description": "Aegis produces structured diagnostic information for telemetry systems to consume; it is not itself a telemetry platform and must not gradually become logging, tracing, analytics, metrics, alerting and monitoring in one package.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "constraints",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#38"
+    },
+    {
+      "id": "AEG-CORE-039",
+      "title": "Application availability impact model",
+      "description": "Aegis should help applications decide whether they can safely continue, via FaultImpact (OperationOnly, FeatureUnavailable, DegradedApplication, ApplicationUnsafe). A GitHub timeout may affect one operation while a corrupted root state file may make the application unsafe; that distinction is first class.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#39"
+    },
+    {
+      "id": "AEG-CORE-040",
+      "title": "Close out initial-pass open design questions",
+      "description": "Section 40 lists unresolved questions (fault immutability, acknowledgement, obligations, retry/recovery transitions in SDE, active vs historical faults, resolution, supersession, duplicate collapsing, repeated transient faults, escalation, startup/shutdown behaviour, diagnostic export, offline queueing, schema evolution). Verify each is answered by the additional-requirements and persistent-logging passes (AEG-ADD-* and AEG-LOG-*) and record any that remain open.",
+      "tags": [
+        "requirement",
+        "aegis-core",
+        "traceability",
+        "epic-e14"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_initial_requirements.txt#40"
+    },
+    {
+      "id": "AEG-ADD-001",
+      "title": "Fault scopes establishing shared diagnostic context",
+      "description": "Support contextual scopes -- e.g. Aegis.scope \"Chrona.Entry.Save\" with repository and entryId context pairs wrapping the operation -- so faults and diagnostic events created inside the scope inherit its context unless explicitly overridden, reducing repetitive context plumbing through method signatures.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "context",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#1"
+    },
+    {
+      "id": "AEG-ADD-002",
+      "title": "Bounded breadcrumb trail",
+      "description": "Support a bounded in-memory breadcrumb trail of meaningful application actions leading up to a fault. Examples given: repository loaded, parsed 42 entries, transition requested, transition accepted, calling GitHub, processing integration message, writing state. Breadcrumbs should be structured where practical, bounded to avoid unbounded memory growth, and attachable to a fault -- especially valuable for agent diagnostics where a stack trace alone does not explain the operational sequence.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "diagnostics",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#2"
+    },
+    {
+      "id": "AEG-ADD-003",
+      "title": "Fault deduplication",
+      "description": "Detect repeated occurrences of the same underlying fault and aggregate them into one active fault rather than creating diagnostic noise, carrying first/last seen timestamps, occurrence count, sample contexts, latest correlation IDs and latest recovery result. Deduplication must not destroy the ability to investigate individual occurrences.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "aggregation",
+        "epic-e10"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#3"
+    },
+    {
+      "id": "AEG-ADD-004",
+      "title": "Stable fault fingerprints",
+      "description": "Generate a stable fingerprint where practical, derived from fault code, operation, normalized cause, source subsystem, exception type and selected non-sensitive context, so today's fault can be matched to a previous occurrence. Fingerprints must exclude timestamps, correlation IDs, secrets and anything else that makes every occurrence unique.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "aggregation",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#4"
+    },
+    {
+      "id": "AEG-ADD-005",
+      "title": "Policy-driven escalation rules",
+      "description": "Support escalation policies (warning becomes error after repeated occurrence, error becomes critical at a threshold, transient becomes persistent after N minutes, FeatureUnavailable becomes ApplicationDegraded after multiple subsystem failures). Escalation must be policy-driven rather than hard-coded, and escalation events must themselves be recorded.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "escalation",
+        "epic-e10"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#5"
+    },
+    {
+      "id": "AEG-ADD-006",
+      "title": "Expose fault state for circuit-breaker adapters",
+      "description": "Expose enough structured fault state for infrastructure adapters to implement circuit-breaker behaviour (Closed, Open, HalfOpen) so repeated known infrastructure failures can influence whether further calls are blocked or tested cautiously. Aegis need not become a general resilience framework, and the behaviour must remain explicit and observable.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "resilience",
+        "epic-e12"
+      ],
+      "priority": "low",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#6"
+    },
+    {
+      "id": "AEG-ADD-007",
+      "title": "Quarantine support for unprocessable data",
+      "description": "Support quarantining malformed, corrupt or unprocessable inbound data, recording source identifier, raw payload reference, fault ID, fault code, reason, timestamp, recovery status and retry eligibility. Quarantine prevents repeatedly processing known-bad data and must follow sensitive-data and retention rules.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "quarantine",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#7"
+    },
+    {
+      "id": "AEG-ADD-008",
+      "title": "Dead-letter handling",
+      "description": "Support dead-letter behaviour for work that cannot be processed after defined recovery or retry attempts, with enough information to identify the failed item, understand why it failed, see what retries occurred, determine whether manual intervention is required, and reprocess later if appropriate. Behaviour must be deterministic and policy-driven.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "quarantine",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#8"
+    },
+    {
+      "id": "AEG-ADD-009",
+      "title": "Fault ownership by subsystem",
+      "description": "Faults identify an owning subsystem or logical component (GitHubIntegration, Chrona, Summa, Strata, Limen, ROS, SDE) to aid diagnosis, routing, filtering and remediation. Ownership describes the responsible software boundary, not an individual person.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#9"
+    },
+    {
+      "id": "AEG-ADD-010",
+      "title": "Environment metadata on diagnostic events",
+      "description": "Diagnostic events may include structured, optional environment metadata: application version, build version, commit SHA, branch, deployment environment, browser version, runtime version, operating system, schema version, and Limen/SDE/integration assembly versions.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "metadata",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#10"
+    },
+    {
+      "id": "AEG-ADD-011",
+      "title": "Deployment and revision correlation",
+      "description": "Support correlating faults with deployments or code revisions so questions such as 'did this fault start after commit X', 'did the occurrence rate increase after release Y' and 'which build generated this fault' can be answered. Commit or build identity is recorded where available.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "metadata",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#11"
+    },
+    {
+      "id": "AEG-ADD-012",
+      "title": "State snapshot references for serious faults",
+      "description": "For serious faults, associate a reference to an application-state snapshot or summary rather than embedding the entire state payload, reducing privacy risk, payload size, duplication and persistence cost. Snapshot capture must follow redaction and sensitive-data requirements.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "diagnostics",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#12"
+    },
+    {
+      "id": "AEG-ADD-013",
+      "title": "Diagnostic bundles",
+      "description": "Support generating a portable, machine-readable diagnostic bundle for human or agent analysis, potentially including selected fault history, breadcrumbs, application version, commit SHA, environment metadata, schema and integration versions, configuration metadata with secrets removed, state summaries, sink health and known recovery attempts. Bundles must never include secrets unless explicitly and safely authorized.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "diagnostics",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#13"
+    },
+    {
+      "id": "AEG-ADD-014",
+      "title": "Known-fault catalog",
+      "description": "Support a catalog of known fault codes with metadata: code, title, description, category, default severity, likely causes, safe recovery actions, retry eligibility, documentation reference, escalation guidance, whether automatic recovery is allowed and whether user notification is normally required, so humans and agents understand faults consistently.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "catalog",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#14"
+    },
+    {
+      "id": "AEG-ADD-015",
+      "title": "Recovery verification",
+      "description": "Do not assume recovery succeeded because the recovery operation returned without throwing. Recovery policies may define a verification step (e.g. reauthenticate, then verify repository access, then mark recovered); recovery is only successful once the relevant condition is verified where verification is possible.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "recovery",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#15"
+    },
+    {
+      "id": "AEG-ADD-016",
+      "title": "Fault obligations",
+      "description": "Certain faults create explicit unresolved obligations (reauthenticate, resolve corrupt entry, review failed payment, reprocess dead-letter item, investigate schema mismatch, restore diagnostic sink). Obligations integrate with SDE rather than forming a second workflow system, and remain visible until explicitly resolved or superseded.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "obligations",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#16"
+    },
+    {
+      "id": "AEG-ADD-017",
+      "title": "Acknowledged is not resolved",
+      "description": "Distinguish acknowledgement (someone or something recognized the fault) from resolution (the underlying condition is corrected or no longer applies), supporting active/unacknowledged, active/acknowledged, resolved/acknowledged and resolved-automatically. Acknowledging must not silently mark a fault resolved.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#17"
+    },
+    {
+      "id": "AEG-ADD-018",
+      "title": "Transient vs persistent classification",
+      "description": "Classify faults by expected persistence behaviour where known (Transient, Persistent, Permanent, Unknown, RequiresIntervention); this classification influences retry, escalation, notification and recovery policy.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#18"
+    },
+    {
+      "id": "AEG-ADD-019",
+      "title": "Safe-mode support",
+      "description": "Support requesting degraded application modes when normal operation would be unsafe (ReadOnly, Offline, FeatureDisabled, DiagnosticsOnly, RestrictedOperation). Aegis may request or recommend a safe mode; SDE determines whether the corresponding transition is legal.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "safe-mode",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#19"
+    },
+    {
+      "id": "AEG-ADD-020",
+      "title": "Startup fault boundary and bootstrap mode",
+      "description": "Aegis must work during startup before full application state exists, with a minimal bootstrap mode covering configuration loading, authentication initialization, Limen startup, schema loading, integration initialization, repository connection and state hydration. Bootstrap diagnostics must be promotable into the normal runtime once initialization succeeds.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "bootstrap",
+        "epic-e08"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#20"
+    },
+    {
+      "id": "AEG-ADD-021",
+      "title": "Shutdown fault boundary",
+      "description": "Support reporting failures during controlled shutdown (pending diagnostic flush failed, state finalization failed, final repository write failed, integration disposal failed) while avoiding recursive or indefinite shutdown loops.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e08"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#21"
+    },
+    {
+      "id": "AEG-ADD-022",
+      "title": "Unhandled top-level boundary",
+      "description": "Every application has one final Aegis boundary around its top-level execution surface (command loop, startup entry point, integration processor, top-level UI event dispatcher). This is the last line of defence, not the primary error-handling strategy.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "boundaries",
+        "epic-e03"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#22"
+    },
+    {
+      "id": "AEG-ADD-023",
+      "title": "Integration contract tests for failure translation",
+      "description": "Every integration assembly needs contract tests proving known external failures translate into standard typed integration failures and Aegis-compatible faults (401 to AuthenticationFailed, 404 to RepositoryNotFound where appropriate, 429 to RateLimited, timeout to NetworkUnavailable/Timeout, malformed response to InvalidResponse). Raw exceptions such as HttpRequestException or JsonException must not leak across integration boundaries except where explicitly documented.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "testing",
+        "epic-e04"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#23"
+    },
+    {
+      "id": "AEG-ADD-024",
+      "title": "Schema migration awareness",
+      "description": "Distinguish storage and payload migration failures from generic deserialization failures, with codes or categories such as MigrationRequired, MigrationFailed, UnsupportedVersion, SchemaMismatch, ForwardVersionUnsupported and BackwardCompatibilityViolation, making recovery clearer than reporting a bare serialization exception.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "schema",
+        "epic-e04"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#24"
+    },
+    {
+      "id": "AEG-ADD-025",
+      "title": "User notification policy via presentation intent",
+      "description": "Provide presentation intent (Silent, Inline, Notification, Banner, Blocking) without rendering UI; Limen decides how intent is rendered. Not every persisted fault should create a visible user notification.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "presentation",
+        "epic-e11"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#25"
+    },
+    {
+      "id": "AEG-ADD-026",
+      "title": "UI noise rate limiting",
+      "description": "Repeated faults must not overwhelm users with duplicate notifications; support rate limiting or suppression metadata for presentation. A network failure occurring 50 times may yield 50 diagnostic occurrences, 1 active aggregated fault and 1 visible notification, preserving diagnostic fidelity while throttling presentation.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "presentation",
+        "epic-e11"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#26"
+    },
+    {
+      "id": "AEG-ADD-027",
+      "title": "Privacy classification for context values",
+      "description": "Context values may carry privacy classification (Public, Internal, Sensitive, Secret) influencing persistence eligibility, redaction, diagnostic bundle export, UI presentation, remote telemetry and agent access. Secret values must normally never be persisted.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "privacy",
+        "epic-e02"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#27"
+    },
+    {
+      "id": "AEG-ADD-028",
+      "title": "Machine-remediation hooks",
+      "description": "Support machine-readable recovery capabilities (Retry, Reauthenticate, Reload, Quarantine, Reprocess, OpenReadOnly, RestoreSink) so an agent or automated component can determine which recovery actions are legally available. Automated recovery must occur through declared capabilities and SDE-approved transitions; agents must not bypass application state rules.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "automation",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#28"
+    },
+    {
+      "id": "AEG-ADD-029",
+      "title": "Fault lifecycle model",
+      "description": "Model the lifecycle of an operational fault rather than only the moment of the exception: Detected, Classified, Recorded, Presented or Suppressed, Recovery Requested, Recovery Attempted, Recovery Verified, Resolved -- with optional branches for Escalated, Quarantined, DeadLettered, Acknowledged, Deferred, Superseded and Reopened.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#29"
+    },
+    {
+      "id": "AEG-ADD-030",
+      "title": "Fault immutability and event-based lifecycle changes",
+      "description": "Fault records are generally immutable once created; lifecycle changes are represented as new events (FaultRecorded, FaultAcknowledged, RecoveryAttempted, RecoverySucceeded, FaultResolved) rather than mutating historical records, preserving auditability and event history.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#30"
+    },
+    {
+      "id": "AEG-ADD-031",
+      "title": "Active fault projection derived from event history",
+      "description": "While the event history stays append-oriented, Aegis derives a current active-fault projection answering which faults are active, acknowledged, unresolved or escalated, which obligations remain and which recovery actions are available. The projection should be derivable from event history where practical.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#31"
+    },
+    {
+      "id": "AEG-ADD-032",
+      "title": "Explicit fault resolution",
+      "description": "A fault has an explicit resolution concept with metadata: resolved timestamp, resolution type, recovery action, verification result, resolving event, and whether resolution was automatic or manual. Resolution must not erase the original fault history.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#32"
+    },
+    {
+      "id": "AEG-ADD-033",
+      "title": "Fault reopening",
+      "description": "A resolved fault may reopen if the same condition returns, and reopening must be explicit. Distinguish a new unrelated occurrence, a recurrence of a known fault and a reopened active condition; fingerprinting may determine which case applies.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#33"
+    },
+    {
+      "id": "AEG-ADD-034",
+      "title": "Fault supersession",
+      "description": "Support supersession relationships where a newer fault better describes the condition (NetworkUnavailable later superseded by AuthenticationProviderUnavailable). Supersession must preserve the original history.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "lifecycle",
+        "epic-e10"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#34"
+    },
+    {
+      "id": "AEG-ADD-035",
+      "title": "Repeated transient fault behaviour",
+      "description": "Define behaviour for repeated transient failures so each occurrence is not treated as an unrelated permanent fault, tracking first seen, last seen, occurrence count, consecutive failure count, recovery count, most recent success and current escalation state.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "aggregation",
+        "epic-e10"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#35"
+    },
+    {
+      "id": "AEG-ADD-036",
+      "title": "Escalation as a lifecycle event",
+      "description": "Represent escalation as lifecycle events (FaultRecorded, FaultRepeated, FaultEscalated) with escalation history preserved; severity must not simply be overwritten without historical evidence.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "escalation",
+        "epic-e10"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#36"
+    },
+    {
+      "id": "AEG-ADD-037",
+      "title": "Recordable recovery attempts",
+      "description": "Every recovery attempt is recordable with recovery action, attempt number, initiating actor, timestamp, correlation ID, expected result, actual result and verification result, making automated remediation auditable.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "recovery",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#37"
+    },
+    {
+      "id": "AEG-ADD-038",
+      "title": "Recovery actors",
+      "description": "Distinguish who or what initiated recovery (User, Application, Agent, ScheduledProcess, Integration, Operator) without requiring identification of a specific individual unless necessary.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "recovery",
+        "epic-e09"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#38"
+    },
+    {
+      "id": "AEG-ADD-039",
+      "title": "Manual intervention representation",
+      "description": "Explicitly represent faults that cannot be safely recovered automatically (corrupt financial data, ambiguous merge conflict, unsupported schema migration, repeated failed authentication, unknown state invariant violation); such faults can create a manual intervention obligation.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "obligations",
+        "epic-e09"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#39"
+    },
+    {
+      "id": "AEG-ADD-040",
+      "title": "Diagnostic export safety",
+      "description": "Diagnostic export must apply redaction after all context aggregation and before output, so a diagnostic bundle never becomes a mechanism that bypasses normal sink redaction.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "privacy",
+        "epic-e02"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#40"
+    },
+    {
+      "id": "AEG-ADD-041",
+      "title": "Fault searchability on structured fields",
+      "description": "Fault records must be searchable via stable structured fields rather than text search of human-readable messages, including code, fingerprint, application, subsystem, operation, severity, lifecycle state, correlation ID, build, commit SHA, first seen, last seen, occurrence count and recovery status.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "query",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#41"
+    },
+    {
+      "id": "AEG-ADD-042",
+      "title": "Agent diagnostic guidance on known faults",
+      "description": "Known faults may expose structured diagnostic guidance for agents: likely causes, evidence to inspect, safe commands or checks, prohibited recovery actions, expected state transitions and documentation references. Guidance must not allow an agent to bypass SDE, security or capability rules.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "automation",
+        "epic-e12"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#42"
+    },
+    {
+      "id": "AEG-ADD-043",
+      "title": "Failure domains",
+      "description": "Identify the failure domain of a fault (LocalOperation, Feature, Integration, Repository, Application, Environment, ExternalDependency) to help determine blast radius and appropriate recovery behaviour.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#43"
+    },
+    {
+      "id": "AEG-ADD-044",
+      "title": "Blast-radius metadata",
+      "description": "A fault can indicate its likely operational impact (one item, one operation, one feature, one repository, one user session, entire application), complementing the existing FaultImpact model.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#44"
+    },
+    {
+      "id": "AEG-ADD-045",
+      "title": "Dependency relationships on faults",
+      "description": "Associate faults with affected dependencies (e.g. Chrona to GitHub Integration to GitHub API) to help determine whether multiple application faults share the same root dependency failure.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "model",
+        "epic-e01"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#45"
+    },
+    {
+      "id": "AEG-ADD-046",
+      "title": "Root-cause grouping",
+      "description": "Support grouping multiple visible faults under a likely common cause (Chrona load failed, Summa save failed, follow-up sync failed all relating to GitHubUnavailable), preserving individual application faults while allowing shared-cause analysis.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "aggregation",
+        "epic-e10"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#46"
+    },
+    {
+      "id": "AEG-ADD-047",
+      "title": "Configuration validation at startup",
+      "description": "Aegis validates its own configuration at startup, detecting duplicate sink identifiers, invalid retention policy, missing required GitHub repository configuration, incompatible sink options and invalid redaction configuration. Configuration errors are reported through bootstrap diagnostics without causing recursive Aegis initialization failure.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "configuration",
+        "epic-e08"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#47"
+    },
+    {
+      "id": "AEG-ADD-048",
+      "title": "Sink capability metadata",
+      "description": "Sinks advertise capabilities (SupportsBatch, SupportsQuery, SupportsDurableWrite, SupportsRetention, SupportsOfflineQueue, SupportsIdempotency, SupportsTransactions); Aegis must not assume every sink supports the same behaviour.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#48"
+    },
+    {
+      "id": "AEG-ADD-049",
+      "title": "Graceful degradation of optional diagnostics",
+      "description": "Aegis degrades gracefully when optional diagnostic features are unavailable -- e.g. continuing with local memory and GitHub sinks when remote telemetry is down -- and required sinks must be explicitly distinguishable from optional ones.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "resilience",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#49"
+    },
+    {
+      "id": "AEG-ADD-050",
+      "title": "Required vs optional sink requirement levels",
+      "description": "Sink configuration supports a requirement level (Required, Preferred, Optional). Failure of a Required sink may affect application operating mode; failure of an Optional sink should not normally block primary application behaviour.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#50"
+    },
+    {
+      "id": "AEG-ADD-051",
+      "title": "Aegis health projection",
+      "description": "Maintain a structured projection of Aegis's own operational health (Healthy, Degraded, PersistenceUnavailable, QueueBacklogged, BootstrapOnly, CriticalFailure), consumable by SDE and Limen.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "health",
+        "epic-e06"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#51"
+    },
+    {
+      "id": "AEG-ADD-052",
+      "title": "Retention and aggregation interaction",
+      "description": "Aggregation must not destroy retention requirements: where individual occurrences are required for audit, Aegis may aggregate presentation while still retaining the underlying occurrence events.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "retention",
+        "epic-e07"
+      ],
+      "priority": "medium",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:53Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#52",
+      "blockedReason": "Enforcement half is out of scope for this repository per DF-AEGIS-2026-DBBD. Retention intent travels on every event as Retention and is tested here; enforcing it -- and therefore guaranteeing that aggregation cannot destroy an audit-required occurrence -- belongs to the storage adapter, per logging 26. Stated and carried here, honoured there."
+    },
+    {
+      "id": "AEG-ADD-053",
+      "title": "Policy separation across concerns",
+      "description": "Clearly separate detection, classification, persistence, presentation intent, recovery capability, recovery policy, state transition and UI rendering. No single component may silently own all of these decisions.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "principle",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#53"
+    },
+    {
+      "id": "AEG-ADD-054",
+      "title": "Architectural principle: own the failure lifecycle",
+      "description": "Aegis owns the lifecycle of operational failure, not merely exception capture. Responsibility split: integration assemblies know WHAT failed; Aegis knows HOW the fault is represented, recorded, correlated and tracked; SDE knows WHAT STATE transitions are legal; Limen knows HOW fault and recovery state are shown; ROS knows HOW development work and architectural compliance are organized; applications retain domain rules and business meaning.",
+      "tags": [
+        "requirement",
+        "aegis-additional",
+        "principle",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#54"
+    },
+    {
+      "id": "AEG-LOG-001",
+      "title": "Purpose: storage-independent persistence of faults and lifecycle events",
+      "description": "Provide a standard, storage-independent way to persist faults and related lifecycle events across GitHub, databases, local files, memory, console and future telemetry systems, without application code knowing which storage is configured. Applications interact through a common reporting interface (Aegis.report fault).",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "purpose",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#1"
+    },
+    {
+      "id": "AEG-LOG-002",
+      "title": "Standard sink abstraction",
+      "description": "Define a common sink abstraction (e.g. IAegisSink with Write: AegisEvent -> Async<unit>) supporting one or many configured sinks. Initial sink types: Console, Memory, File, GitHub, Database; potential future sinks include remote telemetry, cloud logging, message queues, diagnostic collectors and test collectors.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#2"
+    },
+    {
+      "id": "AEG-LOG-003",
+      "title": "Standard store abstraction",
+      "description": "Separate durable storage from the core runtime with a standard store contract (e.g. IAegisStore with Append, AppendBatch and Query). The core package must not depend directly on PostgreSQL, SQL Server, SQLite or any other specific database engine.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "storage",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#3"
+    },
+    {
+      "id": "AEG-LOG-004",
+      "title": "Storage adapters outside the core",
+      "description": "Storage-specific adapters implement the standard store contract (e.g. Aegis.Store.Postgres, Aegis.Store.SqlServer, Aegis.Store.Sqlite, Aegis.Store.GitHub) and remain outside the core runtime unless a compelling reason exists otherwise.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "storage",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:53Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#4",
+      "blockedReason": "Out of scope for this repository per DF-AEGIS-2026-DBBD. Aegis.Store.GitHub is the reference adapter that keeps Store.T honest; the Postgres, SQL Server and SQLite adapters logging 4 names are built against the same contract outside this repository, where the driver dependency belongs and logging 42 is satisfied structurally. Blocked rather than abandoned: the requirement stays true of Aegis as a system, and an adapter repository satisfies it."
+    },
+    {
+      "id": "AEG-LOG-005",
+      "title": "Persist more than faults: the lifecycle event model",
+      "description": "Persistence records the full fault lifecycle, not only the original exception. Define a common AegisEvent model (FaultRecorded, RecoveryAttempted, RecoverySucceeded, RecoveryFailed, FaultAcknowledged, FaultResolved) giving a complete history of what happened after a fault occurred.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "model",
+        "lifecycle",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#5"
+    },
+    {
+      "id": "AEG-LOG-006",
+      "title": "Append-oriented immutable storage",
+      "description": "Favour append-oriented writes; persisted records are normally immutable once written. Corrections, acknowledgements, recovery attempts and resolution are additional events rather than destructive updates to existing history.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "storage",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#6"
+    },
+    {
+      "id": "AEG-LOG-007",
+      "title": "GitHub storage model: one immutable file per event",
+      "description": "The GitHub sink favours one immutable event file per event (e.g. /aegis/YYYY/MM/DD/<ULID>.json) rather than rewriting a single large log file, minimizing merge conflicts and simplifying audit history, agent inspection, Git history, retention rules, archival, diagnostics and correlation searches.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "github",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#7"
+    },
+    {
+      "id": "AEG-LOG-008",
+      "title": "GitHub file naming with sortable unique identifiers",
+      "description": "GitHub event file names use stable, sortable unique identifiers, with ULID-style identifiers preferred for uniqueness and time ordering. File names must not contain sensitive information and must not depend on mutable human-readable messages.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "github",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#8"
+    },
+    {
+      "id": "AEG-LOG-009",
+      "title": "GitHub repository configuration",
+      "description": "The GitHub sink is configurable with repository, organization/owner, branch, root path, authentication provider, batching policy, retention metadata and write strategy. The core runtime must not require application methods to repeatedly provide this configuration.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "github",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#9"
+    },
+    {
+      "id": "AEG-LOG-010",
+      "title": "Database storage with efficient lookup",
+      "description": "The database sink persists events using the same semantic event model as GitHub and other sinks, supporting efficient lookup by at least event ID, fault ID, correlation ID, timestamp, application, operation, fault code, severity and event type.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "database",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:53Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#10",
+      "blockedReason": "Out of scope for this repository per DF-AEGIS-2026-DBBD. The provider-independent query model that makes efficient lookup expressible exists in Store.fs and is exercised by the GitHub adapter; index and schema design belong to the adapter that owns them, which is outside this repository. Blocked rather than abandoned: an adapter repository satisfies it."
+    },
+    {
+      "id": "AEG-LOG-011",
+      "title": "Storage schema consistency across sinks",
+      "description": "GitHub, database, file and telemetry sinks preserve the same semantic event schema: a fault stored in PostgreSQL represents the same information as the equivalent fault in GitHub. Storage-specific representation may differ, but meaning must not.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "schema",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#11"
+    },
+    {
+      "id": "AEG-LOG-012",
+      "title": "Versioned event schema",
+      "description": "Every persisted event includes a schema version (e.g. \"schema\": \"aegis/event/v1\"). Schema evolution must not silently break existing consumers, agents, tools or historical records.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "schema",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#12"
+    },
+    {
+      "id": "AEG-LOG-013",
+      "title": "Standard serialized event shape",
+      "description": "Define the storage-independent serialized event shape. The representative example carries schema aegis/event/v1, eventId, faultId, correlationId, timestamp, application Chrona, operation Chrona.TimeEntry.Load, eventType FaultRecorded, code CHRONA.GITHUB.LOAD_FAILED, severity Error and a context map. The exact schema may evolve but must remain storage independent.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "schema",
+        "model",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#13"
+    },
+    {
+      "id": "AEG-LOG-014",
+      "title": "Simultaneous logging to multiple sinks",
+      "description": "Support simultaneous logging to multiple destinations (memory, GitHub, database, future telemetry) without applications needing separate reporting logic per sink.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#14"
+    },
+    {
+      "id": "AEG-LOG-015",
+      "title": "Sink independence on failure",
+      "description": "Failure of one sink must not automatically prevent other configured sinks from receiving the event -- e.g. if GitHub persistence fails but a database sink is available, the database sink still receives the event where practical.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "sinks",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#15"
+    },
+    {
+      "id": "AEG-LOG-016",
+      "title": "Bounded sink failure handling with re-entry guard",
+      "description": "A sink failure must not create an infinite Aegis failure loop. Define a bounded fallback strategy: the original fault, then a GitHub sink failure, then a minimal sink-failure record through fallback handling, with no recursive retry loop and a hard recursion or re-entry guard.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "resilience",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#16"
+    },
+    {
+      "id": "AEG-LOG-017",
+      "title": "Primary operation safety on persistence failure",
+      "description": "A persistence failure must not normally fail the original business operation merely because diagnostic logging failed. Exceptions where audit persistence is itself a business or compliance requirement must be explicitly configured rather than assumed.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "policy",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#17"
+    },
+    {
+      "id": "AEG-LOG-018",
+      "title": "Asynchronous persistence",
+      "description": "Persistence is asynchronous from the primary operation where practical, adding minimal latency to application behaviour. Aegis must not block normal execution on slow remote storage unless configured to do so.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "performance",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#18"
+    },
+    {
+      "id": "AEG-LOG-019",
+      "title": "Event batching",
+      "description": "Support event batching where it improves efficiency (PostgreSQL batch inserts, GitHub grouped commits, remote telemetry submission). Batching must not destroy event ordering, identity, correlation or schema consistency.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "performance",
+        "epic-e06"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#19"
+    },
+    {
+      "id": "AEG-LOG-020",
+      "title": "Offline and deferred delivery",
+      "description": "Support deferred persistence, queueing events when a remote sink is temporarily unavailable, with configurable behaviour. Queued events must preserve event identity, timestamps, correlation IDs, ordering metadata, redaction state and schema version.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "offline",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#20"
+    },
+    {
+      "id": "AEG-LOG-021",
+      "title": "Redaction before events reach any sink",
+      "description": "Sensitive data must be redacted before an event reaches any sink; sinks must never decide whether credentials are safe to persist. GitHub tokens, API keys, authorization headers, passwords, cookies, session tokens, private keys and secrets must be removed or masked, and applications must be able to register additional redaction rules.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "privacy",
+        "epic-e02"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#21"
+    },
+    {
+      "id": "AEG-LOG-022",
+      "title": "Consistent correlation across sinks",
+      "description": "Every sink preserves correlation IDs consistently so a single operation can be traced across application command, integration assembly, GitHub API, serialization, recovery action and resolution, regardless of which sink is queried.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "correlation",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#22"
+    },
+    {
+      "id": "AEG-LOG-023",
+      "title": "Fault ID preserved on every lifecycle event",
+      "description": "Every persisted lifecycle event associated with a fault preserves the fault ID so all events for a single fault can be reconstructed.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "correlation",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#23"
+    },
+    {
+      "id": "AEG-LOG-024",
+      "title": "Distinct event identity",
+      "description": "Every event has its own unique event ID, distinct from the fault ID (e.g. fault AG-F-01KH... with events AG-E-01KH1 FaultRecorded, AG-E-01KH2 RecoveryAttempted, AG-E-01KH3 RecoverySucceeded, AG-E-01KH4 FaultResolved).",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "model",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#24"
+    },
+    {
+      "id": "AEG-LOG-025",
+      "title": "UTC timestamp requirements",
+      "description": "Every persisted event includes a UTC timestamp as canonical; storage implementations may additionally preserve local time or timezone information where required.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "model",
+        "epic-e05"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#25"
+    },
+    {
+      "id": "AEG-LOG-026",
+      "title": "Retention policy metadata",
+      "description": "Support retention metadata (retain indefinitely, retain 30 days, retain 90 days, archive after 1 year, diagnostic-only, audit-required). Storage adapters may enforce retention; the core event model must allow retention intent to be represented.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "retention",
+        "epic-e07"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#26"
+    },
+    {
+      "id": "AEG-LOG-027",
+      "title": "Provider-independent query model",
+      "description": "Define a standard query model independent of the storage provider, with filters for fault ID, event ID, correlation ID, application, operation, fault code, severity, event type, time range, unresolved faults and recovery status.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "query",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#27"
+    },
+    {
+      "id": "AEG-LOG-028",
+      "title": "Recording path separate from querying",
+      "description": "Keep the recording path small and dependable; querying, filtering, dashboards, analytics and reporting sit above the write path, and the write path must not become dependent on advanced query infrastructure.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "principle",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#28"
+    },
+    {
+      "id": "AEG-LOG-029",
+      "title": "Agent readability of persisted events",
+      "description": "Persisted events must be easy for agents to inspect and understand, preferring structured fields over large unstructured log messages, with GitHub persistence making direct repository inspection practical.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "diagnostics",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#29"
+    },
+    {
+      "id": "AEG-LOG-030",
+      "title": "Human readability without proprietary tooling",
+      "description": "Persisted records remain understandable to developers and operators without proprietary tooling: JSON in GitHub should be reasonably readable, and database records renderable into equivalent human-readable diagnostic views.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "diagnostics",
+        "epic-e06"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#30"
+    },
+    {
+      "id": "AEG-LOG-031",
+      "title": "Reconstructable audit history",
+      "description": "Append-oriented storage must make it possible to reconstruct what failed, when, what caused it, what recovery was attempted, whether recovery succeeded, who or what acknowledged the fault and when it was resolved. Historical events must not normally be destructively rewritten.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "audit",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#31"
+    },
+    {
+      "id": "AEG-LOG-032",
+      "title": "Idempotent writes",
+      "description": "Sink implementations consider duplicate-write protection so retrying persistence does not silently create misleading duplicate events; event IDs should be usable as idempotency keys where supported.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "storage",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#32"
+    },
+    {
+      "id": "AEG-LOG-033",
+      "title": "Event ordering reconstruction",
+      "description": "Preserve enough ordering information to reconstruct event sequence; timestamps alone may be insufficient, so event IDs or sequence metadata may be used when necessary.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "storage",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#33"
+    },
+    {
+      "id": "AEG-LOG-034",
+      "title": "Concurrent write tolerance",
+      "description": "Sinks must tolerate concurrent event writes. The GitHub strategy must minimize conflicts when multiple users, browser sessions, agents or application instances record events simultaneously, and database implementations use concurrency safeguards appropriate to the engine.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "concurrency",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#34"
+    },
+    {
+      "id": "AEG-LOG-035",
+      "title": "GitHub commit strategy",
+      "description": "The GitHub adapter defines a standard commit strategy (one event per commit, multiple queued events per commit, or periodic batch commits), preferring the approach that minimizes API usage while retaining understandable history. This remains adapter-level policy rather than core behaviour.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "github",
+        "epic-e07"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#35"
+    },
+    {
+      "id": "AEG-LOG-036",
+      "title": "GitHub conflict handling",
+      "description": "GitHub write conflicts must be handled explicitly and Aegis must never silently overwrite an existing event file. Because records are immutable and uniquely named, filename collisions should be extremely rare and treated as abnormal.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "github",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#36"
+    },
+    {
+      "id": "AEG-LOG-037",
+      "title": "Database transaction behaviour for batches",
+      "description": "Database sinks define transaction behaviour for batch persistence with deterministic handling when one event in a batch fails. The adapter must document whether the whole batch rolls back, valid events persist independently, or failed events are quarantined; silent partial persistence is not acceptable.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "database",
+        "epic-e07"
+      ],
+      "priority": "high",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:54Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#37",
+      "blockedReason": "Out of scope for this repository per DF-AEGIS-2026-DBBD. Batch transaction behaviour is a per-engine decision that each adapter must document, and Store.T already carries the per-event identity and Retention that make whole-rollback, independent-persistence and quarantine all expressible. The adapter that chooses between them is outside this repository."
+    },
+    {
+      "id": "AEG-LOG-038",
+      "title": "Sink health and diagnostics",
+      "description": "Expose sink health information without becoming a monitoring platform: sink available/degraded/unavailable, queued event count, last successful write and last failed write, structured for consumption by Limen or agents.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "health",
+        "epic-e06"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#38"
+    },
+    {
+      "id": "AEG-LOG-039",
+      "title": "Declare sinks once in configuration",
+      "description": "Configuration allows applications to declare sinks once (e.g. Memory, GitHub, Database sinks in Aegis.configure); application methods remain unaware of individual sink configuration.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "configuration",
+        "epic-e08"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#39"
+    },
+    {
+      "id": "AEG-LOG-040",
+      "title": "Deterministic tests per sink implementation",
+      "description": "Each sink implementation needs deterministic tests for successful writes, duplicate writes, concurrency, batching, serialization, schema versioning, redaction, sink outage, retry behaviour, correlation preservation, event ordering, malformed storage responses, partial failure and fallback behaviour.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "testing",
+        "epic-e13"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#40"
+    },
+    {
+      "id": "AEG-LOG-041",
+      "title": "In-memory test sink",
+      "description": "Provide a simple in-memory test sink (e.g. TestAegisSink) whose collected events tests can inspect without a real database, GitHub repository, console capture or network dependency.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "testing",
+        "epic-e06"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#41"
+    },
+    {
+      "id": "AEG-LOG-042",
+      "title": "Minimal core dependencies",
+      "description": "The core must not require database drivers, GitHub SDKs, telemetry SDKs or logging frameworks; storage-specific dependencies belong in adapters so applications include only the sink packages they use.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "constraints",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#42"
+    },
+    {
+      "id": "AEG-LOG-043",
+      "title": "Integration assemblies may provide sinks",
+      "description": "Integration assemblies can provide Aegis-compatible sinks or storage adapters where appropriate -- e.g. a standard Echelon GitHub integration assembly providing the GitHub persistence implementation -- so Aegis does not duplicate GitHub API code owned by the integration layer.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "integration",
+        "epic-e07"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#43"
+    },
+    {
+      "id": "AEG-LOG-044",
+      "title": "SDE integration for persistence state",
+      "description": "Sink availability and persistence failures may influence application state where relevant (e.g. DiagnosticPersistenceAvailable to DiagnosticPersistenceDegraded), but Aegis must not independently bypass SDE rules; SDE determines valid transitions.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "integration-sde",
+        "epic-e14"
+      ],
+      "priority": "medium",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:52Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#44",
+      "blockedReason": "Blocked on a dependency that does not exist here. Sde.fs produces the persistence-state transition proposals logging 44 describes and they are tested, but there is no SDE instance in this repository to consume them, so the integration half cannot be demonstrated. The proposals are the deliverable this repository owns."
+    },
+    {
+      "id": "AEG-LOG-045",
+      "title": "Limen integration for persistence state",
+      "description": "Limen may expose diagnostic persistence state (diagnostics queued, synchronized, unavailable, last synchronization failed). Aegis provides structured state; Limen decides how it is rendered.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "integration-limen",
+        "epic-e11"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#45"
+    },
+    {
+      "id": "AEG-LOG-046",
+      "title": "ROS integration for persistence declarations",
+      "description": "ROS should eventually require projects to declare configured Aegis sinks, required durable storage, fallback behaviour, retention policy, fault boundaries and offline behaviour, with architecture validation later verifying that required persistence is configured.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "integration-ros",
+        "epic-e14"
+      ],
+      "priority": "low",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#46"
+    },
+    {
+      "id": "AEG-LOG-047",
+      "title": "Recommended architectural principle for persistence",
+      "description": "Core design principle: Aegis produces structured events, sinks persist those events, stores provide durable retrieval, SDE governs legal state transitions, Limen presents diagnostic and recovery state, and applications report faults without knowing where they are ultimately stored.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "principle",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#47"
+    },
+    {
+      "id": "AEG-LOG-048",
+      "title": "Scope constraint on persistence",
+      "description": "Aegis persistence must not turn Aegis into a general application database, business event store, metrics platform, distributed tracing product, logging vendor abstraction, analytics system or monitoring platform. Aegis owns fault and fault-lifecycle diagnostics; other application events enter only when they directly support fault diagnosis, recovery, acknowledgement or resolution.",
+      "tags": [
+        "requirement",
+        "aegis-logging",
+        "principle",
+        "constraints",
+        "epic-e00"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T21:00:25Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": "Input-documents/aegis_persistent_logging_requirements.txt#48"
+    },
+    {
+      "id": "AEG-SYNTH-001",
+      "title": "Synthesize Aegis requirements into dependency-ordered implementation epics",
+      "description": "Group the 143 captured requirement items into a verified partition of dependency-ordered epics, record the sequencing decision as a canonical DF decision record, and tag each requirement item with its epic.",
+      "tags": [
+        "synthesis",
+        "planning"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:14:45Z",
+      "updatedAt": "2026-09-16T23:17:08Z",
+      "createdBy": "claude",
+      "source": "requirements-intake",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-EPIC-E00",
+      "title": "E00: Governing constraints and scope",
+      "description": "Cross-cutting principles that constrain every other epic rather than being built once. Reviewed as acceptance criteria throughout, not scheduled as standalone delivery. Wave 1; depends on nothing; 12 requirement items tagged epic-e00.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-1"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:38:42Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E01",
+      "title": "E01: Fault model and classification vocabulary",
+      "description": "The representation and classification vocabulary every later epic consumes. Nothing can be captured, recorded, recovered or presented before Fault, FailureCategory, codes, severity and impact exist. Wave 2; depends on E00; 14 requirement items tagged epic-e01.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-2"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:38:51Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E02",
+      "title": "E02: Redaction and privacy core",
+      "description": "Sequenced before anything persists or exports because the requirements state sensitive-data protection is foundational rather than optional, and sinks must never decide whether credentials are safe to persist. Wave 3; depends on E01; 5 requirement items tagged epic-e02.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-3"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:38:56Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E03",
+      "title": "E03: Capture API and architectural boundaries",
+      "description": "The public surface and the rules for where it is used. Depends on the fault model for what it produces and on redaction so captured context is safe from the first call. Wave 4; depends on E01, E02; 9 requirement items tagged epic-e03.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-4"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:39:09Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E04",
+      "title": "E04: Translation and integration contracts",
+      "description": "Keeps technology exceptions from crossing integration boundaries and gives each integration assembly a typed failure model, with contract tests proving the translation. Wave 5; depends on E01, E03; 5 requirement items tagged epic-e04.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:39:14Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E05",
+      "title": "E05: Event model and serialization",
+      "description": "The persisted lifecycle event vocabulary and its wire shape, versioned from the start. Storage adapters and the lifecycle projection both build on this. Wave 4; depends on E01, E02; 7 requirement items tagged epic-e05.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-4"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:39:21Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E06",
+      "title": "E06: Sink runtime",
+      "description": "Sink abstraction, fan-out, independence, failure containment and delivery behaviour, including the guarantee that Aegis survives its own sink failures. Wave 5; depends on E05, E03; 27 requirement items tagged epic-e06.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:39:43Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E07",
+      "title": "E07: Storage adapters and retrieval",
+      "description": "Concrete durable stores behind the standard contract, kept outside the core, plus the query and retention model that makes history usable. Wave 6; depends on E06; 15 requirement items tagged epic-e07.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:39:59Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E08",
+      "title": "E08: Configuration, bootstrap and shutdown",
+      "description": "Declare-once configuration with startup validation, plus fault boundaries that work before state exists and during controlled shutdown. Wave 6; depends on E06; 5 requirement items tagged epic-e08.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:40:06Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E09",
+      "title": "E09: Recovery and obligations",
+      "description": "Recovery policy, retry safety, verification that recovery actually worked, and the obligations and safe-mode requests that Aegis proposes but SDE authorizes. Wave 5; depends on E01, E03, E05; 10 requirement items tagged epic-e09.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:40:16Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E10",
+      "title": "E10: Fault lifecycle and projections",
+      "description": "The lifecycle Aegis owns beyond exception capture: immutable events, the active-fault projection derived from them, resolution, reopening, supersession, deduplication and escalation. Wave 5; depends on E05; 12 requirement items tagged epic-e10.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-5"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:40:29Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E11",
+      "title": "E11: Presentation intent",
+      "description": "Structured presentation intent and noise control for Limen to render, without Aegis generating UI. Wave 6; depends on E01, E10; 4 requirement items tagged epic-e11.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:40:36Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E12",
+      "title": "E12: Diagnostics and agent surface",
+      "description": "The operator- and agent-facing diagnostic layer: breadcrumbs, environment and deployment metadata, bundles, the known-fault catalog, and the containment behaviours that consume fault state. Wave 6; depends on E01, E06; 10 requirement items tagged epic-e12.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:40:47Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E13",
+      "title": "E13: Test strategy",
+      "description": "Deterministic testability as a design constraint plus the concrete suites the requirements enumerate for the package and for every sink. Wave 6; depends on E03, E06; 3 requirement items tagged epic-e13.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-6"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:33:52Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-EPIC-E14",
+      "title": "E14: Documentation and ROS compliance",
+      "description": "The teaching documentation the requirements mandate, the declared fault boundaries and persistence declarations ROS should enforce, and closing out the initial pass's open design questions. Wave 7; depends on E03, E07; 5 requirement items tagged epic-e14.",
+      "tags": [
+        "epic",
+        "aegis-synthesis",
+        "wave-7"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:15:39Z",
+      "updatedAt": "2026-09-17T07:40:54Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": "research/decisions/aegis-implementation-sequencing"
+    },
+    {
+      "id": "AEG-SLICE-001",
+      "title": "Vertical slice: fault model, redaction, capture, in-memory sink",
+      "description": "First end-to-end slice of Aegis per DF-AEGIS-2026-0CA3: fault model and classification vocabulary (E01), redaction core (E02), capture API and scopes (E03), versioned event model (E05), sink fan-out with failure containment and a test sink (E06), with deterministic tests (E13).",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:36:30Z",
+      "updatedAt": "2026-09-16T23:41:05Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-002",
+      "title": "Lifecycle events, recovery records and offline queue",
+      "description": "Complete the event model and sink runtime per DF-AEGIS-2026-0CA3: full AegisEvent lifecycle vocabulary (acknowledge, resolve, recovery attempted/succeeded/failed, escalate, supersede), the active-fault projection derived from event history, and a deferred-delivery queue preserving identity, order and redaction state.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:45:38Z",
+      "updatedAt": "2026-09-16T23:49:49Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-003",
+      "title": "Store contract and GitHub storage adapter",
+      "description": "Provider-independent durable store contract and query model in core, plus a GitHub adapter outside the core implementing one immutable file per event, explicit conflict handling and adapter-level commit strategy. GitHub API calls are injected rather than embedded, since integration assemblies own that code.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-16T23:55:07Z",
+      "updatedAt": "2026-09-16T23:58:31Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-004",
+      "title": "Configuration validation, bootstrap and shutdown boundaries",
+      "description": "Validate Aegis configuration at startup without recursive initialization failure, support a minimal bootstrap mode that reports faults before full state exists and promotes those diagnostics into the normal runtime, and report shutdown failures without recursive or indefinite loops.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:03:09Z",
+      "updatedAt": "2026-09-17T00:04:50Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-005",
+      "title": "Translation, integration failure models and contract tests",
+      "description": "Generic translation from a typed integration failure model into the shared fault model, data-integrity and schema-migration taxonomies, and a worked GitHub integration assembly with contract tests proving technology exceptions never cross the boundary.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:08:04Z",
+      "updatedAt": "2026-09-17T00:10:58Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-006",
+      "title": "Recovery execution, obligations and safe-mode requests",
+      "description": "Recovery with authorization injected so Aegis proposes and an external authority decides, bounded retry that respects idempotency, verification before recovery counts as successful, machine-readable recovery capabilities for agents, obligations for faults that cannot be recovered automatically, and safe-mode recommendations.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:12:37Z",
+      "updatedAt": "2026-09-17T00:14:24Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-007",
+      "title": "Escalation policy, dependency grouping and presentation intent",
+      "description": "Close the remaining E10 gaps (policy-driven escalation rules, dependency association and root-cause grouping) and deliver E11: fault presentation model with intent, notification rate limiting and Limen-facing persistence state.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:15:23Z",
+      "updatedAt": "2026-09-17T00:20:15Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-008",
+      "title": "Diagnostics surface: breadcrumbs, bundles, catalog and containment",
+      "description": "E12: bounded structured breadcrumbs, environment and deployment metadata, state snapshot references, diagnostic bundles with redaction applied after aggregation, the known-fault catalog with agent guidance, and the containment behaviours (circuit-breaker state, quarantine, dead-letter).",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:21:56Z",
+      "updatedAt": "2026-09-17T00:25:17Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-009",
+      "title": "Close enumerated test-coverage gaps",
+      "description": "Audit the test suite against the areas core 28 and logging 40 enumerate, and add tests for whatever is genuinely uncovered.",
+      "tags": [
+        "slice",
+        "testing"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:26:05Z",
+      "updatedAt": "2026-09-17T00:28:07Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-010",
+      "title": "SDE transition proposals, fault boundary declarations and documentation",
+      "description": "E14: proposed SDE transitions for faults and persistence state, declared fault boundaries with a check that the declaration stays honest, the teaching documentation core 34 mandates, and traceability closing the initial pass's open design questions.",
+      "tags": [
+        "slice",
+        "documentation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:29:28Z",
+      "updatedAt": "2026-09-17T00:32:53Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "TSWK-INSTALL-001",
+      "title": "Install typescript-wasm-kernel scaffolding",
+      "description": "Run 'npx @echelon-foundry/typescript-wasm-kernel init' and record its changes under attribution.",
+      "tags": [
+        "scaffold",
+        "install"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:24:48Z",
+      "updatedAt": "2026-09-17T06:26:43Z",
+      "createdBy": "claude",
+      "source": "tswk-init",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-STORE-ADAPTERS-001",
+      "title": "Decide how to build the remaining store adapters",
+      "description": "Decided by DF-AEGIS-2026-DBBD: database adapters are built against Store.T outside this repository, where the driver dependency belongs and logging 42 is satisfied structurally. All six open questions -- ownership, engines, dependency shape, schema ownership and migration, transaction behaviour, retention enforcement -- are answered in that record. Aegis.Store.GitHub remains here as the reference implementation that keeps the contract honest. AEG-LOG-004, AEG-LOG-010, AEG-LOG-037 and the enforcement half of AEG-ADD-052 are blocked against that scope boundary rather than against this decision.",
+      "tags": [
+        "storage",
+        "decision",
+        "scope"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:34:02Z",
+      "updatedAt": "2026-09-17T07:36:17Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-011",
+      "title": "Async sink delivery, batching and sink health",
+      "description": "Fix AEG-LOG-018, which is violated rather than merely missing: Sink.Write is synchronous and the GitHub sink blocks the caller on Async.RunSynchronously. Make the delivery path asynchronous, batch where a sink supports it (AEG-LOG-019), and record per-sink health (AEG-LOG-038). Also frame the blocked store-adapter decision in the docs.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:34:31Z",
+      "updatedAt": "2026-09-17T06:43:16Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-012",
+      "title": "Attach diagnostics to faults; failure domain, blast radius, retention",
+      "description": "AEG-ADD-043 failure domains, AEG-ADD-044 blast radius, AEG-LOG-026 retention intent in the core event model, AEG-CORE-037 fault schema serialization, and wiring AEG-ADD-002/010/011/012 so breadcrumbs, environment metadata, deployment identity and snapshot references are actually carried by a fault rather than only defined.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:44:43Z",
+      "updatedAt": "2026-09-17T06:50:00Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-013",
+      "title": "Console, file and no-op sinks; top-level boundary",
+      "description": "AEG-CORE-023 and AEG-LOG-002: the sink types the requirements name that do not exist yet (console, file, no-op), and AEG-ADD-022: a guard for the application's top-level execution surface.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:50:54Z",
+      "updatedAt": "2026-09-17T06:54:11Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-014",
+      "title": "Persist quarantine and dead-letter records; verify C# consumability",
+      "description": "AEG-ADD-007 and AEG-ADD-008: make quarantine and dead-letter records persistent through the same event, redaction and retention path as everything else, rather than types held only in memory. AEG-CORE-036: verify the public API is usable from C# with a real test project.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:55:02Z",
+      "updatedAt": "2026-09-17T06:59:48Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-FIX-001",
+      "title": "Unpin FSharp.Core in the C# test project",
+      "description": "CI failed with NU1605 because the C# project pinned FSharp.Core 8.0.400 while Aegis.Core transitively required 10.1.400 on the runner's SDK.",
+      "tags": [
+        "fix"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:02:08Z",
+      "updatedAt": "2026-09-17T07:02:08Z",
+      "createdBy": "claude",
+      "source": "ci",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-FIX-002",
+      "title": "Stop FaultSeverity shadowing Result.Error",
+      "description": "FaultSeverity.Error has shadowed Result.Error at eight call sites across the session. Rather than renaming the case, which would deviate from the vocabulary core 18 names explicitly, require qualified access so the name is preserved and bare Error always means Result.Error.",
+      "tags": [
+        "fix",
+        "api"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:03:49Z",
+      "updatedAt": "2026-09-17T07:06:45Z",
+      "createdBy": "claude",
+      "source": "code-quality",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-DOC-001",
+      "title": "Commit the requirement traceability matrix",
+      "description": "The implementation audit lived only in a scratchpad, so its answer was not durable in the repository. Record all 143 requirement items with source section, status, implementing module and test file.",
+      "tags": [
+        "documentation",
+        "traceability"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:08:46Z",
+      "updatedAt": "2026-09-17T07:08:47Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-GOV-001",
+      "title": "Accept the implementation-sequencing decision record",
+      "description": "Promote DF-AEGIS-2026-0CA3 from review to accepted. The build order it proposes has been executed end to end; leaving it in review misrepresents the repository's own history.",
+      "tags": [
+        "governance",
+        "decision"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:27:33Z",
+      "updatedAt": "2026-09-17T07:28:15Z",
+      "createdBy": "claude",
+      "source": "user-request",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SCOPE-001",
+      "title": "Scope this repository to the core, the GitHub adapter and the GitHub integration",
+      "description": "Record the decision that database store adapters and the Limen TypeScript/WASM kernel tooling do not belong in this repository, remove the Limen install, and re-point the declarations and documents that named them as undecided.",
+      "tags": [
+        "governance",
+        "decision",
+        "scope"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:29:00Z",
+      "updatedAt": "2026-09-17T07:36:24Z",
+      "createdBy": "claude",
+      "source": "user-request",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-TRACE-001",
+      "title": "Record how the requirement matrix maps onto backlog state",
+      "description": "The 158 captured requirement and epic items have been transitioned to complete or blocked. Record the mapping between the matrix status column and the ROS backlog state so the two cannot be read as independent claims.",
+      "tags": [
+        "documentation",
+        "traceability"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:41:13Z",
+      "updatedAt": "2026-09-17T07:41:38Z",
+      "createdBy": "claude",
+      "source": "user-request",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-SCOPE-002",
+      "title": "Attribute the scope decision record and record its follow-up validation",
+      "description": "CI validation against main found research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md with no work-item attribution: the file was committed before AEG-SCOPE-001 completed, so the completion recorded only the paths still dirty at that moment. Attribute the path, and use the same window to add the follow-up validation section the Engineering Standards asks a decision record to carry.",
+      "tags": [
+        "governance",
+        "decision"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:45:14Z",
+      "updatedAt": "2026-09-17T07:45:44Z",
+      "createdBy": "claude",
+      "source": "ros-validation",
+      "sourceReference": null
+    },
+    {
+      "id": "AEG-PKG-001",
+      "title": "Package Aegis for NuGet and set up trusted-publishing CI",
+      "description": "Add NuGet packaging metadata (PackageId, version, license, README) to Aegis.Core, Aegis.Store.GitHub and Aegis.Integration.GitHub; add a LICENSE (Apache-2.0); add a publish workflow using NuGet.org Trusted Publishing (OIDC) with a preflight that refuses a release before burning versions; write consumer and agent-integration documentation.",
+      "tags": [
+        "packaging",
+        "nuget",
+        "documentation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T21:11:04Z",
+      "updatedAt": "2026-09-17T21:16:20Z",
+      "createdBy": "claude",
+      "source": "user-request",
+      "sourceReference": null
+    }
+  ]
+}
