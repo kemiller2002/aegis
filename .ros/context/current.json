@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T07:06:45Z",
+  "updatedAt": "2026-09-17T07:08:47Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -406,6 +406,18 @@
         "EXE-20260917T070350470Z-3707bb9f"
       ],
       "completedAt": "2026-09-17T07:06:45Z"
+    },
+    {
+      "id": "AEG-DOC-001",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [],
+      "updatedAt": "2026-09-17T07:08:47Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T070847326Z-f1294247"
+      ],
+      "completedAt": "2026-09-17T07:08:47Z"
     }
   ]
 }

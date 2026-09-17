@@ -3350,6 +3350,23 @@
       "createdBy": "claude",
       "source": "code-quality",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-DOC-001",
+      "title": "Commit the requirement traceability matrix",
+      "description": "The implementation audit lived only in a scratchpad, so its answer was not durable in the repository. Record all 143 requirement items with source section, status, implementing module and test file.",
+      "tags": [
+        "documentation",
+        "traceability"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:08:46Z",
+      "updatedAt": "2026-09-17T07:08:47Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

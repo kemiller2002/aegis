@@ -7,6 +7,7 @@ owners:
   - repository-governance
 created: 2026-09-17
 related_documents:
+  - docs/aegis/REQUIREMENTS-STATUS.md
   - Input-documents/aegis_initial_requirements.txt
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
   - aegis-boundaries.json
@@ -22,6 +23,9 @@ through every method signature, and so that swallowing them is not an option.
 
 Every example below is a real scenario from this repository or from Chrona.
 There is no `FooException` anywhere in this document, deliberately.
+
+Where each requirement is implemented and tested, and what is not done yet, is
+in [`REQUIREMENTS-STATUS.md`](REQUIREMENTS-STATUS.md).
 
 ## When to use Aegis
 
