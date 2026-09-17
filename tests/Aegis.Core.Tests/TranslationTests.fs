@@ -229,6 +229,7 @@ let ``read-only recovery survives serialization`` () =
           Sinks = [ collector.Sink() ]
           Rules = Redaction.defaultRules
           Fallback = ignore
+          Persistence = Blocking
           Now = fun () -> at
           Random = fun () -> 1L, 2L }
 

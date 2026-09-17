@@ -170,6 +170,8 @@
 | AEG-SLICE-008 | Diagnostics surface: breadcrumbs, bundles, catalog and containment | complete | slice, implementation | high |
 | AEG-SLICE-009 | Close enumerated test-coverage gaps | complete | slice, testing | high |
 | AEG-SLICE-010 | SDE transition proposals, fault boundary declarations and documentation | complete | slice, documentation | high |
+| AEG-SLICE-011 | Async sink delivery, batching and sink health | complete | slice, implementation | high |
+| AEG-STORE-ADAPTERS-001 | Decide how to build the remaining store adapters | blocked | storage, decision-needed, blocked | medium |
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |

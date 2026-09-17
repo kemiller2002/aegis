@@ -170,21 +170,45 @@ module GitHubStore =
 
     /// A sink that writes through the store, queueing when the store is
     /// unavailable so a transient outage defers rather than loses events.
-    /// Requirements: logging 15, 20.
+    /// Asynchronous throughout: nothing here blocks the caller.
+    /// Requirements: logging 15, 18, 19, 20.
     let sink (store: Store.T) (level: Sinks.Level) (queue: Offline.Queue ref) (nextId: unit -> EventId) =
-        { Sinks.Name = "github"
-          Sinks.Level = level
-          Sinks.Capabilities = [ Sinks.SupportsDurableWrite; Sinks.SupportsQuery; Sinks.SupportsBatch; Sinks.SupportsOfflineQueue; Sinks.SupportsIdempotency ]
-          Sinks.Write =
-            fun payload ->
+        let writeOne payload =
+            async {
                 let eventId = nextId ()
 
-                match store.Append eventId payload |> Async.RunSynchronously with
-                | Ok () -> ()
+                match! store.Append eventId payload with
+                | Ok () -> return ()
                 | Result.Error (Store.Conflict path) ->
                     // Abnormal: a uniquely named immutable record already
                     // exists. Surface it rather than overwrite.
-                    failwith $"conflict: {path} already exists"
+                    return failwith $"conflict: {path} already exists"
                 | Result.Error failure ->
+                    // Defer rather than lose it, then tell the runtime this
+                    // sink did not persist.
                     queue.Value <- Offline.enqueue eventId payload queue.Value
-                    failwith $"deferred: {failure}" }
+                    return failwith $"deferred: {failure}"
+            }
+
+        { Sinks.Name = "github"
+          Sinks.Level = level
+          Sinks.Capabilities =
+            [ Sinks.SupportsDurableWrite
+              Sinks.SupportsQuery
+              Sinks.SupportsBatch
+              Sinks.SupportsOfflineQueue
+              Sinks.SupportsIdempotency ]
+          Sinks.Write = writeOne
+          Sinks.WriteBatch =
+            Some(fun payloads ->
+                async {
+                    let items = payloads |> List.map (fun payload -> nextId (), payload)
+
+                    match! store.AppendBatch items with
+                    | Ok () -> return ()
+                    | Result.Error failure ->
+                        for id, payload in items do
+                            queue.Value <- Offline.enqueue id payload queue.Value
+
+                        return failwith $"deferred batch: {failure}"
+                }) }

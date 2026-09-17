@@ -34,6 +34,7 @@ let private config sinks =
       Sinks = sinks
       Rules = Redaction.defaultRules
       Fallback = ignore
+      Persistence = Blocking
       Now = fun () -> at
       Random =
         let counter = ref 0L
@@ -140,7 +141,7 @@ let ``concurrent writes to a sink lose nothing`` () =
     let collector = Sinks.Collector(capacity = 1000)
     let sink = collector.Sink()
 
-    Parallel.For(0, 200, fun n -> sink.Write $"{{\"eventId\":\"E{n}\"}}") |> ignore
+    Parallel.For(0, 200, fun n -> sink.Write $"{{\"eventId\":\"E{n}\"}}" |> Async.RunSynchronously) |> ignore
 
     Assert.Equal(200, List.length collector.Events)
 
@@ -168,7 +169,7 @@ let ``a bounded sink under concurrent load stays within its limit`` () =
     let collector = Sinks.Collector(capacity = 50)
     let sink = collector.Sink()
 
-    Parallel.For(0, 500, fun n -> sink.Write $"{{\"eventId\":\"E{n}\"}}") |> ignore
+    Parallel.For(0, 500, fun n -> sink.Write $"{{\"eventId\":\"E{n}\"}}" |> Async.RunSynchronously) |> ignore
 
     Assert.True(List.length collector.Events <= 50, $"expected at most 50, got {List.length collector.Events}")
 

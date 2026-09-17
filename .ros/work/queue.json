@@ -3230,6 +3230,42 @@
       "createdBy": "claude",
       "source": "tswk-init",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-STORE-ADAPTERS-001",
+      "title": "Decide how to build the remaining store adapters",
+      "description": "Blocked on a decision, not on effort. Covers AEG-LOG-004 (Postgres, SQL Server, SQLite adapters), AEG-LOG-010 (database storage with efficient lookup), AEG-LOG-037 (batch transaction behaviour) and the enforcement half of AEG-LOG-026 and AEG-ADD-052 (retention). The Store.T contract and query model already exist and are exercised by the GitHub adapter; what is undecided is whether this repository owns these adapters at all, which engines to support, whether to take a driver dependency or generate SQL, and how migrations are owned. See docs/aegis/OPEN-QUESTIONS.md for the options.",
+      "tags": [
+        "storage",
+        "decision-needed",
+        "blocked"
+      ],
+      "priority": "medium",
+      "status": "blocked",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:34:02Z",
+      "updatedAt": "2026-09-17T06:34:11Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null,
+      "blockedReason": "Awaiting a decision on adapter ownership, engines, driver dependencies and migration strategy."
+    },
+    {
+      "id": "AEG-SLICE-011",
+      "title": "Async sink delivery, batching and sink health",
+      "description": "Fix AEG-LOG-018, which is violated rather than merely missing: Sink.Write is synchronous and the GitHub sink blocks the caller on Async.RunSynchronously. Make the delivery path asynchronous, batch where a sink supports it (AEG-LOG-019), and record per-sink health (AEG-LOG-038). Also frame the blocked store-adapter decision in the docs.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:34:31Z",
+      "updatedAt": "2026-09-17T06:43:16Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

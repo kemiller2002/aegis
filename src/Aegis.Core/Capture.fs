@@ -2,6 +2,17 @@ namespace Aegis
 
 open System
 
+/// Whether reporting waits for persistence.
+/// Requirements: logging 17, 18.
+type PersistenceMode =
+    /// The default. Reporting starts delivery and returns, so a slow remote
+    /// sink never blocks the application's primary operation.
+    | Detached
+    /// Await delivery before returning. For the case logging 17 carves out,
+    /// where audit persistence is itself a business or compliance
+    /// requirement, and for deterministic tests.
+    | Blocking
+
 /// Configuration is supplied once, not threaded through application methods.
 /// Requirements: core 26; logging 39.
 type AegisConfig =
@@ -11,6 +22,8 @@ type AegisConfig =
       Rules: Redaction.Rule list
       /// Last-resort path when a sink fails. Requirement: core 25.
       Fallback: string -> unit
+      /// Whether reporting blocks on persistence. Requirements: logging 17, 18.
+      Persistence: PersistenceMode
       /// Injected so behaviour is deterministic under test. Requirement: core 27.
       Now: unit -> DateTimeOffset
       Random: unit -> int64 * int64 }
@@ -38,6 +51,7 @@ module Aegis =
           Sinks = sinks
           Rules = Redaction.defaultRules
           Fallback = ignore
+          Persistence = Detached
           Now = fun () -> DateTimeOffset.UtcNow
           Random =
             let rng = Random.Shared
@@ -108,11 +122,35 @@ module Aegis =
           Recovery = recovery
           Cause = Some(CausedByException(detail ex)) }
 
-    /// Record an event through the configured sinks. Redaction happens inside
-    /// serialization, so no sink ever sees an unredacted payload.
-    /// Requirements: logging 21; core 24, 25.
+    /// Record an event through the configured sinks, awaiting delivery.
+    /// Redaction happens inside serialization, so no sink ever sees an
+    /// unredacted payload. Requirements: logging 21; core 24, 25.
+    let reportAsync config (ev: AegisEvent) =
+        Sinks.deliverAsync config.Fallback config.Rules (newId config EventId) config.Sinks ev
+
+    /// Awaits delivery and returns the outcome. Used where the result matters:
+    /// audit-required persistence, and deterministic tests.
     let report config (ev: AegisEvent) =
-        Sinks.deliver config.Fallback config.Rules (newId config EventId) config.Sinks ev
+        reportAsync config ev |> Async.RunSynchronously
+
+    /// Starts delivery and returns immediately, adding minimal latency to the
+    /// application's primary operation. Requirement: logging 18.
+    let reportDetached config (ev: AegisEvent) =
+        reportAsync config ev |> Async.Ignore |> Async.Start
+
+    /// Record a group of events, using each sink's batch path where it has
+    /// one. Requirement: logging 19.
+    let reportBatch config (events: AegisEvent list) =
+        let ids = events |> List.map (fun _ -> newId config EventId)
+        Sinks.deliverBatchAsync config.Fallback config.Rules ids config.Sinks events
+        |> Async.RunSynchronously
+
+    /// Report according to the configured persistence mode. This is what the
+    /// capture path uses, so the default costs the caller nothing.
+    let private emit config (ev: AegisEvent) =
+        match config.Persistence with
+        | Detached -> reportDetached config ev
+        | Blocking -> report config ev |> ignore
 
     /// Guard a boundary. On success the value is returned; on an unexpected
     /// failure the fault is recorded and returned, never swallowed. Programming
@@ -126,7 +164,7 @@ module Aegis =
             elif isCancellation ex then reraise ()
             else
                 let fault = classify scope ex
-                report config (FaultRecorded fault) |> ignore
+                emit config (FaultRecorded fault)
                 Result.Error fault
 
     /// Async form. Requirement: core 5.
@@ -140,7 +178,7 @@ module Aegis =
                     return rethrow ex
                 else
                     let fault = classify scope ex
-                    report config (FaultRecorded fault) |> ignore
+                    emit config (FaultRecorded fault)
                     return Result.Error fault
         }
 

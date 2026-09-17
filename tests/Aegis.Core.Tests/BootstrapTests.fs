@@ -12,6 +12,7 @@ let private baseConfig sinks =
       Sinks = sinks
       Rules = Redaction.defaultRules
       Fallback = ignore
+      Persistence = Blocking
       Now = fun () -> at
       Random =
         let counter = ref 0L
@@ -23,7 +24,8 @@ let private durableSink name level =
     { Sinks.Name = name
       Sinks.Level = level
       Sinks.Capabilities = [ Sinks.SupportsDurableWrite ]
-      Sinks.Write = ignore }
+      Sinks.WriteBatch = None
+      Sinks.Write = fun _ -> async { return () } }
 
 // ------------------------------------------------------- configuration validation
 
@@ -61,7 +63,8 @@ let ``a required sink that cannot write durably is rejected`` () =
         { Sinks.Name = "audit"
           Sinks.Level = Sinks.Required
           Sinks.Capabilities = [ Sinks.SupportsQuery ]
-          Sinks.Write = ignore }
+          Sinks.WriteBatch = None
+          Sinks.Write = fun _ -> async { return () } }
 
     match Bootstrap.validate None (baseConfig [ flimsy ]) with
     | Result.Error problems -> Assert.Contains(Bootstrap.RequiredSinkWithoutDurableWrite "audit", problems)
@@ -73,7 +76,8 @@ let ``an optional sink without durable writes is accepted`` () =
         { Sinks.Name = "telemetry"
           Sinks.Level = Sinks.Optional
           Sinks.Capabilities = []
-          Sinks.Write = ignore }
+          Sinks.WriteBatch = None
+          Sinks.Write = fun _ -> async { return () } }
 
     match Bootstrap.validate None (baseConfig [ telemetry ]) with
     | Ok _ -> ()
@@ -116,7 +120,8 @@ let ``validation is pure and does not touch the sinks`` () =
         { Sinks.Name = "counting"
           Sinks.Level = Sinks.Optional
           Sinks.Capabilities = [ Sinks.SupportsDurableWrite ]
-          Sinks.Write = fun _ -> System.Threading.Interlocked.Increment writes |> ignore }
+          Sinks.WriteBatch = None
+          Sinks.Write = fun _ -> async { System.Threading.Interlocked.Increment writes |> ignore } }
 
     Bootstrap.validate (Some 10) (baseConfig [ counting ]) |> ignore
     Assert.Equal(0, writes.Value)

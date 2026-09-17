@@ -54,9 +54,37 @@ and deliberately left to a human.
 2. **Limen interop is declared but unguarded.** `aegis-boundaries.json`
    records it as `guarded: false` because Limen does not exist in this
    repository. The declaration keeps the gap visible.
-3. **Only the GitHub store adapter exists.** Logging 4 lists Postgres, SQL
-   Server and SQLite adapters as well; the store contract is in place and
-   unexercised by those.
+3. **Only the GitHub store adapter exists**, and building the rest is blocked
+   on a decision rather than on effort. Tracked as
+   `AEG-STORE-ADAPTERS-001` (status `blocked`), covering `AEG-LOG-004`,
+   `AEG-LOG-010`, `AEG-LOG-037` and the enforcement halves of `AEG-LOG-026`
+   and `AEG-ADD-052`. `Store.T` and the query model already exist and are
+   exercised by the GitHub adapter, so the contract is not the question.
+   What needs deciding:
+
+   - **Ownership.** Do these adapters live in this repository, or in the
+     integration assembly that already owns each engine's client? Logging 43
+     gives GitHub API code to the integration layer for exactly this reason,
+     and the same argument applies to a database driver.
+   - **Engines.** Logging 4 names Postgres, SQL Server and SQLite. Supporting
+     three means three schema definitions, three dialects and three test
+     matrices. One engine plus the contract may serve better until a second
+     consumer exists.
+   - **Dependency shape.** A driver dependency (Npgsql, Microsoft.Data.Sqlite)
+     is the normal answer, but logging 42 requires the *core* to stay free of
+     them, so each adapter becomes its own package. Alternatively the adapter
+     takes injected command execution, the way the GitHub adapter takes
+     injected repository operations, and carries no driver at all.
+   - **Schema ownership and migration.** Who owns the table definition, who
+     runs migrations, and how does that interact with the migration faults
+     Aegis itself raises (additional 24)?
+   - **Transaction behaviour.** Logging 37 requires the adapter to document
+     whether a failed batch rolls back wholly, persists valid events
+     independently, or quarantines the failures. That is a per-engine
+     decision and it is observable, so it cannot be left implicit.
+   - **Retention enforcement.** Logging 26 lets the adapter enforce retention.
+     Deciding that here also settles how `AEG-ADD-052` keeps aggregation from
+     destroying audit-required occurrences.
 4. **The sequencing decision record is still `review`.** `DF-AEGIS-2026-0CA3`
    proposed the build order that was then followed under standing
    authorization. Moving it to `accepted` makes it immutable, which is a

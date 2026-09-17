@@ -61,28 +61,43 @@ module Offline =
           Failed: (EventId * string) option }
 
     /// Deliver in sequence order, stopping at the first failure so ordering is
-    /// never violated by skipping ahead. Requirements: logging 19, 20, 33.
-    let drain (write: string -> unit) (queue: Queue) =
+    /// never violated by skipping ahead. Asynchronous, so flushing a backlog
+    /// does not block the caller either.
+    /// Requirements: logging 18, 19, 20, 33.
+    let drainAsync (write: string -> Async<unit>) (queue: Queue) =
         let rec loop remaining delivered =
-            match remaining with
-            | [] ->
-                { Queue = { queue with Entries = [] }
-                  Delivered = List.rev delivered
-                  Failed = None }
-            | entry :: rest ->
-                match (try
-                           write entry.Payload
-                           None
-                       with ex ->
-                           Some ex.Message)
-                    with
-                | None -> loop rest (entry.EventId :: delivered)
-                | Some message ->
-                    { Queue = { queue with Entries = entry :: rest }
-                      Delivered = List.rev delivered
-                      Failed = Some(entry.EventId, message) }
+            async {
+                match remaining with
+                | [] ->
+                    return
+                        { Queue = { queue with Entries = [] }
+                          Delivered = List.rev delivered
+                          Failed = None }
+                | (entry: Entry) :: rest ->
+                    let! failure =
+                        async {
+                            try
+                                do! write entry.Payload
+                                return None
+                            with ex ->
+                                return Some ex.Message
+                        }
+
+                    match failure with
+                    | None -> return! loop rest (entry.EventId :: delivered)
+                    | Some message ->
+                        return
+                            { Queue = { queue with Entries = entry :: rest }
+                              Delivered = List.rev delivered
+                              Failed = Some(entry.EventId, message) }
+            }
 
         loop (queue.Entries |> List.sortBy (fun e -> e.Sequence)) []
+
+    /// Awaits the drain. For callers that need the outcome, such as a
+    /// controlled shutdown.
+    let drain (write: string -> unit) (queue: Queue) =
+        drainAsync (fun payload -> async { write payload }) queue |> Async.RunSynchronously
 
     /// Idempotency keys for duplicate-write protection at the sink.
     /// Requirement: logging 32.

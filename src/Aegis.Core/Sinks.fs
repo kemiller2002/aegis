@@ -28,9 +28,16 @@ module Sinks =
         { Name: string
           Level: Level
           Capabilities: Capability list
-          /// Writes one serialized event. Raising is permitted: the runtime
-          /// contains the failure rather than trusting sinks to behave.
-          Write: string -> unit }
+          /// Writes one serialized event. Asynchronous so the reporting path
+          /// adds minimal latency and a slow remote sink never blocks the
+          /// application's primary operation. Raising or failing the async is
+          /// permitted: the runtime contains the failure rather than trusting
+          /// sinks to behave. Requirements: logging 17, 18.
+          Write: string -> Async<unit>
+          /// Batch write for a sink advertising SupportsBatch. Batching must
+          /// not lose identity or ordering, so the list is delivered in order.
+          /// Requirement: logging 19.
+          WriteBatch: (string list -> Async<unit>) option }
 
     /// Per-sink result, so suppression is never silent. Requirement: core 7.
     type Outcome =
@@ -49,28 +56,15 @@ module Sinks =
           FallbackUsed: bool
           RequiredFailed: bool }
 
-    let private attempt (payload: string) (sink: Sink) =
-        try
-            sink.Write payload
-            Written sink.Name
-        with ex ->
-            Failed(sink.Name, sink.Level, ex.Message)
-
-    /// Deliver one event to every sink. Each sink is attempted independently.
-    /// If any sink fails, a minimal sink-failure event is offered to the
-    /// fallback exactly once -- never through the failing sinks, so no
-    /// recursion is possible. Requirements: logging 15, 16; core 24, 25.
-    let deliver (fallback: string -> unit) (rules: Redaction.Rule list) (eventId: EventId) (sinks: Sink list) (ev: AegisEvent) =
-        let payload = Serialization.event rules eventId ev
-        let outcomes = sinks |> List.map (attempt payload)
+    /// Build the delivery report and take the last-resort path at most once
+    /// per delivery: the hard re-entry guard. Requirements: core 25; logging 16.
+    let private report (fallback: string -> unit) (description: string) (outcomes: Outcome list) =
         let failures = outcomes |> List.filter isFailure
 
         let fallbackUsed =
             match failures with
             | [] -> false
             | _ ->
-                // The fallback is a plain function, not a sink, and is invoked
-                // at most once per delivery: the hard re-entry guard.
                 let summary =
                     failures
                     |> List.map (function
@@ -79,7 +73,7 @@ module Sinks =
                     |> String.concat "; "
 
                 try
-                    fallback $"aegis sink failure while writing {Serialization.eventTypeName ev}: {summary}"
+                    fallback $"aegis sink failure while writing {description}: {summary}"
                     true
                 with _ ->
                     // Even the fallback may fail. There is nowhere further to
@@ -93,6 +87,55 @@ module Sinks =
             |> List.exists (function
                 | Failed (_, Required, _) -> true
                 | _ -> false) }
+
+    let private attempt (payload: string) (sink: Sink) =
+        async {
+            try
+                do! sink.Write payload
+                return Written sink.Name
+            with ex ->
+                return Failed(sink.Name, sink.Level, ex.Message)
+        }
+
+    let private attemptBatch (payloads: string list) (sink: Sink) =
+        async {
+            try
+                match sink.WriteBatch with
+                | Some writeBatch when sink.Capabilities |> List.contains SupportsBatch ->
+                    do! writeBatch payloads
+                | _ ->
+                    // A sink without batch support still receives every event,
+                    // in order. Requirement: logging 19.
+                    for payload in payloads do
+                        do! sink.Write payload
+
+                return Written sink.Name
+            with ex ->
+                return Failed(sink.Name, sink.Level, ex.Message)
+        }
+
+    /// Deliver one event to every sink. Each sink is attempted
+    /// independently. If any sink fails, a minimal sink-failure summary is
+    /// offered to the fallback exactly once -- never through the failing
+    /// sinks, so no recursion is possible.
+    /// Requirements: logging 15, 16, 18; core 24, 25.
+    let deliverAsync (fallback: string -> unit) (rules: Redaction.Rule list) (eventId: EventId) (sinks: Sink list) (ev: AegisEvent) =
+        async {
+            let payload = Serialization.event rules eventId ev
+            // Sinks are attempted in parallel: one slow sink must not delay
+            // the others. Requirement: logging 15, 18.
+            let! outcomes = sinks |> List.map (attempt payload) |> Async.Parallel
+            return report fallback (Serialization.eventTypeName ev) (List.ofArray outcomes)
+        }
+
+    /// Deliver several events, using each sink's batch path where it has one.
+    /// Requirement: logging 19.
+    let deliverBatchAsync (fallback: string -> unit) (rules: Redaction.Rule list) (ids: EventId list) (sinks: Sink list) (events: AegisEvent list) =
+        async {
+            let payloads = List.zip ids events |> List.map (fun (id, ev) -> Serialization.event rules id ev)
+            let! outcomes = sinks |> List.map (attemptBatch payloads) |> Async.Parallel
+            return report fallback $"batch of {List.length events}" (List.ofArray outcomes)
+        }
 
     /// In-memory sink for tests and for a bounded local history.
     /// Requirements: core 22, 27; logging 41.
@@ -109,10 +152,13 @@ module Sinks =
             { Name = "collector"
               Level = defaultArg level Optional
               Capabilities = [ SupportsQuery ]
+              WriteBatch = None
               Write =
                 fun payload ->
-                    events.Enqueue payload
-                    this.Trim() }
+                    async {
+                        events.Enqueue payload
+                        this.Trim()
+                    } }
 
         /// Immutable snapshot. Tests assert against this rather than console output.
         member _.Events = events |> Seq.toList
@@ -132,4 +178,68 @@ module Sinks =
         { Name = name
           Level = level
           Capabilities = []
-          Write = fun _ -> failwith $"{name} is unavailable" }
+          WriteBatch = None
+          Write = fun _ -> async { return failwith $"{name} is unavailable" } }
+
+    /// Per-sink health derived from observed outcomes rather than hidden
+    /// counters, so it is reproducible and inspectable.
+    /// Requirement: logging 38.
+    type State =
+        | Available
+        | SinkDegraded
+        | SinkUnavailable
+
+    type Health =
+        { Sink: string
+          Level: Level
+          State: State
+          Writes: int
+          Failures: int
+          LastSuccess: DateTimeOffset option
+          LastFailure: (DateTimeOffset * string) option }
+
+    let private fold (health: Health) (at: DateTimeOffset, outcome: Outcome) =
+        match outcome with
+        | Written _ ->
+            { health with
+                Writes = health.Writes + 1
+                LastSuccess = Some at
+                State = Available }
+        | Failed (_, _, message) ->
+            let failures = health.Failures + 1
+
+            { health with
+                Failures = failures
+                LastFailure = Some(at, message)
+                // One failure is degradation; a failure with no success since
+                // is unavailability.
+                State = if health.LastSuccess.IsNone then SinkUnavailable else SinkDegraded }
+
+    /// Observed history of (time, outcome) pairs to per-sink health.
+    let observe (observations: (DateTimeOffset * Outcome) list) =
+        observations
+        |> List.fold
+            (fun acc (at, outcome) ->
+                let name, level =
+                    match outcome with
+                    | Written name -> name, Optional
+                    | Failed (name, level, _) -> name, level
+
+                let current =
+                    acc
+                    |> Map.tryFind name
+                    |> Option.defaultValue
+                        { Sink = name
+                          Level = level
+                          State = Available
+                          Writes = 0
+                          Failures = 0
+                          LastSuccess = None
+                          LastFailure = None }
+
+                Map.add name (fold current (at, outcome)) acc)
+            Map.empty
+
+    /// Flatten reports into observations, for callers that keep a report log.
+    let observationsOf (at: DateTimeOffset) (reports: Report list) =
+        reports |> List.collect (fun r -> r.Outcomes |> List.map (fun o -> at, o))

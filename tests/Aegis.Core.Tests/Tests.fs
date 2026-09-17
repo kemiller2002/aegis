@@ -14,6 +14,7 @@ let private configWith sinks =
       Sinks = sinks
       Rules = Redaction.defaultRules
       Fallback = ignore
+      Persistence = Blocking
       Now = fun () -> at
       Random =
         let counter = ref 0L
