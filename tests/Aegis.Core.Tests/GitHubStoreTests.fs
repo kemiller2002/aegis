@@ -73,7 +73,7 @@ let private payloadFor (eventId: string) (faultId: string) (code: string) (times
           Operation = "Chrona.TimeEntry.Load"
           Category = IntegrationFailure
           Code = FaultCode code
-          Severity = Warning
+          Severity = FaultSeverity.Warning
           Impact = OperationOnly
           Domain = IntegrationDomain
           Radius = OneOperation

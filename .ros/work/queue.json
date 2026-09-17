@@ -3333,6 +3333,23 @@
       "createdBy": "claude",
       "source": "ci",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-FIX-002",
+      "title": "Stop FaultSeverity shadowing Result.Error",
+      "description": "FaultSeverity.Error has shadowed Result.Error at eight call sites across the session. Rather than renaming the case, which would deviate from the vocabulary core 18 names explicitly, require qualified access so the name is preserved and bare Error always means Result.Error.",
+      "tags": [
+        "fix",
+        "api"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:03:49Z",
+      "updatedAt": "2026-09-17T07:06:45Z",
+      "createdBy": "claude",
+      "source": "code-quality",
+      "sourceReference": null
     }
   ]
 }

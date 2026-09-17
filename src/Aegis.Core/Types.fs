@@ -64,6 +64,12 @@ type FailureCategory =
     | UnknownFailure
 
 /// Requirement: core 18. Deliberately few levels.
+///
+/// Qualified access is required because the `Error` case would otherwise
+/// shadow `Result.Error` wherever this type is in scope, which it silently
+/// did across several modules. Core 18 names these levels explicitly, so the
+/// case keeps its name and callers write `FaultSeverity.Error` instead.
+[<RequireQualifiedAccess>]
 type FaultSeverity =
     | Diagnostic
     | Warning

@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T07:02:08Z",
+  "updatedAt": "2026-09-17T07:06:45Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -385,6 +385,27 @@
         "EXE-20260917T070209186Z-8351d24e"
       ],
       "completedAt": "2026-09-17T07:02:08Z"
+    },
+    {
+      "id": "AEG-FIX-002",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T07:06:45Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T070350470Z-3707bb9f"
+      ],
+      "completedAt": "2026-09-17T07:06:45Z"
     }
   ]
 }

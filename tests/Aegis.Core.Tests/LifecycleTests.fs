@@ -15,7 +15,7 @@ let private faultWith id code operation =
       Operation = operation
       Category = IntegrationFailure
       Code = FaultCode code
-      Severity = Warning
+      Severity = FaultSeverity.Warning
       Impact = OperationOnly
       Domain = IntegrationDomain
       Radius = OneOperation
@@ -142,13 +142,13 @@ let ``escalation advances severity and keeps the history`` () =
     // Requirement: additional 36 -- severity is not silently overwritten.
     let events =
         [ FaultRecorded fault
-          FaultEscalated(fault.Id, Warning, FaultSeverity.Error, at.AddMinutes 5.)
-          FaultEscalated(fault.Id, FaultSeverity.Error, Critical, at.AddMinutes 9.) ]
+          FaultEscalated(fault.Id, FaultSeverity.Warning, FaultSeverity.Error, at.AddMinutes 5.)
+          FaultEscalated(fault.Id, FaultSeverity.Error, FaultSeverity.Critical, at.AddMinutes 9.) ]
 
     let p = projectOne events
-    Assert.Equal(Critical, p.Severity)
+    Assert.Equal(FaultSeverity.Critical, p.Severity)
     Assert.Equal(2, List.length p.EscalationHistory)
-    Assert.Equal(Warning, p.Fault.Severity) // the original record is unchanged
+    Assert.Equal(FaultSeverity.Warning, p.Fault.Severity) // the original record is unchanged
 
 [<Fact>]
 let ``recovery attempts are recorded and concluded`` () =
@@ -300,7 +300,7 @@ let ``lifecycle events serialize with the schema and their fault id`` () =
         [ FaultAcknowledged(fault.Id, Operator, at)
           FaultResolved(fault.Id, { Timestamp = at; Kind = ResolvedManually; Action = Some Reauthenticate; Verified = true })
           FaultReopened(fault.Id, at, "recurred")
-          FaultEscalated(fault.Id, Warning, Critical, at)
+          FaultEscalated(fault.Id, FaultSeverity.Warning, FaultSeverity.Critical, at)
           FaultSuperseded(fault.Id, FaultId "F2", at)
           FaultRepeated(fault.Id, at) ]
 

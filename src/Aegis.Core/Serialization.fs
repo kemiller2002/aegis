@@ -22,10 +22,10 @@ module Serialization =
 
     let private severityName =
         function
-        | Diagnostic -> "Diagnostic"
-        | Warning -> "Warning"
-        | Error -> "Error"
-        | Critical -> "Critical"
+        | FaultSeverity.Diagnostic -> "Diagnostic"
+        | FaultSeverity.Warning -> "Warning"
+        | FaultSeverity.Error -> "Error"
+        | FaultSeverity.Critical -> "Critical"
 
     let private impactName =
         function

@@ -17,7 +17,7 @@ let private fault =
       Operation = "Chrona.TimeEntry.Load"
       Category = IntegrationFailure
       Code = FaultCode "CHRONA.GITHUB.LOAD_FAILED"
-      Severity = Warning
+      Severity = FaultSeverity.Warning
       Impact = OperationOnly
       Domain = IntegrationDomain
       Radius = OneOperation
@@ -62,7 +62,7 @@ let ``an event carrying unknown future fields is still readable`` () =
         """{"schema":"aegis/event/v2","eventId":"01E1","eventType":"FaultRecorded",
             "faultId":"01F1","correlationId":"CORR1","application":"Chrona",
             "operation":"Chrona.TimeEntry.Load","code":"CHRONA.GITHUB.LOAD_FAILED",
-            "severity":"Warning","timestamp":"2026-09-17T13:00:00.000Z",
+            "severity":"FaultSeverity.Warning","timestamp":"2026-09-17T13:00:00.000Z",
             "somethingAddedLater":{"nested":true},"anotherNewField":[1,2,3]}"""
 
     match Store.index future with
@@ -114,7 +114,7 @@ let ``every current event type round-trips through the index`` () =
           FaultSuppressed(fault, "throttled")
           FaultRepeated(fault.Id, at)
           FaultAcknowledged(fault.Id, Operator, at)
-          FaultEscalated(fault.Id, Warning, Critical, at)
+          FaultEscalated(fault.Id, FaultSeverity.Warning, FaultSeverity.Critical, at)
           FaultResolved(fault.Id, { Timestamp = at; Kind = ResolvedAutomatically; Action = None; Verified = true })
           FaultReopened(fault.Id, at, "recurred")
           FaultSuperseded(fault.Id, FaultId "01F2", at)
@@ -272,3 +272,41 @@ let ``concurrent appends of the same event id persist it only once`` () =
     // Exactly one write won; the rest were refused rather than overwriting.
     Assert.Equal(1, writes.Value)
     Assert.Equal(1, files.Count)
+
+// -------------------------------------------------- severity naming collision
+
+[<Fact>]
+let ``bare Error means Result.Error even with FaultSeverity in scope`` () =
+    // FaultSeverity.Error used to shadow Result.Error wherever the type was
+    // in scope, which silently broke two call sites in this session. Qualified
+    // access keeps the name core 18 specifies while leaving `Error` alone.
+    let failed: Result<int, string> = Error "not a severity"
+
+    match failed with
+    | Error message -> Assert.Equal("not a severity", message)
+    | Ok _ -> failwith "expected a Result.Error"
+
+[<Fact>]
+let ``severity still serializes under the names the requirements use`` () =
+    // Requirement: core 18 -- the vocabulary is unchanged by the qualification.
+    let named severity =
+        Serialization.event Redaction.defaultRules (EventId "01E1") (FaultRecorded { fault with Severity = severity })
+
+    Assert.Contains("\"severity\":\"Diagnostic\"", named FaultSeverity.Diagnostic)
+    Assert.Contains("\"severity\":\"Warning\"", named FaultSeverity.Warning)
+    Assert.Contains("\"severity\":\"Error\"", named FaultSeverity.Error)
+    Assert.Contains("\"severity\":\"Critical\"", named FaultSeverity.Critical)
+
+[<Fact>]
+let ``a guarded boundary can return a Result without ambiguity`` () =
+    // The pattern that previously misresolved: capture returns Result while
+    // FaultSeverity is in scope.
+    let collector = Sinks.Collector()
+    let cfg = { config [ collector.Sink() ] with Persistence = Blocking }
+    let scope = Aegis.scope cfg "Chrona.TimeEntry.Load" Map.empty
+
+    let classify (s: Scope) (_: exn) = { fault with Operation = s.Operation; Severity = FaultSeverity.Error }
+
+    match Aegis.capture cfg scope classify (fun () -> failwith "boom") with
+    | Error f -> Assert.Equal(FaultSeverity.Error, f.Severity)
+    | Ok (_: int) -> failwith "expected a fault"

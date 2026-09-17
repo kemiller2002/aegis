@@ -94,10 +94,10 @@ module Store =
 
     let private severityName =
         function
-        | Diagnostic -> "Diagnostic"
-        | Warning -> "Warning"
+        | FaultSeverity.Diagnostic -> "Diagnostic"
+        | FaultSeverity.Warning -> "Warning"
         | FaultSeverity.Error -> "Error"
-        | Critical -> "Critical"
+        | FaultSeverity.Critical -> "Critical"
 
     /// Every supplied filter must match. Requirement: logging 27.
     let matches (query: Query) (event: Indexed) =

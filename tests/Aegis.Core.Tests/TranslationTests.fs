@@ -201,7 +201,7 @@ let ``corrupt state is treated as unsafe to continue`` () =
     // Requirements: core 20, 39.
     Assert.Equal(ApplicationUnsafe, Integrity.impact (Integrity.HashMismatch("a", "b")))
     Assert.Equal(ApplicationUnsafe, Integrity.impact (Integrity.InvalidPersistedState "bad"))
-    Assert.Equal(Critical, (Integrity.mapping.Severity (Integrity.InvalidPersistedState "bad")))
+    Assert.Equal(FaultSeverity.Critical, (Integrity.mapping.Severity (Integrity.InvalidPersistedState "bad")))
 
 [<Fact>]
 let ``integrity failures are data failures and need intervention`` () =

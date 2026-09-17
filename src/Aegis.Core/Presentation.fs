@@ -35,9 +35,9 @@ module Presentation =
     /// Requirement: additional 25.
     let intentFor (fault: Fault) =
         match fault.Severity, fault.Impact with
-        | Diagnostic, _ -> Silent
+        | FaultSeverity.Diagnostic, _ -> Silent
         | _, ApplicationUnsafe -> Blocking
-        | Critical, _ -> Banner
+        | FaultSeverity.Critical, _ -> Banner
         | _, DegradedApplication -> Banner
         | _, FeatureUnavailable -> Notification
         | _, OperationOnly -> Inline
@@ -92,7 +92,7 @@ module Presentation =
             | Some last when now - last < state.Window -> false, state
             | _ -> true, { state with LastNotified = Map.add key now state.LastNotified }
 
-    /// Diagnostic persistence state for Limen to render. Aegis supplies the
+    /// FaultSeverity.Diagnostic persistence state for Limen to render. Aegis supplies the
     /// state; Limen chooses the words. Requirement: logging 45.
     type PersistenceState =
         | Synchronized

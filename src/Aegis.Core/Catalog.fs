@@ -97,7 +97,7 @@ module Catalog =
               Title = "Network unavailable"
               Description = "A dependency could not be reached."
               Category = InfrastructureFailure
-              DefaultSeverity = Warning
+              DefaultSeverity = FaultSeverity.Warning
               RetryEligible = true
               AutomaticRecoveryAllowed = true
               NotifyUser = false
@@ -114,7 +114,7 @@ module Catalog =
               Title = "Stored data failed its integrity check"
               Description = "Persisted content does not match its recorded digest, so it cannot be trusted."
               Category = DataFailure
-              DefaultSeverity = Critical
+              DefaultSeverity = FaultSeverity.Critical
               RetryEligible = false
               // Correctness is not established, so nothing automatic may write.
               AutomaticRecoveryAllowed = false

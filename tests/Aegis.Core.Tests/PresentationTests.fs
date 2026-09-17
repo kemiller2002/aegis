@@ -30,7 +30,7 @@ let private faultOf id severity impact recovery dependencies =
       Diagnostics = noDiagnostics
       Cause = None }
 
-let private plain = faultOf "F1" Warning OperationOnly (Retry(3, Immediate)) [ "Chrona"; "GitHubIntegration" ]
+let private plain = faultOf "F1" FaultSeverity.Warning OperationOnly (Retry(3, Immediate)) [ "Chrona"; "GitHubIntegration" ]
 
 // -------------------------------------------------------------- presentation
 
@@ -53,13 +53,13 @@ let ``presentation offers the recovery actions the policy allows`` () =
 
 [<Fact>]
 let ``a fault needing manual intervention offers no actions`` () =
-    let manual = faultOf "F2" Critical ApplicationUnsafe ManualIntervention [ "Chrona" ]
+    let manual = faultOf "F2" FaultSeverity.Critical ApplicationUnsafe ManualIntervention [ "Chrona" ]
     Assert.Empty (Presentation.present "Data problem" manual).Actions
 
 [<Fact>]
 let ``the reference is derived from the fault id not the message`` () =
     // Requirement: core 31 -- a person can quote it back.
-    let presented = Presentation.present "t" (faultOf "01HXYZABCDE" Warning OperationOnly NoRecovery [])
+    let presented = Presentation.present "t" (faultOf "01HXYZABCDE" FaultSeverity.Warning OperationOnly NoRecovery [])
     Assert.StartsWith("AG-", presented.Reference)
 
 [<Fact>]
@@ -75,7 +75,7 @@ let ``Aegis produces no markup`` () =
 [<Fact>]
 let ``a diagnostic fault is silent`` () =
     // Requirement: additional 25 -- not every fault is visible.
-    Assert.Equal(Presentation.Silent, Presentation.intentFor (faultOf "F" Diagnostic OperationOnly NoRecovery []))
+    Assert.Equal(Presentation.Silent, Presentation.intentFor (faultOf "F" FaultSeverity.Diagnostic OperationOnly NoRecovery []))
 
 [<Fact>]
 let ``an unsafe application blocks`` () =
@@ -83,11 +83,11 @@ let ``an unsafe application blocks`` () =
 
 [<Fact>]
 let ``an operation-scoped fault is shown inline`` () =
-    Assert.Equal(Presentation.Inline, Presentation.intentFor (faultOf "F" Warning OperationOnly NoRecovery []))
+    Assert.Equal(Presentation.Inline, Presentation.intentFor (faultOf "F" FaultSeverity.Warning OperationOnly NoRecovery []))
 
 [<Fact>]
 let ``an unavailable feature notifies`` () =
-    Assert.Equal(Presentation.Notification, Presentation.intentFor (faultOf "F" Warning FeatureUnavailable NoRecovery []))
+    Assert.Equal(Presentation.Notification, Presentation.intentFor (faultOf "F" FaultSeverity.Warning FeatureUnavailable NoRecovery []))
 
 // ---------------------------------------------------------------- throttling
 
@@ -125,7 +125,7 @@ let ``throttling is keyed by fingerprint so different problems both notify`` () 
 
 [<Fact>]
 let ``a silent fault never notifies`` () =
-    let quiet = faultOf "F" Diagnostic OperationOnly NoRecovery []
+    let quiet = faultOf "F" FaultSeverity.Diagnostic OperationOnly NoRecovery []
     let notify, _ = Presentation.shouldNotify at quiet (Presentation.throttle (TimeSpan.FromMinutes 5.))
     Assert.False notify
 
@@ -160,7 +160,7 @@ let ``severity escalates after repeated occurrences`` () =
 
     match Escalation.evaluate policy at (projectedOf plain 5) with
     | Some (FaultEscalated (_, previous, current, _)) ->
-        Assert.Equal(Warning, previous)
+        Assert.Equal(FaultSeverity.Warning, previous)
         Assert.Equal(FaultSeverity.Error, current)
     | other -> failwith $"expected an escalation, got {other}"
 
@@ -172,13 +172,13 @@ let ``escalation does not fire before the threshold`` () =
 [<Fact>]
 let ``escalation never lowers severity`` () =
     // Requirement: additional 36 -- a policy cannot quietly downgrade.
-    let critical = { plain with Severity = Critical }
-    let policy = { Escalation.Rules = [ Escalation.AfterOccurrences(1, Warning) ] }
+    let critical = { plain with Severity = FaultSeverity.Critical }
+    let policy = { Escalation.Rules = [ Escalation.AfterOccurrences(1, FaultSeverity.Warning) ] }
     Assert.True (Escalation.evaluate policy at (projectedOf critical 3)).IsNone
 
 [<Fact>]
 let ``a resolved fault does not escalate`` () =
-    let policy = { Escalation.Rules = [ Escalation.AfterOccurrences(1, Critical) ] }
+    let policy = { Escalation.Rules = [ Escalation.AfterOccurrences(1, FaultSeverity.Critical) ] }
 
     let projection =
         Lifecycle.project
@@ -189,7 +189,7 @@ let ``a resolved fault does not escalate`` () =
 
 [<Fact>]
 let ``a fault active beyond the window escalates`` () =
-    let policy = { Escalation.Rules = [ Escalation.AfterActiveFor(TimeSpan.FromMinutes 30., Critical) ] }
+    let policy = { Escalation.Rules = [ Escalation.AfterActiveFor(TimeSpan.FromMinutes 30., FaultSeverity.Critical) ] }
     Assert.True (Escalation.evaluate policy (at.AddHours 1.) (projectedOf plain 1)).IsSome
     Assert.True (Escalation.evaluate policy (at.AddMinutes 5.) (projectedOf plain 1)).IsNone
 
@@ -205,8 +205,8 @@ let ``a transient fault becomes persistent after the window`` () =
 [<Fact>]
 let ``faults sharing a dependency group together`` () =
     // Requirements: additional 45, 46 -- the requirements' worked example.
-    let chrona = faultOf "F1" Warning OperationOnly NoRecovery [ "Chrona"; "GitHubIntegration"; "GitHubApi" ]
-    let summa = { faultOf "F2" Warning OperationOnly NoRecovery [ "Summa"; "GitHubIntegration"; "GitHubApi" ] with Application = "Summa" }
+    let chrona = faultOf "F1" FaultSeverity.Warning OperationOnly NoRecovery [ "Chrona"; "GitHubIntegration"; "GitHubApi" ]
+    let summa = { faultOf "F2" FaultSeverity.Warning OperationOnly NoRecovery [ "Summa"; "GitHubIntegration"; "GitHubApi" ] with Application = "Summa" }
     let projection = Lifecycle.project [ FaultRecorded chrona; FaultRecorded summa ]
 
     let groups = Escalation.byDependency projection
@@ -216,8 +216,8 @@ let ``faults sharing a dependency group together`` () =
 [<Fact>]
 let ``the likeliest root cause is the innermost shared dependency`` () =
     // Requirement: additional 46 -- several symptoms, one cause.
-    let chrona = faultOf "F1" Warning OperationOnly NoRecovery [ "Chrona"; "GitHubIntegration"; "GitHubApi" ]
-    let summa = { faultOf "F2" Warning OperationOnly NoRecovery [ "Summa"; "GitHubIntegration"; "GitHubApi" ] with Application = "Summa" }
+    let chrona = faultOf "F1" FaultSeverity.Warning OperationOnly NoRecovery [ "Chrona"; "GitHubIntegration"; "GitHubApi" ]
+    let summa = { faultOf "F2" FaultSeverity.Warning OperationOnly NoRecovery [ "Summa"; "GitHubIntegration"; "GitHubApi" ] with Application = "Summa" }
     let projection = Lifecycle.project [ FaultRecorded chrona; FaultRecorded summa ]
 
     match Escalation.likelyRootCause projection with
@@ -233,8 +233,8 @@ let ``a single fault is not reported as a shared root cause`` () =
 
 [<Fact>]
 let ``resolved faults do not contribute to root-cause grouping`` () =
-    let chrona = faultOf "F1" Warning OperationOnly NoRecovery [ "Chrona"; "GitHubApi" ]
-    let summa = { faultOf "F2" Warning OperationOnly NoRecovery [ "Summa"; "GitHubApi" ] with Application = "Summa" }
+    let chrona = faultOf "F1" FaultSeverity.Warning OperationOnly NoRecovery [ "Chrona"; "GitHubApi" ]
+    let summa = { faultOf "F2" FaultSeverity.Warning OperationOnly NoRecovery [ "Summa"; "GitHubApi" ] with Application = "Summa" }
 
     let projection =
         Lifecycle.project

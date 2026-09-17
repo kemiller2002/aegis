@@ -15,7 +15,7 @@ let private fault =
       Operation = "Chrona.TimeEntry.Load"
       Category = IntegrationFailure
       Code = FaultCode "AEGIS.NETWORK.UNAVAILABLE"
-      Severity = Warning
+      Severity = FaultSeverity.Warning
       Impact = OperationOnly
       Domain = IntegrationDomain
       Radius = OneOperation
@@ -193,7 +193,7 @@ let ``integrity faults allow no automatic recovery at all`` () =
     match Catalog.lookup (FaultCode "AEGIS.DATA.HASH_MISMATCH") Catalog.builtIn with
     | Some entry ->
         Assert.False entry.AutomaticRecoveryAllowed
-        Assert.Equal(Critical, entry.DefaultSeverity)
+        Assert.Equal(FaultSeverity.Critical, entry.DefaultSeverity)
     | None -> failwith "expected a catalog entry"
 
 [<Fact>]
@@ -221,15 +221,15 @@ let ``catalog guidance cannot grant what the authority denies`` () =
 [<Fact>]
 let ``the catalog applies consistent classification`` () =
     // Requirement: additional 14 -- humans and agents see the same thing.
-    let vague = { fault with Category = UnknownFailure; Severity = Diagnostic }
+    let vague = { fault with Category = UnknownFailure; Severity = FaultSeverity.Diagnostic }
     let classified = Catalog.classify Catalog.builtIn vague
     Assert.Equal(InfrastructureFailure, classified.Category)
-    Assert.Equal(Warning, classified.Severity)
+    Assert.Equal(FaultSeverity.Warning, classified.Severity)
 
 [<Fact>]
 let ``classification leaves unknown codes untouched`` () =
-    let unknown = { fault with Code = FaultCode "NOT.IN.CATALOG"; Severity = Diagnostic }
-    Assert.Equal(Diagnostic, (Catalog.classify Catalog.builtIn unknown).Severity)
+    let unknown = { fault with Code = FaultCode "NOT.IN.CATALOG"; Severity = FaultSeverity.Diagnostic }
+    Assert.Equal(FaultSeverity.Diagnostic, (Catalog.classify Catalog.builtIn unknown).Severity)
 
 // --------------------------------------------------------------- circuit breaker
 

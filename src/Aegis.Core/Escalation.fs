@@ -9,7 +9,7 @@ module Escalation =
 
     /// Requirement: additional 5 -- the rule shapes the requirements name.
     type Rule =
-        /// Warning becomes Error after repeated occurrence.
+        /// FaultSeverity.Warning becomes Error after repeated occurrence.
         | AfterOccurrences of count: int * target: FaultSeverity
         /// A fault still active after a window escalates.
         | AfterActiveFor of window: TimeSpan * target: FaultSeverity
@@ -22,10 +22,10 @@ module Escalation =
 
     let private severityRank =
         function
-        | Diagnostic -> 0
-        | Warning -> 1
+        | FaultSeverity.Diagnostic -> 0
+        | FaultSeverity.Warning -> 1
         | FaultSeverity.Error -> 2
-        | Critical -> 3
+        | FaultSeverity.Critical -> 3
 
     /// Escalation only ever raises severity: a policy cannot quietly downgrade
     /// a fault. Requirement: additional 36.

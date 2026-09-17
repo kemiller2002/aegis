@@ -112,7 +112,7 @@ module GitHubFailure =
             (function
             | AuthenticationFailed -> FaultSeverity.Error
             | InvalidResponse _ -> FaultSeverity.Error
-            | _ -> Warning)
+            | _ -> FaultSeverity.Warning)
           Impact =
             (function
             | AuthenticationFailed -> FeatureUnavailable

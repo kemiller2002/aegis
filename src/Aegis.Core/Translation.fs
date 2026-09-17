@@ -142,7 +142,7 @@ module Integrity =
     let mapping: Translation.Mapping<IntegrityFailure> =
         { Code = code
           Category = fun _ -> DataFailure
-          Severity = fun f -> if impact f = ApplicationUnsafe then Critical else FaultSeverity.Error
+          Severity = fun f -> if impact f = ApplicationUnsafe then FaultSeverity.Critical else FaultSeverity.Error
           Impact = impact
           Persistence = fun _ -> RequiresIntervention
           Recovery = recovery
