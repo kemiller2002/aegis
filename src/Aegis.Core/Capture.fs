@@ -101,6 +101,7 @@ module Aegis =
           Impact = impact
           Persistence = persistence
           Owner = None
+          Dependencies = [ config.Application ]
           UserMessage = userMessage
           TechnicalDetails = Some ex.Message
           Context = scope.Context

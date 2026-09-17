@@ -3145,6 +3145,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-007",
+      "title": "Escalation policy, dependency grouping and presentation intent",
+      "description": "Close the remaining E10 gaps (policy-driven escalation rules, dependency association and root-cause grouping) and deliver E11: fault presentation model with intent, notification rate limiting and Limen-facing persistence state.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T00:15:23Z",
+      "updatedAt": "2026-09-17T00:20:15Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }

@@ -19,6 +19,7 @@ let private faultWith recovery category impact =
       Impact = impact
       Persistence = Transient
       Owner = Some "GitHubIntegration"
+      Dependencies = [ "Chrona"; "GitHubIntegration" ]
       UserMessage = "GitHub sign-in is required."
       TechnicalDetails = None
       Context = Map.empty

@@ -77,6 +77,7 @@ let private payloadFor (eventId: string) (faultId: string) (code: string) (times
           Impact = OperationOnly
           Persistence = Transient
           Owner = None
+          Dependencies = [ "Chrona"; "GitHubIntegration" ]
           UserMessage = "Unable to load time entries."
           TechnicalDetails = None
           Context = Map.empty

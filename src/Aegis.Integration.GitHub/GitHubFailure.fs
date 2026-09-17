@@ -121,4 +121,7 @@ module GitHubFailure =
           Persistence = persistence
           Recovery = recovery
           UserMessage = userMessage
-          Owner = "GitHubIntegration" }
+          Owner = "GitHubIntegration"
+          // The chain the requirements' own example describes:
+          // Chrona -> GitHub Integration -> GitHub API. Requirement: additional 45.
+          Dependencies = [ "GitHubIntegration"; "GitHubApi" ] }

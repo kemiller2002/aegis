@@ -125,6 +125,7 @@ module Bootstrap =
                       Impact = FeatureUnavailable
                       Persistence = RequiresIntervention
                       Owner = Some "Aegis"
+                      Dependencies = [ config.Application; "Aegis" ]
                       UserMessage = "A problem was detected while starting up."
                       TechnicalDetails = Some message
                       Context = Map [ "phase", Public "bootstrap" ]

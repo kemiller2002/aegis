@@ -153,6 +153,15 @@ module Serialization =
             match fault.Owner with
             | Some o -> writer.WriteString("owner", o)
             | None -> ()
+
+            match fault.Dependencies with
+            | [] -> ()
+            | chain ->
+                writer.WritePropertyName "dependencies"
+                writer.WriteStartArray()
+                for dependency in chain do
+                    writer.WriteStringValue dependency
+                writer.WriteEndArray()
             writer.WriteString("userMessage", fault.UserMessage)
             match fault.TechnicalDetails with
             | Some d -> writer.WriteString("technicalDetails", d)

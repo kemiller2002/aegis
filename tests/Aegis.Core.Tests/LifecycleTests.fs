@@ -19,6 +19,7 @@ let private faultWith id code operation =
       Impact = OperationOnly
       Persistence = Transient
       Owner = Some "GitHubIntegration"
+      Dependencies = [ "Chrona"; "GitHubIntegration"; "GitHubApi" ]
       UserMessage = "Unable to load time entries."
       TechnicalDetails = None
       Context = Map [ "repository", Public "aegis" ]

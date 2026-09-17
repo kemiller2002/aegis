@@ -148,6 +148,9 @@ and Fault =
       Impact: FaultImpact
       Persistence: Persistence
       Owner: string option
+      /// Dependencies this fault implicates, outermost first, e.g.
+      /// ["Chrona"; "GitHubIntegration"; "GitHubApi"]. Requirement: additional 45.
+      Dependencies: string list
       UserMessage: string
       TechnicalDetails: string option
       Context: Map<string, ContextValue>

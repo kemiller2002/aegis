@@ -23,7 +23,10 @@ module Translation =
           Persistence: 'failure -> Persistence
           Recovery: 'failure -> RecoveryPolicy
           UserMessage: 'failure -> string
-          Owner: string }
+          Owner: string
+          /// The dependency chain this assembly sits in, innermost last, e.g.
+          /// ["GitHubIntegration"; "GitHubApi"]. Requirement: additional 45.
+          Dependencies: string list }
 
     /// Normalize a typed integration failure into a fault, preserving the
     /// original exception detail where one exists so translation never
@@ -51,6 +54,7 @@ module Translation =
           Impact = mapping.Impact failure
           Persistence = mapping.Persistence failure
           Owner = Some mapping.Owner
+          Dependencies = application :: mapping.Dependencies
           UserMessage = mapping.UserMessage failure
           TechnicalDetails = Some(string (box failure))
           Context = context
@@ -127,4 +131,5 @@ module Integrity =
           Persistence = fun _ -> RequiresIntervention
           Recovery = recovery
           UserMessage = fun _ -> "Stored data could not be read safely."
-          Owner = "Aegis" }
+          Owner = "Aegis"
+          Dependencies = [ "Aegis"; "PersistentState" ] }
