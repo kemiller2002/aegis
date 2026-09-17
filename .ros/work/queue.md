@@ -112,6 +112,7 @@
 | AEG-EPIC-E12 | E12: Diagnostics and agent surface | captured | epic, aegis-synthesis, wave-6 | high |
 | AEG-EPIC-E13 | E13: Test strategy | captured | epic, aegis-synthesis, wave-6 | high |
 | AEG-EPIC-E14 | E14: Documentation and ROS compliance | captured | epic, aegis-synthesis, wave-7 | high |
+| AEG-FIX-001 | Unpin FSharp.Core in the C# test project | complete | fix | high |
 | AEG-LOG-001 | Purpose: storage-independent persistence of faults and lifecycle events | captured | requirement, aegis-logging, purpose, epic-e00 | high |
 | AEG-LOG-002 | Standard sink abstraction | captured | requirement, aegis-logging, sinks, epic-e06 | high |
 | AEG-LOG-003 | Standard store abstraction | captured | requirement, aegis-logging, storage, epic-e07 | high |

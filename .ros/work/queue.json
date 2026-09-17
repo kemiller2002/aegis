@@ -3317,6 +3317,22 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-FIX-001",
+      "title": "Unpin FSharp.Core in the C# test project",
+      "description": "CI failed with NU1605 because the C# project pinned FSharp.Core 8.0.400 while Aegis.Core transitively required 10.1.400 on the runner's SDK.",
+      "tags": [
+        "fix"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T07:02:08Z",
+      "updatedAt": "2026-09-17T07:02:08Z",
+      "createdBy": "claude",
+      "source": "ci",
+      "sourceReference": null
     }
   ]
 }
