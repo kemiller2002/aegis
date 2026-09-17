@@ -121,6 +121,76 @@ type ContextValue =
         | Sensitive v
         | Secret v -> v
 
+/// Where a failure sits in the system, which bounds how far it reaches.
+/// Requirement: additional 43.
+type FailureDomain =
+    | LocalOperation
+    | FeatureDomain
+    | IntegrationDomain
+    | RepositoryDomain
+    | ApplicationDomain
+    | EnvironmentDomain
+    | ExternalDependency
+
+/// Likely operational reach, complementing FaultImpact rather than replacing
+/// it: impact says how badly, radius says how widely.
+/// Requirement: additional 44.
+type BlastRadius =
+    | OneItem
+    | OneOperation
+    | OneFeature
+    | OneRepository
+    | OneSession
+    | EntireApplication
+
+/// Retention intent travels with the event; an adapter may enforce it.
+/// Requirement: logging 26.
+type Retention =
+    | RetainIndefinitely
+    | RetainDays of int
+    | ArchiveAfterDays of int
+    | DiagnosticOnly
+    | AuditRequired
+
+/// A structured step leading up to a fault. Bounded trails live in the
+/// Diagnostics module; the type is here so a fault can carry them.
+/// Requirement: additional 2.
+type Breadcrumb =
+    { At: DateTimeOffset
+      Category: string
+      Message: string
+      Data: Map<string, ContextValue> }
+
+/// Structured, entirely optional environment metadata.
+/// Requirements: additional 10, 11.
+type EnvironmentInfo =
+    { ApplicationVersion: string option
+      BuildVersion: string option
+      CommitSha: string option
+      Branch: string option
+      DeploymentEnvironment: string option
+      RuntimeVersion: string option
+      OperatingSystem: string option
+      BrowserVersion: string option
+      SchemaVersion: string option
+      ComponentVersions: Map<string, string> }
+
+/// A reference to a state snapshot, never the state itself.
+/// Requirement: additional 12.
+type SnapshotReference =
+    { Location: string
+      Digest: string
+      Summary: string
+      CapturedAt: DateTimeOffset }
+
+/// The optional diagnostic material a fault may carry. Grouped so the fault
+/// record stays readable and so callers that have none say so once.
+/// Requirements: additional 2, 10, 11, 12.
+type FaultDiagnostics =
+    { Breadcrumbs: Breadcrumb list
+      Environment: EnvironmentInfo option
+      Snapshot: SnapshotReference option }
+
 /// Preserved original exception detail, kept separate from the domain-facing
 /// fault representation. Requirement: core 17.
 type ExceptionDetail =
@@ -146,6 +216,12 @@ and Fault =
       Code: FaultCode
       Severity: FaultSeverity
       Impact: FaultImpact
+      /// Requirement: additional 43.
+      Domain: FailureDomain
+      /// Requirement: additional 44.
+      Radius: BlastRadius
+      /// Requirement: logging 26.
+      Retention: Retention
       Persistence: Persistence
       Owner: string option
       /// Dependencies this fault implicates, outermost first, e.g.
@@ -155,6 +231,8 @@ and Fault =
       TechnicalDetails: string option
       Context: Map<string, ContextValue>
       Recovery: RecoveryPolicy
+      /// Requirements: additional 2, 10, 11, 12.
+      Diagnostics: FaultDiagnostics
       Cause: FaultCause option }
 
 /// Stable identity for "is this the same underlying problem as before?".
@@ -202,6 +280,26 @@ type Resolution =
       Kind: ResolutionKind
       Action: RecoveryPolicy option
       Verified: bool }
+
+/// A fault with no diagnostic material attached.
+[<AutoOpen>]
+module FaultDefaults =
+    let noDiagnostics =
+        { Breadcrumbs = []
+          Environment = None
+          Snapshot = None }
+
+    let unknownEnvironment =
+        { ApplicationVersion = None
+          BuildVersion = None
+          CommitSha = None
+          Branch = None
+          DeploymentEnvironment = None
+          RuntimeVersion = None
+          OperatingSystem = None
+          BrowserVersion = None
+          SchemaVersion = None
+          ComponentVersions = Map.empty }
 
 /// Persisted lifecycle events, not only the originating fault. Lifecycle
 /// changes are new events, never mutations of history.

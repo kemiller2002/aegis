@@ -26,7 +26,13 @@ module Translation =
           Owner: string
           /// The dependency chain this assembly sits in, innermost last, e.g.
           /// ["GitHubIntegration"; "GitHubApi"]. Requirement: additional 45.
-          Dependencies: string list }
+          Dependencies: string list
+          /// Requirement: additional 43.
+          Domain: 'failure -> FailureDomain
+          /// Requirement: additional 44.
+          Radius: 'failure -> BlastRadius
+          /// Requirement: logging 26.
+          Retention: 'failure -> Retention }
 
     /// Normalize a typed integration failure into a fault, preserving the
     /// original exception detail where one exists so translation never
@@ -52,6 +58,9 @@ module Translation =
           Code = mapping.Code failure
           Severity = mapping.Severity failure
           Impact = mapping.Impact failure
+          Domain = mapping.Domain failure
+          Radius = mapping.Radius failure
+          Retention = mapping.Retention failure
           Persistence = mapping.Persistence failure
           Owner = Some mapping.Owner
           Dependencies = application :: mapping.Dependencies
@@ -59,6 +68,7 @@ module Translation =
           TechnicalDetails = Some(string (box failure))
           Context = context
           Recovery = mapping.Recovery failure
+          Diagnostics = noDiagnostics
           Cause = cause }
 
 /// Data integrity and schema migration failures, which the requirements
@@ -138,4 +148,16 @@ module Integrity =
           Recovery = recovery
           UserMessage = fun _ -> "Stored data could not be read safely."
           Owner = "Aegis"
-          Dependencies = [ "Aegis"; "PersistentState" ] }
+          Dependencies = [ "Aegis"; "PersistentState" ]
+          Domain =
+            (function
+            | Migration _ -> RepositoryDomain
+            | _ -> RepositoryDomain)
+          Radius =
+            (function
+            | HashMismatch _
+            | InvalidPersistedState _ -> OneRepository
+            | Migration _ -> OneFeature
+            | _ -> OneItem)
+          // Integrity problems are audit material, not disposable diagnostics.
+          Retention = fun _ -> AuditRequired }

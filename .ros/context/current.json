@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T06:43:16Z",
+  "updatedAt": "2026-09-17T06:50:00Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -310,6 +310,27 @@
         "EXE-20260917T063432698Z-8cec5ec9"
       ],
       "completedAt": "2026-09-17T06:43:16Z"
+    },
+    {
+      "id": "AEG-SLICE-012",
+      "type": "default",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Types.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FaultDiagnosticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-17T06:50:00Z",
+      "telemetryExecutionIds": [
+        "EXE-20260917T064444584Z-0b943fd6"
+      ],
+      "completedAt": "2026-09-17T06:50:00Z"
     }
   ]
 }

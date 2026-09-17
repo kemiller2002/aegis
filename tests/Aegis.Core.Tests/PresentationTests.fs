@@ -17,6 +17,9 @@ let private faultOf id severity impact recovery dependencies =
       Code = FaultCode "CHRONA.GITHUB.LOAD_FAILED"
       Severity = severity
       Impact = impact
+      Domain = IntegrationDomain
+      Radius = OneOperation
+      Retention = DiagnosticOnly
       Persistence = Transient
       Owner = Some "GitHubIntegration"
       Dependencies = dependencies
@@ -24,6 +27,7 @@ let private faultOf id severity impact recovery dependencies =
       TechnicalDetails = Some "HttpRequestException at Foo.Bar line 42, token ghp_secret"
       Context = Map.empty
       Recovery = recovery
+      Diagnostics = noDiagnostics
       Cause = None }
 
 let private plain = faultOf "F1" Warning OperationOnly (Retry(3, Immediate)) [ "Chrona"; "GitHubIntegration" ]

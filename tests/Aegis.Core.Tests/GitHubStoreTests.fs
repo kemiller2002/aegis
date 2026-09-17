@@ -75,6 +75,9 @@ let private payloadFor (eventId: string) (faultId: string) (code: string) (times
           Code = FaultCode code
           Severity = Warning
           Impact = OperationOnly
+          Domain = IntegrationDomain
+          Radius = OneOperation
+          Retention = DiagnosticOnly
           Persistence = Transient
           Owner = None
           Dependencies = [ "Chrona"; "GitHubIntegration" ]
@@ -82,6 +85,7 @@ let private payloadFor (eventId: string) (faultId: string) (code: string) (times
           TechnicalDetails = None
           Context = Map.empty
           Recovery = NoRecovery
+          Diagnostics = noDiagnostics
           Cause = None }
 
     Serialization.event Redaction.defaultRules (EventId eventId) (FaultRecorded fault)

@@ -17,6 +17,9 @@ let private faultWith recovery category impact =
       Code = FaultCode "AEGIS.GITHUB.AUTHENTICATION_FAILED"
       Severity = Warning
       Impact = impact
+      Domain = IntegrationDomain
+      Radius = OneOperation
+      Retention = DiagnosticOnly
       Persistence = Transient
       Owner = Some "GitHubIntegration"
       Dependencies = [ "Chrona"; "GitHubIntegration" ]
@@ -24,6 +27,7 @@ let private faultWith recovery category impact =
       TechnicalDetails = None
       Context = Map.empty
       Recovery = recovery
+      Diagnostics = noDiagnostics
       Cause = None }
 
 let private allow = { Recovery.Authorize = fun _ _ -> Recovery.Authorized }

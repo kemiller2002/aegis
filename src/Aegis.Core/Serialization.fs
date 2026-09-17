@@ -90,6 +90,33 @@ module Serialization =
         | ResolvedManually -> "Manual"
         | NoLongerApplies -> "NoLongerApplies"
 
+    let private domainName =
+        function
+        | LocalOperation -> "LocalOperation"
+        | FeatureDomain -> "Feature"
+        | IntegrationDomain -> "Integration"
+        | RepositoryDomain -> "Repository"
+        | ApplicationDomain -> "Application"
+        | EnvironmentDomain -> "Environment"
+        | ExternalDependency -> "ExternalDependency"
+
+    let private radiusName =
+        function
+        | OneItem -> "OneItem"
+        | OneOperation -> "OneOperation"
+        | OneFeature -> "OneFeature"
+        | OneRepository -> "OneRepository"
+        | OneSession -> "OneSession"
+        | EntireApplication -> "EntireApplication"
+
+    let private retentionName =
+        function
+        | RetainIndefinitely -> "RetainIndefinitely"
+        | RetainDays days -> $"RetainDays({days})"
+        | ArchiveAfterDays days -> $"ArchiveAfterDays({days})"
+        | DiagnosticOnly -> "DiagnosticOnly"
+        | AuditRequired -> "AuditRequired"
+
     /// UTC is canonical. Requirement: logging 25.
     let private timestamp (t: DateTimeOffset) =
         t.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
@@ -148,6 +175,9 @@ module Serialization =
             writer.WriteString("category", categoryName fault.Category)
             writer.WriteString("severity", severityName fault.Severity)
             writer.WriteString("impact", impactName fault.Impact)
+            writer.WriteString("domain", domainName fault.Domain)
+            writer.WriteString("radius", radiusName fault.Radius)
+            writer.WriteString("retention", retentionName fault.Retention)
             writer.WriteString("persistence", persistenceName fault.Persistence)
             writer.WriteString("recovery", recoveryName fault.Recovery)
             match fault.Owner with
@@ -185,6 +215,71 @@ module Serialization =
                 for key, reason in entries do
                     writer.WriteString(key, reason)
                 writer.WriteEndObject()
+
+            match fault.Diagnostics.Environment with
+            | Some env ->
+                writer.WritePropertyName "environment"
+                writer.WriteStartObject()
+                for key, value in
+                    [ "applicationVersion", env.ApplicationVersion
+                      "buildVersion", env.BuildVersion
+                      "commitSha", env.CommitSha
+                      "branch", env.Branch
+                      "deploymentEnvironment", env.DeploymentEnvironment
+                      "runtimeVersion", env.RuntimeVersion
+                      "operatingSystem", env.OperatingSystem
+                      "browserVersion", env.BrowserVersion
+                      "schemaVersion", env.SchemaVersion ] do
+                    match value with
+                    | Some v -> writer.WriteString(key, v)
+                    | None -> ()
+
+                for KeyValue (name, version) in env.ComponentVersions do
+                    writer.WriteString(name, version)
+
+                writer.WriteEndObject()
+            | None -> ()
+
+            match fault.Diagnostics.Snapshot with
+            | Some snapshot ->
+                // A reference, never the state itself. Requirement: additional 12.
+                writer.WritePropertyName "snapshot"
+                writer.WriteStartObject()
+                writer.WriteString("location", snapshot.Location)
+                writer.WriteString("digest", snapshot.Digest)
+                writer.WriteString("summary", snapshot.Summary)
+                writer.WriteString("capturedAt", timestamp snapshot.CapturedAt)
+                writer.WriteEndObject()
+            | None -> ()
+
+            match fault.Diagnostics.Breadcrumbs with
+            | [] -> ()
+            | crumbs ->
+                writer.WritePropertyName "breadcrumbs"
+                writer.WriteStartArray()
+
+                for crumb in crumbs do
+                    writer.WriteStartObject()
+                    writer.WriteString("at", timestamp crumb.At)
+                    writer.WriteString("category", crumb.Category)
+                    writer.WriteString("message", crumb.Message)
+
+                    match Map.toList crumb.Data with
+                    | [] -> ()
+                    | _ ->
+                        // Breadcrumb data is context and is redacted as such.
+                        // Requirement: logging 21.
+                        writer.WritePropertyName "data"
+                        writer.WriteStartObject()
+
+                        for KeyValue (key, value) in Redaction.apply rules crumb.Data do
+                            writer.WriteString(key, value)
+
+                        writer.WriteEndObject()
+
+                    writer.WriteEndObject()
+
+                writer.WriteEndArray()
 
             match fault.Cause with
             | Some cause ->
@@ -244,3 +339,15 @@ module Serialization =
         writer.WriteEndObject()
         writer.Flush()
         Encoding.UTF8.GetString(stream.ToArray())
+
+    /// Serialize a fault on its own, carrying the fault schema version so
+    /// future tooling never depends implicitly on the current shape.
+    /// Requirement: core 37.
+    let fault (rules: Redaction.Rule list) (f: Fault) =
+        let asEvent = event rules (EventId f.Id.Value) (FaultRecorded f)
+        // Reuse the event shape's field layout, restamped with the fault
+        // schema and without the event-only identifiers.
+        asEvent
+            .Replace($"\"schema\":\"{Schema.Event}\"", $"\"schema\":\"{Schema.Fault}\"")
+            .Replace($"\"eventId\":\"{f.Id.Value}\",", "")
+            .Replace("\"eventType\":\"FaultRecorded\",", "")

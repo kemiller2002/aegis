@@ -124,4 +124,31 @@ module GitHubFailure =
           Owner = "GitHubIntegration"
           // The chain the requirements' own example describes:
           // Chrona -> GitHub Integration -> GitHub API. Requirement: additional 45.
-          Dependencies = [ "GitHubIntegration"; "GitHubApi" ] }
+          Dependencies = [ "GitHubIntegration"; "GitHubApi" ]
+          // Where the failure sits, and how far it reaches.
+          // Requirements: additional 43, 44.
+          Domain =
+            (function
+            | AuthenticationFailed -> ExternalDependency
+            | RepositoryNotFound _ -> RepositoryDomain
+            | NetworkUnavailable
+            | Timeout -> EnvironmentDomain
+            | RateLimited _
+            | Conflict _
+            | InvalidResponse _ -> IntegrationDomain)
+          Radius =
+            (function
+            // Sign-in is gone for the whole session, not one call.
+            | AuthenticationFailed -> OneSession
+            | RepositoryNotFound _ -> OneRepository
+            | RateLimited _ -> OneFeature
+            | Conflict _ -> OneItem
+            | NetworkUnavailable
+            | Timeout
+            | InvalidResponse _ -> OneOperation)
+          Retention =
+            (function
+            // A security-relevant failure is audit material; a timeout is not.
+            | AuthenticationFailed -> AuditRequired
+            | Conflict _ -> RetainDays 90
+            | _ -> DiagnosticOnly) }

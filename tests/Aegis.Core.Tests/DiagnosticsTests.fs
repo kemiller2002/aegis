@@ -17,6 +17,9 @@ let private fault =
       Code = FaultCode "AEGIS.NETWORK.UNAVAILABLE"
       Severity = Warning
       Impact = OperationOnly
+      Domain = IntegrationDomain
+      Radius = OneOperation
+      Retention = DiagnosticOnly
       Persistence = Transient
       Owner = Some "GitHubIntegration"
       Dependencies = [ "Chrona"; "GitHubIntegration" ]
@@ -24,6 +27,7 @@ let private fault =
       TechnicalDetails = Some "HttpRequestException: connection reset"
       Context = Map [ "repository", Public "aegis"; "github_token", Public "ghp_leaked" ]
       Recovery = Retry(3, Immediate)
+      Diagnostics = noDiagnostics
       Cause = None }
 
 // ----------------------------------------------------------------- breadcrumbs
@@ -72,14 +76,14 @@ let ``asking for more crumbs than exist returns what there is`` () =
 [<Fact>]
 let ``environment metadata is optional`` () =
     // Requirement: additional 10.
-    Assert.True Diagnostics.unknownEnvironment.CommitSha.IsNone
-    Assert.Empty Diagnostics.unknownEnvironment.ComponentVersions
+    Assert.True unknownEnvironment.CommitSha.IsNone
+    Assert.Empty unknownEnvironment.ComponentVersions
 
 [<Fact>]
 let ``deployment identity answers which build produced a fault`` () =
     // Requirement: additional 11.
     let env =
-        { Diagnostics.unknownEnvironment with
+        { unknownEnvironment with
             CommitSha = Some "abc1234"
             BuildVersion = Some "2026.9.17.1"
             Branch = Some "main"
@@ -92,7 +96,7 @@ let ``deployment identity answers which build produced a fault`` () =
 
 [<Fact>]
 let ``deployment identity omits what is unknown rather than inventing it`` () =
-    let identity = Diagnostics.deploymentIdentity Diagnostics.unknownEnvironment
+    let identity = Diagnostics.deploymentIdentity unknownEnvironment
     Assert.Empty identity
 
 // ---------------------------------------------------------- snapshot references
@@ -101,10 +105,10 @@ let ``deployment identity omits what is unknown rather than inventing it`` () =
 let ``a snapshot is referenced rather than embedded`` () =
     // Requirement: additional 12 -- references over payloads.
     let reference =
-        { Diagnostics.Location = "aegis/snapshots/2026/09/17/01ABC.json"
-          Diagnostics.Digest = "sha256:deadbeef"
-          Diagnostics.Summary = "42 time entries, 3 unsynced"
-          Diagnostics.CapturedAt = at }
+        { Location = "aegis/snapshots/2026/09/17/01ABC.json"
+          Digest = "sha256:deadbeef"
+          Summary = "42 time entries, 3 unsynced"
+          CapturedAt = at }
 
     // The reference carries identity and a summary, never the state itself.
     Assert.DoesNotContain("entries\":[", reference.Summary)
@@ -115,7 +119,7 @@ let ``a snapshot is referenced rather than embedded`` () =
 let private bundle =
     { Diagnostics.GeneratedAt = at
       Diagnostics.Application = "Chrona"
-      Diagnostics.Environment = { Diagnostics.unknownEnvironment with CommitSha = Some "abc1234" }
+      Diagnostics.Environment = { unknownEnvironment with CommitSha = Some "abc1234" }
       Diagnostics.Faults = [ fault ]
       Diagnostics.Breadcrumbs =
         [ Diagnostics.crumb at "auth" "Refreshing credentials" (Map [ "authorization", Public "Bearer ghp_alsoleaked" ]) ]

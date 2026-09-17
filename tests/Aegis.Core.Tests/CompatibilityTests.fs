@@ -19,6 +19,9 @@ let private fault =
       Code = FaultCode "CHRONA.GITHUB.LOAD_FAILED"
       Severity = Warning
       Impact = OperationOnly
+      Domain = IntegrationDomain
+      Radius = OneOperation
+      Retention = DiagnosticOnly
       Persistence = Transient
       Owner = None
       Dependencies = [ "Chrona" ]
@@ -26,6 +29,7 @@ let private fault =
       TechnicalDetails = None
       Context = Map.empty
       Recovery = NoRecovery
+      Diagnostics = noDiagnostics
       Cause = None }
 
 let private config sinks =

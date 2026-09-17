@@ -113,6 +113,9 @@ module Aegis =
           Code = code
           Severity = severity
           Impact = impact
+          Domain = IntegrationDomain
+          Radius = OneOperation
+          Retention = DiagnosticOnly
           Persistence = persistence
           Owner = None
           Dependencies = [ config.Application ]
@@ -120,6 +123,7 @@ module Aegis =
           TechnicalDetails = Some ex.Message
           Context = scope.Context
           Recovery = recovery
+          Diagnostics = noDiagnostics
           Cause = Some(CausedByException(detail ex)) }
 
     /// Record an event through the configured sinks, awaiting delivery.

@@ -123,6 +123,9 @@ module Bootstrap =
                       Code = code
                       Severity = Warning
                       Impact = FeatureUnavailable
+                      Domain = ApplicationDomain
+                      Radius = EntireApplication
+                      Retention = AuditRequired
                       Persistence = RequiresIntervention
                       Owner = Some "Aegis"
                       Dependencies = [ config.Application; "Aegis" ]
@@ -130,6 +133,7 @@ module Bootstrap =
                       TechnicalDetails = Some message
                       Context = Map [ "phase", Public "bootstrap" ]
                       Recovery = ManualIntervention
+                      Diagnostics = noDiagnostics
                       Cause = None }
 
                 Aegis.report config (FaultRecorded fault))

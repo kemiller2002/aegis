@@ -19,15 +19,6 @@ module GitHubStore =
         /// Group up to n events into one commit. Requirement: logging 19.
         | Batched of maxPerCommit: int
 
-    /// Retention intent travels with the configuration; enforcement is the
-    /// adapter's. Requirement: logging 26.
-    type Retention =
-        | RetainIndefinitely
-        | RetainDays of int
-        | ArchiveAfterDays of int
-        | AuditRequired
-        | DiagnosticOnly
-
     /// Requirement: logging 9.
     type Config =
         { Owner: string
@@ -35,7 +26,9 @@ module GitHubStore =
           Branch: string
           RootPath: string
           CommitStrategy: CommitStrategy
-          Retention: Retention
+          /// Default retention for events this adapter stores, when an event
+          /// does not carry its own intent. Requirement: logging 26.
+          Retention: Aegis.Retention
           /// Used only when an event carries no timestamp of its own.
           Now: unit -> DateTimeOffset }
 
@@ -57,7 +50,7 @@ module GitHubStore =
           Branch = "main"
           RootPath = "aegis"
           CommitStrategy = OnePerCommit
-          Retention = RetainIndefinitely
+          Retention = Aegis.RetainIndefinitely
           Now = fun () -> DateTimeOffset.UtcNow }
 
     /// Date-bucketed path holding one immutable event file. The file name is

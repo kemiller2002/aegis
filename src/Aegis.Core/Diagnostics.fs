@@ -7,14 +7,6 @@ open System
 /// Requirements: additional 2, 10, 11, 12, 13, 40.
 module Diagnostics =
 
-    /// Structured rather than free prose, so an agent can read the sequence.
-    /// Requirement: additional 2.
-    type Breadcrumb =
-        { At: DateTimeOffset
-          Category: string
-          Message: string
-          Data: Map<string, ContextValue> }
-
     /// Bounded: breadcrumb history must not grow without limit.
     /// Requirement: additional 2.
     type Trail =
@@ -49,34 +41,9 @@ module Diagnostics =
         let skip = max 0 (List.length entries - count)
         entries |> List.skip skip
 
-    /// Structured and entirely optional. Requirement: additional 10.
-    type Environment =
-        { ApplicationVersion: string option
-          BuildVersion: string option
-          CommitSha: string option
-          Branch: string option
-          DeploymentEnvironment: string option
-          RuntimeVersion: string option
-          OperatingSystem: string option
-          BrowserVersion: string option
-          SchemaVersion: string option
-          ComponentVersions: Map<string, string> }
-
-    let unknownEnvironment =
-        { ApplicationVersion = None
-          BuildVersion = None
-          CommitSha = None
-          Branch = None
-          DeploymentEnvironment = None
-          RuntimeVersion = None
-          OperatingSystem = None
-          BrowserVersion = None
-          SchemaVersion = None
-          ComponentVersions = Map.empty }
-
     /// Enough to answer "did this start after commit X" and "which build
     /// produced this". Requirement: additional 11.
-    let deploymentIdentity (env: Environment) =
+    let deploymentIdentity (env: EnvironmentInfo) =
         [ "commit", env.CommitSha
           "build", env.BuildVersion
           "branch", env.Branch
@@ -84,22 +51,22 @@ module Diagnostics =
         |> List.choose (fun (key, value) -> value |> Option.map (fun v -> key, v))
         |> Map.ofList
 
-    /// A reference to a state snapshot, never the state itself: embedding the
-    /// payload would multiply privacy risk, size and persistence cost.
-    /// Requirement: additional 12.
-    type SnapshotReference =
-        { Location: string
-          /// Content hash, so a snapshot can be identified without reading it.
-          Digest: string
-          Summary: string
-          CapturedAt: DateTimeOffset }
+    /// Attach the most recent crumbs, and any environment or snapshot
+    /// material, to a fault. This is what makes additional 2, 10, 11 and 12
+    /// more than type definitions.
+    let attach (count: int) (trail: Trail) (environment: EnvironmentInfo option) (snapshot: SnapshotReference option) (fault: Fault) =
+        { fault with
+            Diagnostics =
+                { Breadcrumbs = recent count trail
+                  Environment = environment
+                  Snapshot = snapshot } }
 
     /// A portable, machine-readable bundle for human or agent analysis.
     /// Requirement: additional 13.
     type Bundle =
         { GeneratedAt: DateTimeOffset
           Application: string
-          Environment: Environment
+          Environment: EnvironmentInfo
           Faults: Fault list
           Breadcrumbs: Breadcrumb list
           Snapshots: SnapshotReference list

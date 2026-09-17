@@ -17,6 +17,9 @@ let private faultWith id code operation =
       Code = FaultCode code
       Severity = Warning
       Impact = OperationOnly
+      Domain = IntegrationDomain
+      Radius = OneOperation
+      Retention = DiagnosticOnly
       Persistence = Transient
       Owner = Some "GitHubIntegration"
       Dependencies = [ "Chrona"; "GitHubIntegration"; "GitHubApi" ]
@@ -24,6 +27,7 @@ let private faultWith id code operation =
       TechnicalDetails = None
       Context = Map [ "repository", Public "aegis" ]
       Recovery = Retry(3, Immediate)
+      Diagnostics = noDiagnostics
       Cause = Some(CausedByException { ExceptionType = "System.TimeoutException"; Message = "timeout"; StackTrace = None; Inner = None }) }
 
 let private fault = faultWith "F1" "CHRONA.GITHUB.LOAD_FAILED" "Chrona.TimeEntry.Load"

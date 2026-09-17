@@ -3266,6 +3266,23 @@
       "createdBy": "claude",
       "source": "requirements-synthesis",
       "sourceReference": null
+    },
+    {
+      "id": "AEG-SLICE-012",
+      "title": "Attach diagnostics to faults; failure domain, blast radius, retention",
+      "description": "AEG-ADD-043 failure domains, AEG-ADD-044 blast radius, AEG-LOG-026 retention intent in the core event model, AEG-CORE-037 fault schema serialization, and wiring AEG-ADD-002/010/011/012 so breadcrumbs, environment metadata, deployment identity and snapshot references are actually carried by a fault rather than only defined.",
+      "tags": [
+        "slice",
+        "implementation"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-17T06:44:43Z",
+      "updatedAt": "2026-09-17T06:50:00Z",
+      "createdBy": "claude",
+      "source": "requirements-synthesis",
+      "sourceReference": null
     }
   ]
 }
