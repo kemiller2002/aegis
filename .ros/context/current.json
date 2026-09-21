@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "protocolVersion": "1.0.0",
   "repository": "aegis",
-  "actor": "claude",
+  "actor": "agent:chatgpt",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-17T21:16:20Z",
+  "updatedAt": "2026-09-21T19:24:56Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4700,6 +4700,18 @@
         "EXE-20260917T211119899Z-2aaf84e2"
       ],
       "completedAt": "2026-09-17T21:16:20Z"
+    },
+    {
+      "id": "ECHELON-UPGRADE-2026-09-21",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [],
+      "updatedAt": "2026-09-21T19:24:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20260921T192426404Z-df2fcf47"
+      ],
+      "completedAt": "2026-09-21T19:24:56Z"
     }
   ]
 }
