@@ -333,3 +333,26 @@ let ``tests assert on collected faults rather than console output`` () =
     let scope = Aegis.scope config "Chrona.TimeEntry.Load" Map.empty
     Aegis.report config (FaultRecorded(classify scope (Exception "boom"))) |> ignore
     Assert.Contains("CHRONA.GITHUB.LOAD_FAILED", collector.Codes)
+
+
+[<Fact>]
+let ``Tutela projection requires security classification and immutable subject`` () =
+    let scope = Aegis.scope (configWith []) "Security.Authorization" Map.empty
+    let baseFault = classify scope (Exception "denied")
+    Assert.Equal(Result.Error Tutela.NotSecurityRelevant, Tutela.tryProjectFault "1.0.0" baseFault)
+    let securityFault = { baseFault with Category = SecurityFailure }
+    Assert.Equal(Result.Error Tutela.MissingImmutableSubjectRef, Tutela.tryProjectFault "1.0.0" securityFault)
+
+[<Fact>]
+let ``Tutela projection carries provenance without fault context`` () =
+    let scope = Aegis.scope (configWith []) "Security.Authorization" (Map [ "token", Secret "never-export" ])
+    let baseFault = classify scope (Exception "denied")
+    let env = { unknownEnvironment with CommitSha = Some "abc123" }
+    let securityFault = { baseFault with Category = SecurityFailure; Diagnostics = { baseFault.Diagnostics with Environment = Some env } }
+    match Tutela.tryProjectFault "1.0.0" securityFault with
+    | Result.Error e -> failwithf "unexpected projection error %A" e
+    | Ok evidence ->
+        Assert.Equal("abc123", evidence.SubjectRef)
+        Assert.Equal("Aegis", evidence.EvidenceType)
+        Assert.True evidence.Redacted
+        Assert.DoesNotContain("never-export", evidence.Result)
