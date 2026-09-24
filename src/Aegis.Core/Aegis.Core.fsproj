@@ -37,8 +37,8 @@
     <Compile Include="Sinks.fs" />
     <Compile Include="Health.fs" />
     <Compile Include="Capture.fs" />
-    <Compile Include="Bootstrap.fs" />
     <Compile Include="Tutela.fs" />
+    <Compile Include="Bootstrap.fs" />
   </ItemGroup>
 
 </Project>
