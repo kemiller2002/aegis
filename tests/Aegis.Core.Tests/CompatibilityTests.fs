@@ -310,3 +310,49 @@ let ``a guarded boundary can return a Result without ambiguity`` () =
     match Aegis.capture cfg scope classify (fun () -> failwith "boom") with
     | Error f -> Assert.Equal(FaultSeverity.Error, f.Severity)
     | Ok (_: int) -> failwith "expected a fault"
+
+// ----------------------------------------------- pinned v1 payloads (golden)
+
+// Byte-for-byte pins of aegis/fault/v1 and aegis/event/v1 as written before
+// provenance existed. Provenance is additive: with no provenance supplied,
+// both the original functions and the provenance-aware ones must still write
+// exactly these bytes. Requirements: core 37; logging 12; AEG-PROV-002, 003.
+
+let private securityFault =
+    { fault with
+        Category = SecurityFailure
+        Context = Map.ofList [ "github_token", Public "ghp_leaked"; "repository", Public "aegis" ] }
+
+let private golden =
+    [ FaultRecorded securityFault,
+      """{"schema":"aegis/event/v1","eventId":"01E1","eventType":"FaultRecorded","faultId":"01F1","correlationId":"CORR1","timestamp":"2026-09-17T13:00:00.000Z","application":"Chrona","operation":"Chrona.TimeEntry.Load","code":"CHRONA.GITHUB.LOAD_FAILED","category":"SecurityFailure","severity":"Warning","impact":"OperationOnly","domain":"Integration","radius":"OneOperation","retention":"DiagnosticOnly","persistence":"Transient","recovery":"NoRecovery","dependencies":["Chrona"],"userMessage":"GitHub could not be reached.","context":{"github_token":"[redacted]","repository":"aegis"},"redacted":{"github_token":"rule:credentials"}}"""
+      FaultAcknowledged(fault.Id, Operator, at),
+      """{"schema":"aegis/event/v1","eventId":"01E1","eventType":"FaultAcknowledged","faultId":"01F1","acknowledgedBy":"Operator","timestamp":"2026-09-17T13:00:00.000Z"}"""
+      RecoveryStarted(
+          fault.Id,
+          { Action = Reload
+            AttemptNumber = 1
+            Actor = Agent
+            Timestamp = at
+            CorrelationId = fault.CorrelationId
+            Outcome = AwaitingVerification }
+      ),
+      """{"schema":"aegis/event/v1","eventId":"01E1","eventType":"RecoveryStarted","faultId":"01F1","correlationId":"CORR1","timestamp":"2026-09-17T13:00:00.000Z","recoveryAction":"Reload","attemptNumber":1,"actor":"Agent","outcome":"AwaitingVerification"}"""
+      RecoveryConcluded(fault.Id, 1, Succeeded, at),
+      """{"schema":"aegis/event/v1","eventId":"01E1","eventType":"RecoveryConcluded","faultId":"01F1","attemptNumber":1,"outcome":"Succeeded","timestamp":"2026-09-17T13:00:00.000Z"}"""
+      FaultResolved(fault.Id, { Timestamp = at; Kind = ResolvedManually; Action = Some Reload; Verified = true }),
+      """{"schema":"aegis/event/v1","eventId":"01E1","eventType":"FaultResolved","faultId":"01F1","resolutionKind":"Manual","verified":true,"timestamp":"2026-09-17T13:00:00.000Z","recoveryAction":"Reload"}""" ]
+
+[<Fact>]
+let ``v1 event payloads are byte-identical when no provenance is supplied`` () =
+    for ev, expected in golden do
+        Assert.Equal(expected, Serialization.event Redaction.defaultRules (EventId "01E1") ev)
+        Assert.Equal(Ok expected, Serialization.eventWith Redaction.defaultRules Serialization.noOptions (EventId "01E1") ev)
+
+[<Fact>]
+let ``the v1 fault payload is byte-identical when no provenance is supplied`` () =
+    let expected =
+        """{"schema":"aegis/fault/v1","faultId":"01F1","correlationId":"CORR1","timestamp":"2026-09-17T13:00:00.000Z","application":"Chrona","operation":"Chrona.TimeEntry.Load","code":"CHRONA.GITHUB.LOAD_FAILED","category":"SecurityFailure","severity":"Warning","impact":"OperationOnly","domain":"Integration","radius":"OneOperation","retention":"DiagnosticOnly","persistence":"Transient","recovery":"NoRecovery","dependencies":["Chrona"],"userMessage":"GitHub could not be reached.","context":{"github_token":"[redacted]","repository":"aegis"},"redacted":{"github_token":"rule:credentials"}}"""
+
+    Assert.Equal(expected, Serialization.fault Redaction.defaultRules securityFault)
+    Assert.Equal(Ok expected, Serialization.faultWith Redaction.defaultRules Serialization.noOptions securityFault)

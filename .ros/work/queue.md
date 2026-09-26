@@ -165,6 +165,13 @@
 | AEG-LOG-047 | Recommended architectural principle for persistence | complete | requirement, aegis-logging, principle, epic-e00 | high |
 | AEG-LOG-048 | Scope constraint on persistence | complete | requirement, aegis-logging, principle, constraints, epic-e00 | high |
 | AEG-PKG-001 | Package Aegis for NuGet and set up trusted-publishing CI | complete | packaging, nuget, documentation | high |
+| AEG-PROV-001 | Praxis-shaped actor and execution attribution | complete | requirement, aegis-provenance, principle | high |
+| AEG-PROV-002 | Optional attribution on fault lifecycle events | complete | requirement, aegis-provenance, lifecycle | high |
+| AEG-PROV-003 | Fault provenance record: discoverer, lineage and evidence | complete | requirement, aegis-provenance, finding | high |
+| AEG-PROV-004 | Remediation and validation contributors never displace the discoverer | complete | requirement, aegis-provenance, lifecycle | high |
+| AEG-PROV-005 | Privacy and secrets in attribution | complete | requirement, aegis-provenance, privacy | high |
+| AEG-PROV-006 | Tutela evidence carries reporting attribution only when supplied | complete | requirement, aegis-provenance, tutela | high |
+| AEG-PROV-007 | Conformance with the vendored Praxis provenance fixtures | complete | requirement, aegis-provenance, conformance | high |
 | AEG-SCOPE-001 | Scope this repository to the core, the GitHub adapter and the GitHub integration | complete | governance, decision, scope | high |
 | AEG-SCOPE-002 | Attribute the scope decision record and record its follow-up validation | complete | governance, decision | high |
 | AEG-SLICE-001 | Vertical slice: fault model, redaction, capture, in-memory sink | complete | slice, implementation | high |
@@ -181,6 +188,7 @@
 | AEG-SLICE-012 | Attach diagnostics to faults; failure domain, blast radius, retention | complete | slice, implementation | high |
 | AEG-SLICE-013 | Console, file and no-op sinks; top-level boundary | complete | slice, implementation | high |
 | AEG-SLICE-014 | Persist quarantine and dead-letter records; verify C# consumability | complete | slice, implementation | high |
+| AEG-SLICE-015 | Security-finding provenance: attribution, fault provenance record and Praxis conformance | complete | requirement, aegis-provenance, slice | high |
 | AEG-STORE-ADAPTERS-001 | Decide how to build the remaining store adapters | complete | storage, decision, scope | medium |
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | AEG-TRACE-001 | Record how the requirement matrix maps onto backlog state | complete | documentation, traceability | medium |

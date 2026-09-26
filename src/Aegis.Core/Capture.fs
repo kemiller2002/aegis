@@ -142,6 +142,22 @@ module Aegis =
     let reportDetached config (ev: AegisEvent) =
         reportAsync config ev |> Async.Ignore |> Async.Start
 
+    /// Record an event carrying provenance: who acted, who validated, and
+    /// the fault's provenance record. Invalid provenance is refused before
+    /// anything reaches a sink, never written partially or dropped silently.
+    /// Requirements: AEG-PROV-002, 003, 005.
+    let reportWithAsync config (options: Serialization.Options) (ev: AegisEvent) =
+        async {
+            match Serialization.eventWith config.Rules options (newId config EventId) ev with
+            | Result.Error problems -> return Result.Error problems
+            | Ok payload ->
+                let! delivered = Sinks.deliverPayloadAsync config.Fallback (Serialization.eventTypeName ev) config.Sinks payload
+                return Ok delivered
+        }
+
+    let reportWith config (options: Serialization.Options) (ev: AegisEvent) =
+        reportWithAsync config options ev |> Async.RunSynchronously
+
     /// Record a group of events, using each sink's batch path where it has
     /// one. Requirement: logging 19.
     let reportBatch config (events: AegisEvent list) =

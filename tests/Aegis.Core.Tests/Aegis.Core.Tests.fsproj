@@ -21,6 +21,14 @@
     <Compile Include="AsyncDeliveryTests.fs" />
     <Compile Include="FaultDiagnosticsTests.fs" />
     <Compile Include="SinkTypesTests.fs" />
+    <Compile Include="ProvenanceTests.fs" />
+    <Compile Include="ProvenanceConformanceTests.fs" />
+  </ItemGroup>
+
+  <!-- Praxis provenance-record conformance fixtures, vendored verbatim with
+       their source commit and digests in SOURCE.json (AEG-PROV-007). -->
+  <ItemGroup>
+    <None Include="fixtures/praxis-provenance-record/**/*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free

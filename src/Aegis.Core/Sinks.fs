@@ -114,6 +114,16 @@ module Sinks =
                 return Failed(sink.Name, sink.Level, ex.Message)
         }
 
+    /// Deliver one already-serialized, already-redacted payload to every
+    /// sink, with the same independence and fallback guarantees.
+    let deliverPayloadAsync (fallback: string -> unit) (label: string) (sinks: Sink list) (payload: string) =
+        async {
+            // Sinks are attempted in parallel: one slow sink must not delay
+            // the others. Requirement: logging 15, 18.
+            let! outcomes = sinks |> List.map (attempt payload) |> Async.Parallel
+            return report fallback label (List.ofArray outcomes)
+        }
+
     /// Deliver one event to every sink. Each sink is attempted
     /// independently. If any sink fails, a minimal sink-failure summary is
     /// offered to the fallback exactly once -- never through the failing
@@ -122,10 +132,7 @@ module Sinks =
     let deliverAsync (fallback: string -> unit) (rules: Redaction.Rule list) (eventId: EventId) (sinks: Sink list) (ev: AegisEvent) =
         async {
             let payload = Serialization.event rules eventId ev
-            // Sinks are attempted in parallel: one slow sink must not delay
-            // the others. Requirement: logging 15, 18.
-            let! outcomes = sinks |> List.map (attempt payload) |> Async.Parallel
-            return report fallback (Serialization.eventTypeName ev) (List.ofArray outcomes)
+            return! deliverPayloadAsync fallback (Serialization.eventTypeName ev) sinks payload
         }
 
     /// Deliver several events, using each sink's batch path where it has one.

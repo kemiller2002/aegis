@@ -3476,6 +3476,150 @@
       "createdBy": "agent:chatgpt",
       "source": "agent-discovery",
       "sourceReference": "public-repository-upgrade-2026-09-21"
+    },
+    {
+      "id": "AEG-PROV-001",
+      "title": "Praxis-shaped actor and execution attribution",
+      "description": "Aegis can state who acted and in which run using the Praxis actor contract (kind,id,provider,model,runtime; human omits provider/model/runtime; non-human states 'unknown' rather than guessing) and a contribution key: ROS_EXECUTION_ID when propagated, else EXE-aegis.<run>, else CTB-<ref> for a human or automation outside any run; an agent is always keyed by an execution. Identity is read only from the whitelisted non-secret environment keys. Contract owned by Praxis; not duplicated here.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "principle"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:RQ-ROS-2026-A001,praxis:RQ-ROS-2026-A014"
+    },
+    {
+      "id": "AEG-PROV-002",
+      "title": "Optional attribution on fault lifecycle events",
+      "description": "Every fault lifecycle event (recorded, suppressed, acknowledged, recovery started/concluded, escalated, resolved, reopened, superseded) may carry an optional attribution of the acting actor and execution, and a resolution may carry a separate validating actor, without changing any event case signature. Payloads without attribution stay byte-identical to aegis/event/v1 today.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "lifecycle"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:RQ-ROS-2026-A001,praxis:RQ-ROS-2026-A004"
+    },
+    {
+      "id": "AEG-PROV-003",
+      "title": "Fault provenance record: discoverer, lineage and evidence",
+      "description": "A fault (the security finding) may carry a Praxis provenance interchange record: the discovering actor as the single 'created' contribution, affected-artifact lineage in derivedFrom with verbatim source snapshots, and evidence references. Aegis preserves the record verbatim including fields it does not model, carries an unsupported major version verbatim without extending it, and rejects malformed provenance rather than dropping it.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "finding"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:RQ-ROS-2026-A013,praxis:RQ-ROS-2026-A004"
+    },
+    {
+      "id": "AEG-PROV-004",
+      "title": "Remediation and validation contributors never displace the discoverer",
+      "description": "Aegis's own lifecycle operations append later contributors to a fault's provenance record: a concluded recovery records the remediation actor as x-remediated, a verified resolution records the validation actor as x-validated (x-resolved, x-handled, x-dismissed and superseded for the other documented cases). Appending never removes, re-keys or re-attributes an existing contribution, and every result passes the Praxis successor check.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "lifecycle"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:RQ-ROS-2026-A015,praxis:RQ-ROS-2026-A004"
+    },
+    {
+      "id": "AEG-PROV-005",
+      "title": "Privacy and secrets in attribution",
+      "description": "Per additional 38, attribution does not identify a specific individual unless the caller says it is necessary: a human actor id is written as the redaction placeholder by default. Credential-shaped values are refused in actor fields, reasons, evidence and lineage and are never serialized.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "privacy"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "Input-documents/aegis_additional_requirements_and_design_ideas.txt#38,praxis:RQ-ROS-2026-A013"
+    },
+    {
+      "id": "AEG-PROV-006",
+      "title": "Tutela evidence carries reporting attribution only when supplied",
+      "description": "Projecting a security fault to Tutela evidence may carry the reporting attribution, only when one is supplied; the existing projection is unchanged. Recorded identity is self-reported provenance and never authorization, evidence or evidence weight.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "tutela"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:RQ-ROS-2026-A015"
+    },
+    {
+      "id": "AEG-PROV-007",
+      "title": "Conformance with the vendored Praxis provenance fixtures",
+      "description": "The Praxis provenance-record conformance fixtures are vendored with their source commit and SHA-256 digests; Aegis's codec is run over every case, successor pair and the Aegis end-to-end step (05 -> 10) as tests. No package or project dependency on Praxis.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "conformance"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:RQ-ROS-2026-A013,praxis:RQ-ROS-2026-A015"
+    },
+    {
+      "id": "AEG-SLICE-015",
+      "title": "Security-finding provenance: attribution, fault provenance record and Praxis conformance",
+      "description": "Implements AEG-PROV-001..007 additively on aegis/fault/v1 and aegis/event/v1 per DF-AEGIS-2026-7A1C.",
+      "tags": [
+        "requirement",
+        "aegis-provenance",
+        "slice"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-09-26T20:57:41.000Z",
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "createdBy": "claude",
+      "source": "praxis-provenance",
+      "sourceReference": "praxis:DF-ROS-2026-A037"
     }
   ]
 }

@@ -127,3 +127,47 @@ module Store =
         { Append: EventId -> string -> Async<Result<unit, Failure>>
           AppendBatch: (EventId * string) list -> Async<Result<unit, Failure>>
           Query: Query -> Async<Result<string list, Failure>> }
+
+    /// The attributions a stored event carries, by role ("attribution",
+    /// "validatedBy"); empty for an event recorded without any, which is
+    /// every event written before they existed. A present but malformed
+    /// attribution is reported, not dropped. Requirements: AEG-PROV-002; logging 40.
+    let attributions (payload: string) : Result<(string * Provenance.Attribution) list, Failure> =
+        try
+            use document = JsonDocument.Parse payload
+            let root = document.RootElement
+
+            [ "attribution"; "validatedBy" ]
+            |> List.choose (fun role ->
+                match root.TryGetProperty role with
+                | true, value -> Some(role, Provenance.Json.tryReadAttribution value)
+                | _ -> None)
+            |> List.fold
+                (fun state (role, read) ->
+                    match state, read with
+                    | Ok found, Ok attribution -> Ok(found @ [ role, attribution ])
+                    | Ok _, Result.Error problems -> Result.Error(Malformed $"""{role}: {String.concat "; " problems}""")
+                    | failed, _ -> failed)
+                (Ok [])
+        with ex ->
+            Result.Error(Malformed ex.Message)
+
+    /// The fault provenance record a stored event carries, if any.
+    /// Requirements: AEG-PROV-003; logging 40.
+    let provenance (payload: string) : Result<Provenance.Document option, Failure> =
+        try
+            use document = JsonDocument.Parse payload
+
+            match document.RootElement.TryGetProperty "provenance" with
+            | true, value ->
+                match Provenance.Document.parse (value.GetRawText()) with
+                | Ok record -> Ok(Some record)
+                | Result.Error problems ->
+                    problems
+                    |> List.map (fun p -> $"{p.Field}: {p.Message}")
+                    |> String.concat "; "
+                    |> Malformed
+                    |> Result.Error
+            | _ -> Ok None
+        with ex ->
+            Result.Error(Malformed ex.Message)
