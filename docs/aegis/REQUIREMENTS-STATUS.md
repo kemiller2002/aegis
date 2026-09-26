@@ -2,15 +2,16 @@
 id: GV-AEGIS-003
 title: Requirement traceability and status
 status: draft
-version: 1.2.0
+version: 1.3.0
 owners:
   - repository-governance
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-26
 related_documents:
   - docs/aegis/OPEN-QUESTIONS.md
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
   - research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md
+  - research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md
   - aegis-boundaries.json
 tags: [aegis, traceability, status]
 ---
@@ -214,6 +215,33 @@ accurate of the two readings.
 | `AEG-LOG-046` | logging §46 | ROS integration for persistence declarations | done | Sde.fs, aegis-boundaries.json, docs/aegis/ | BoundaryTests.fs |  |
 | `AEG-LOG-047` | logging §47 | Recommended architectural principle for persistence | done | (architectural constraints) | BoundaryTests.fs |  |
 | `AEG-LOG-048` | logging §48 | Scope constraint on persistence | done | (architectural constraints) | BoundaryTests.fs |  |
+
+## Security-finding provenance (`AEG-PROV`)
+
+These seven requirements were added after the 143-item intake. They are
+counted separately so that the intake measurement above stays a measurement
+of the intake. They adopt the Praxis agent-provenance contract; they do not
+restate it. The source column names the Praxis requirement each one follows.
+The adoption and the versioning decision are recorded in
+[`DF-AEGIS-2026-7A1C`](../../research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md).
+Their backlog items and work item `AEG-SLICE-015` are in `.ros/work/queue.json`.
+
+| Done | Partial | Not started |
+| --- | --- | --- |
+| 7 | 0 | 0 |
+
+Test paths are relative to `tests/Aegis.Core.Tests/` unless stated otherwise.
+The C# tests are in `tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs`.
+
+| Item | Source | Requirement | Status | Implemented in | Tested in | Note |
+| --- | --- | --- | --- | --- | --- | --- |
+| `AEG-PROV-001` | Praxis RQ-ROS-2026-A001, A014 | Praxis-shaped actor and execution attribution | done | Provenance.fs | ProvenanceTests.fs, ConsumabilityTests.cs | identity is read from whitelisted environment keys only; keys are `ROS_EXECUTION_ID`, else `EXE-aegis.<run>`, else `CTB-` |
+| `AEG-PROV-002` | Praxis RQ-ROS-2026-A001, A004 | Optional attribution on fault lifecycle events | done | Serialization.fs, Capture.fs, Sinks.fs, Store.fs | ProvenanceTests.fs, CompatibilityTests.fs, ConsumabilityTests.cs | additive `attribution` / `validatedBy` members; v1 payloads byte-identical without them |
+| `AEG-PROV-003` | Praxis RQ-ROS-2026-A013, A004 | Fault provenance record: discoverer, lineage, evidence | done | Provenance.fs, Serialization.fs, Store.fs | ProvenanceTests.fs, ProvenanceConformanceTests.fs | carried verbatim; unsupported major carried, never extended; malformed rejected |
+| `AEG-PROV-004` | Praxis RQ-ROS-2026-A015, A004 | Remediation and validation contributors never displace the discoverer | done | Provenance.fs | ProvenanceTests.fs, ProvenanceConformanceTests.fs | `x-remediated`, `x-validated` and the other documented operations; every append passes the successor check |
+| `AEG-PROV-005` | additional §38; Praxis RQ-ROS-2026-A013 | Privacy and secrets in attribution | done | Provenance.fs, Tutela.fs | ProvenanceTests.fs, ConsumabilityTests.cs | a human id is `[redacted]` unless marked `identified`; credential-shaped values are refused |
+| `AEG-PROV-006` | Praxis RQ-ROS-2026-A015 | Tutela evidence carries reporting attribution only when supplied | done | Tutela.fs | ProvenanceTests.fs, ConsumabilityTests.cs | `tryProjectFault` is unchanged |
+| `AEG-PROV-007` | Praxis RQ-ROS-2026-A013, A015 | Conformance with the vendored Praxis provenance fixtures | done | fixtures/praxis-provenance-record/ | ProvenanceConformanceTests.fs | pinned to Praxis `58cf46a` by SHA-256 |
 
 ## Regenerating this
 

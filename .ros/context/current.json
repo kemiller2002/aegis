@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "protocolVersion": "1.0.0",
   "repository": "aegis",
-  "actor": "agent:chatgpt",
+  "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-21T19:24:56Z",
+  "updatedAt": "2026-09-26T21:15:08.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4712,6 +4712,398 @@
         "EXE-20260921T192426404Z-df2fcf47"
       ],
       "completedAt": "2026-09-21T19:24:56Z"
+    },
+    {
+      "id": "AEG-SLICE-015",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205753949Z-8c0ff064"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-001",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205754302Z-894b6b9b"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-002",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205754750Z-324d086d"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-003",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205755218Z-27f05187"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-004",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205755738Z-2da7c280"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-005",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205756320Z-2f1093a6"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-006",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205756871Z-8ec3ee30"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
+    },
+    {
+      "id": "AEG-PROV-007",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Serialization.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Tutela.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Store.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/CompatibilityTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.CSharpTests/ConsumabilityTests.cs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md"
+        }
+      ],
+      "updatedAt": "2026-09-26T21:15:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T205757531Z-170830b5"
+      ],
+      "completedAt": "2026-09-26T21:15:08.000Z"
     }
   ]
 }

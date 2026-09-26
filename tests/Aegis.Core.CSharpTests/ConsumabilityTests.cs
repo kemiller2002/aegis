@@ -109,6 +109,119 @@ public class ConsumabilityTests
         Assert.StartsWith("AG-", presented.Reference);
     }
 
+    // ------------------------------------------------------------ provenance
+    //
+    // AEG-PROV-001..006: the additive provenance surface is usable from C#.
+    // A type and a module sharing a name surface as `XModule`, and the
+    // options record is built through its positional constructor.
+
+    private static Provenance.Attribution AgentAttribution()
+    {
+        var actor = Provenance.ActorModule.agent("google/gemini-cli", "google", "gemini-2.5-pro", "gemini-cli");
+        var execution = Provenance.Execution.ofRun("run-1");
+        Assert.True(execution.IsOk);
+
+        var attribution = Provenance.AttributionModule.create(actor, execution.ResultValue);
+        Assert.True(attribution.IsOk);
+        return attribution.ResultValue;
+    }
+
+    [Fact]
+    public void An_attributed_event_can_be_serialized_from_csharp()
+    {
+        var options = new Serialization.Options(
+            Some(AgentAttribution()),
+            FSharpOption<Provenance.Attribution>.None,
+            FSharpOption<Provenance.Document>.None);
+
+        var recorded = AegisEvent.NewFaultRecorded(MakeFault("CHRONA.GITHUB.LOAD_FAILED"));
+        var payload = Serialization.eventWith(Redaction.defaultRules, options, EventId.NewEventId("01E1"), recorded);
+
+        Assert.True(payload.IsOk);
+        Assert.EndsWith(
+            "\"attribution\":{\"execution\":\"EXE-aegis.run-1\",\"actor\":{\"kind\":\"agent\",\"id\":\"google/gemini-cli\",\"provider\":\"google\",\"model\":\"gemini-2.5-pro\",\"runtime\":\"gemini-cli\"}}}",
+            payload.ResultValue);
+    }
+
+    [Fact]
+    public void Without_provenance_the_csharp_overload_writes_the_v1_payload()
+    {
+        var recorded = AegisEvent.NewFaultRecorded(MakeFault("CHRONA.GITHUB.LOAD_FAILED"));
+        var plain = Serialization.@event(Redaction.defaultRules, EventId.NewEventId("01E1"), recorded);
+        var withNone = Serialization.eventWith(Redaction.defaultRules, Serialization.noOptions, EventId.NewEventId("01E1"), recorded);
+
+        Assert.Equal(plain, withNone.ResultValue);
+    }
+
+    [Fact]
+    public void A_provenance_record_can_be_created_and_advanced_from_csharp()
+    {
+        var discovered = Provenance.DocumentModule.discovered(
+            "aegis:fault/01F1",
+            At,
+            AgentAttribution(),
+            ListOf("git:commit/abc123"),
+            FSharpList<Tuple<string, Provenance.Document>>.Empty);
+        Assert.True(discovered.IsOk);
+
+        var human = Provenance.AttributionModule.create(
+            Provenance.ActorModule.human("kevin"),
+            Provenance.Execution.outsideRun("20260917-review").ResultValue).ResultValue;
+
+        var resolved = AegisEvent.NewFaultResolved(
+            FaultId.NewFaultId("01F1"),
+            new Resolution(At.AddMinutes(5), ResolutionKind.ResolvedManually, FSharpOption<RecoveryPolicy>.None, true));
+
+        var advanced = Provenance.DocumentModule.advance(
+            FSharpOption<Provenance.Attribution>.None, Some(human), resolved, discovered.ResultValue);
+
+        Assert.True(advanced.IsOk);
+        Assert.Contains("\"x-validated\"", advanced.ResultValue.Text);
+        Assert.DoesNotContain("kevin", advanced.ResultValue.Text);
+    }
+
+    [Fact]
+    public void Tutela_evidence_with_attribution_is_readable_from_csharp()
+    {
+        var fault = new Fault(
+            FaultId.NewFaultId("01F1"), CorrelationId.NewCorrelationId("CORR1"), At, "Chrona", Some("1.4.2"),
+            "Chrona.Auth", FailureCategory.SecurityFailure, FaultCode.NewFaultCode("CHRONA.AUTH"),
+            FaultSeverity.Error, FaultImpact.OperationOnly, FailureDomain.LocalOperation, BlastRadius.OneOperation,
+            Retention.AuditRequired, Persistence.Persistent, FSharpOption<string>.None, ListOf<string>(),
+            "Sign-in failed.", FSharpOption<string>.None, MapModule.Empty<string, ContextValue>(), RecoveryPolicy.NoRecovery,
+            new FaultDiagnostics(
+                FSharpList<Breadcrumb>.Empty,
+                Some(new EnvironmentInfo(
+                    FSharpOption<string>.None, FSharpOption<string>.None, Some("abc123"), FSharpOption<string>.None,
+                    FSharpOption<string>.None, FSharpOption<string>.None, FSharpOption<string>.None,
+                    FSharpOption<string>.None, FSharpOption<string>.None, MapModule.Empty<string, string>())),
+                FSharpOption<SnapshotReference>.None),
+            FSharpOption<FaultCause>.None);
+
+        var projected = Tutela.tryProjectFaultAttributed("1.0.0", Some(AgentAttribution()), fault);
+
+        Assert.True(projected.IsOk);
+        Assert.Equal("google/gemini-cli", projected.ResultValue.ReportedBy.Value.Actor.Id);
+    }
+
+    [Fact]
+    public void Reporting_with_attribution_works_from_csharp()
+    {
+        var collector = new Sinks.Collector(Some(10));
+        var config = MakeConfig(collector.Sink(FSharpOption<Sinks.Level>.None));
+        var options = new Serialization.Options(
+            Some(AgentAttribution()),
+            FSharpOption<Provenance.Attribution>.None,
+            FSharpOption<Provenance.Document>.None);
+
+        var reported = Aegis.reportWith(config, options, AegisEvent.NewFaultRecorded(MakeFault("CHRONA.GITHUB.LOAD_FAILED")));
+
+        Assert.True(reported.IsOk);
+        var attributions = Store.attributions(collector.Events.First());
+        Assert.True(attributions.IsOk);
+        Assert.Equal("attribution", attributions.ResultValue.Head.Item1);
+    }
+
     // ---------------------------------------------------------------- helpers
     //
     // What a C# consumer has to write. Kept together so the cost of the

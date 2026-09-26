@@ -2,11 +2,11 @@
 id: GV-AEGIS-001
 title: Using Aegis
 status: draft
-version: 1.1.0
+version: 1.2.0
 owners:
   - repository-governance
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-26
 related_documents:
   - docs/aegis/REQUIREMENTS-STATUS.md
   - docs/aegis/AGENT-INTEGRATION.md
@@ -173,6 +173,48 @@ Three rules that are easy to get wrong:
   recovery that runs but leaves the condition is a failure.
 - **Manual intervention is never automatic.** It raises an obligation that
   stays visible until discharged.
+
+## Recording who found and who fixed a fault
+
+A fault (for a security fault, the finding) can carry provenance. Provenance
+covers who discovered the fault, in which run, what the fault derives from,
+and who later remediated and validated it. The shapes are the Praxis
+provenance contract, implemented locally with no Praxis dependency. All of it
+is optional, so a payload without provenance is byte-identical to one written
+before provenance existed.
+
+```fsharp
+let lookup key = Environment.GetEnvironmentVariable key |> Option.ofObj
+
+// ROS_ACTOR_KIND/ROS_ACTOR/ROS_TELEMETRY_* ("unknown" when undeclared), and
+// ROS_EXECUTION_ID when Praxis propagated one, else EXE-aegis.<run>.
+let discoverer =
+    match Provenance.Actor.fromEnvironment lookup, Provenance.Execution.fromEnvironment lookup "job-42" with
+    | Ok actor, Ok execution -> Provenance.Attribution.create actor execution
+    | Error problems, _ -> Error problems
+    | _, Error problem -> Error [ problem ]
+
+// Discovery: the discoverer is the single `created` contribution; lineage names the affected artifacts.
+let finding = Provenance.Document.discovered (Provenance.Document.subjectOf fault.Id) now discoverer [ "git:commit/abc123" ] []
+
+// Later acts append contributors and never displace the discoverer.
+let remediated = finding |> Result.bind (Provenance.Document.advance (Some fixer) None (RecoveryConcluded(fault.Id, 1, Succeeded, now)))
+
+Aegis.reportWith config { Serialization.noOptions with Attribution = Some fixer; Provenance = Result.toOption remediated } ev
+```
+
+Rules to know:
+
+- **A human is not identified unless that is necessary.** The id is written
+  as `[redacted]` unless you call `Attribution.identified`. This is
+  additional 38.
+- **Credentials are refused.** Invalid provenance is refused outright,
+  never dropped silently.
+- **Identity is provenance, not proof.** It is not authorization, and it is
+  not evidence or evidence weight, including in the Tutela projection
+  (`Tutela.tryProjectFaultAttributed`).
+
+See [`DF-AEGIS-2026-7A1C`](../../research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md).
 
 ## How SDE interacts with faults
 

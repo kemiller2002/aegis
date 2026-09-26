@@ -26,6 +26,35 @@
     "version": "1.1.0"
   },
   {
+    "created": "2026-09-26",
+    "id": "DF-AEGIS-2026-7A1C",
+    "owners": [
+      "repository-governance"
+    ],
+    "path": "research/decisions/DF-AEGIS-2026-7A1C--security-finding-provenance.md",
+    "related_documents": [
+      "docs/aegis/REQUIREMENTS-STATUS.md",
+      "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md",
+      "Input-documents/aegis_persistent_logging_requirements.txt",
+      "Input-documents/aegis_additional_requirements_and_design_ideas.txt",
+      "tests/Aegis.Core.Tests/fixtures/praxis-provenance-record/SOURCE.json"
+    ],
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "aegis",
+      "provenance",
+      "schema",
+      "versioning",
+      "privacy",
+      "tutela"
+    ],
+    "title": "Security-finding provenance as an additive evolution of aegis/fault/v1 and aegis/event/v1",
+    "updated": "2026-09-26",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-09-17",
     "id": "DF-AEGIS-2026-DBBD",
     "owners": [
