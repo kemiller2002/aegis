@@ -149,9 +149,8 @@ module Serialization =
             | None -> ()
             w.WriteEndObject()
 
-    /// Serialize one event. `eventId` is distinct from the fault id, so all
-    /// events for one fault can be reconstructed. Requirements: logging 13, 23, 24.
-    let event (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) =
+    /// The one event writer behind `event` and `attributedEvent`.
+    let private write (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) (provenance: ProvenanceBlock option) =
         use stream = new IO.MemoryStream()
         use writer = new Utf8JsonWriter(stream)
         writer.WriteStartObject()
@@ -365,18 +364,46 @@ module Serialization =
             writer.WriteString("timestamp", timestamp item.At)
             writer.WriteString("retention", retentionName AuditRequired)
 
+        // Contribution provenance is written verbatim: unknown fields and
+        // other majors survive untouched. A ProvenanceBlock cannot be
+        // malformed, so nothing unvalidated reaches a sink. An event without
+        // one is exactly what it was before provenance existed.
+        // Requirements: AEG-PROV-001, AEG-PROV-007, AEG-PROV-008.
+        match provenance with
+        | Some block ->
+            writer.WritePropertyName "provenance"
+            writer.WriteRawValue block.Json
+        | None -> ()
+
         writer.WriteEndObject()
         writer.Flush()
         Encoding.UTF8.GetString(stream.ToArray())
 
+    /// Serialize one event. `eventId` is distinct from the fault id, so all
+    /// events for one fault can be reconstructed. Requirements: logging 13, 23, 24.
+    let event (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) = write rules eventId ev None
+
+    /// Serialize one event with the contribution provenance of the act it
+    /// records, under the `provenance` field. Requirement: AEG-PROV-001.
+    let attributedEvent (rules: Redaction.Rule list) (eventId: EventId) (attributed: AttributedEvent) =
+        write rules eventId attributed.Event attributed.Provenance
+
     /// Serialize a fault on its own, carrying the fault schema version so
     /// future tooling never depends implicitly on the current shape.
     /// Requirement: core 37.
-    let fault (rules: Redaction.Rule list) (f: Fault) =
-        let asEvent = event rules (EventId f.Id.Value) (FaultRecorded f)
+    let private faultWith (rules: Redaction.Rule list) (f: Fault) (provenance: ProvenanceBlock option) =
+        let asEvent = write rules (EventId f.Id.Value) (FaultRecorded f) provenance
         // Reuse the event shape's field layout, restamped with the fault
         // schema and without the event-only identifiers.
         asEvent
             .Replace($"\"schema\":\"{Schema.Event}\"", $"\"schema\":\"{Schema.Fault}\"")
             .Replace($"\"eventId\":\"{f.Id.Value}\",", "")
             .Replace("\"eventType\":\"FaultRecorded\",", "")
+
+    /// Serialize a fault on its own. Requirement: core 37.
+    let fault (rules: Redaction.Rule list) (f: Fault) = faultWith rules f None
+
+    /// Serialize a fault with its discovering (or accumulated) contribution
+    /// provenance. Requirement: AEG-PROV-001.
+    let attributedFault (rules: Redaction.Rule list) (f: Fault) (provenance: ProvenanceBlock) =
+        faultWith rules f (Some provenance)

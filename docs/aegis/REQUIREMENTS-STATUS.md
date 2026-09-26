@@ -2,17 +2,31 @@
 id: GV-AEGIS-003
 title: Requirement traceability and status
 status: draft
-version: 1.2.0
+version: 1.3.0
 owners:
   - repository-governance
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-26
 related_documents:
   - docs/aegis/OPEN-QUESTIONS.md
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
   - research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md
   - aegis-boundaries.json
+  - requirements/PROVENANCE-INTEGRATION.md
+  - research/decisions/DF-AEGIS-2026-DC5B--fault-contribution-provenance.md
 tags: [aegis, traceability, status]
+provenance:
+  contributions:
+    EXE-20260926T081020061Z-1e736e64:
+      operations: [modified]
+      at: 2026-09-26T08:24:24.126Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Add AEG-PROV-001..012 traceability (FEAT-ECHELON-PROVENANCE)"
 ---
 
 # Requirement traceability and status
@@ -214,6 +228,30 @@ accurate of the two readings.
 | `AEG-LOG-046` | logging §46 | ROS integration for persistence declarations | done | Sde.fs, aegis-boundaries.json, docs/aegis/ | BoundaryTests.fs |  |
 | `AEG-LOG-047` | logging §47 | Recommended architectural principle for persistence | done | (architectural constraints) | BoundaryTests.fs |  |
 | `AEG-LOG-048` | logging §48 | Scope constraint on persistence | done | (architectural constraints) | BoundaryTests.fs |  |
+
+## Contribution provenance
+
+Added by [`DF-AEGIS-2026-DC5B`](../../research/decisions/DF-AEGIS-2026-DC5B--fault-contribution-provenance.md)
+from [`requirements/PROVENANCE-INTEGRATION.md`](../../requirements/PROVENANCE-INTEGRATION.md),
+which cites the Praxis contract (`DF-ROS-2026-A037`, `RQ-ROS-2026-A001`..`A019`)
+instead of restating it. These twelve items are outside the 143 counted above:
+they come from the cross-system provenance upgrade, not the original intake.
+Work item `FEAT-ECHELON-PROVENANCE`.
+
+| Item | Source | Requirement | Status | Implemented in | Tested in | Note |
+| --- | --- | --- | --- | --- | --- | --- |
+| `AEG-PROV-001` | RQ-ROS-2026-A009, A015 | Events carry the `praxis.provenance/1` block | done | Provenance.fs, Serialization.fs, Sinks.fs, Capture.fs | ProvenanceTests.fs | `AttributedEvent`; event schema unchanged |
+| `AEG-PROV-002` | RQ-ROS-2026-A001, A002, A013, A014 | Discovering actor and execution | done | Provenance.fs, Capture.fs | ProvenanceTests.fs | `Provenance.discovery`, `Aegis.captureAttributed` |
+| `AEG-PROV-003` | RQ-ROS-2026-A003, A004, A014 | Later contributors live on later events | done | Provenance.fs | ProvenanceTests.fs | `Provenance.attribute`, `operationsFor`; `RecoveryActor` stays a role |
+| `AEG-PROV-004` | RQ-ROS-2026-A004 | Accumulated provenance is a pure projection | done | Provenance.fs, Store.fs | ProvenanceTests.fs | `ProvenanceHistory`, `Store.provenanceHistory` |
+| `AEG-PROV-005` | RQ-ROS-2026-A008 | Affected-artifact lineage is not authorship | done | Provenance.fs | ProvenanceTests.fs |  |
+| `AEG-PROV-006` | RQ-ROS-2026-A004, A017 | Evidence provenance by reference | done | Provenance.fs | ProvenanceTests.fs | `Provenance.evidenceOf` |
+| `AEG-PROV-007` | RQ-ROS-2026-A015, A017 | Receiving rules: supported / unsupported / malformed | done | Provenance.fs, Serialization.fs, Store.fs | ProvenanceTests.fs | all vendored `cases.json` |
+| `AEG-PROV-008` | RQ-ROS-2026-A004, A007 | Legacy events stay valid and unattributed | done | Serialization.fs, Store.fs | ProvenanceTests.fs, CompatibilityTests.fs |  |
+| `AEG-PROV-009` | RQ-ROS-2026-A010, A019 | Tutela `contributionProvenance` | done | Tutela.fs | ProvenanceTests.fs | never `provenance` or `producerIdentity` |
+| `AEG-PROV-010` | RQ-ROS-2026-A006, A016 | Explicit identity propagation | done | Provenance.fs | ProvenanceTests.fs | `ProvenanceIdentity.fromDeclarations` |
+| `AEG-PROV-011` | RQ-ROS-2026-A018 | Conformance to the shared fixtures | done | tests/fixtures/praxis-provenance/ | ProvenanceTests.fs | SHA-256 check, chain replay |
+| `AEG-PROV-012` | AEG-CORE-036, AEG-CORE-037, AEG-LOG-012 | Backward compatibility | done | (additive surface) | CompatibilityTests.fs, Aegis.Core.CSharpTests | no existing record, case or signature changed |
 
 ## Regenerating this
 

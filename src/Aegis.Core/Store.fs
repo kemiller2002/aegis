@@ -92,6 +92,55 @@ module Store =
         with ex ->
             Result.Error(Malformed ex.Message)
 
+    /// The contribution provenance a stored event carries. An event written
+    /// before provenance existed, or without it, is `Ok None`: unattributed,
+    /// never inferred. A stored block is re-classified on read, so malformed
+    /// provenance is reported rather than silently dropped.
+    /// Requirements: AEG-PROV-007, AEG-PROV-008.
+    let provenanceOf (payload: string) : Result<ProvenanceBlock option, Failure> =
+        try
+            use document = JsonDocument.Parse payload
+            let root = document.RootElement
+
+            if root.ValueKind <> JsonValueKind.Object then
+                Result.Error(Malformed "event is not a JSON object")
+            else
+                match root.TryGetProperty "provenance" with
+                | true, value ->
+                    match Provenance.receive (value.GetRawText()) with
+                    | Ok block -> Ok(Some block)
+                    | Result.Error problems -> Result.Error(Malformed("provenance: " + String.Join("; ", problems)))
+                | _ -> Ok None
+        with ex ->
+            Result.Error(Malformed ex.Message)
+
+    /// Accumulate every fault's contribution provenance from stored event
+    /// payloads, in stream order. Unreadable events fail the projection
+    /// rather than vanishing from it. Requirement: AEG-PROV-004.
+    let provenanceHistory (payloads: string list) : Result<Map<string, FaultProvenance>, Failure> =
+        let read payload =
+            match index payload, provenanceOf payload with
+            | Ok indexed, Ok block -> Ok(indexed, block)
+            | Result.Error failure, _
+            | _, Result.Error failure -> Result.Error failure
+
+        let rec collect acc remaining =
+            match remaining with
+            | [] -> Ok(List.rev acc)
+            | payload :: rest ->
+                match read payload with
+                | Ok item -> collect (item :: acc) rest
+                | Result.Error failure -> Result.Error failure
+
+        collect [] payloads
+        |> Result.map (fun items ->
+            items
+            |> List.choose (fun (indexed, block) ->
+                indexed.FaultId |> Option.map (fun faultId -> faultId, ($"{indexed.EventType} {indexed.EventId.Value}", block)))
+            |> List.groupBy fst
+            |> List.map (fun (faultId, entries) -> faultId.Value, ProvenanceHistory.ofBlocks faultId (entries |> List.map snd))
+            |> Map.ofList)
+
     let private severityName =
         function
         | FaultSeverity.Diagnostic -> "Diagnostic"

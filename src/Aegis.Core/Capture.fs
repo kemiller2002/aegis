@@ -232,3 +232,44 @@ module Aegis =
     /// recorded. Requirement: core 7.
     let suppress config fault reason =
         report config (FaultSuppressed(fault, reason))
+
+    /// Record an event together with the contribution provenance of the act
+    /// it records (who discovered, remediated, validated, acknowledged ...
+    /// and in which execution). Requirements: AEG-PROV-001, AEG-PROV-003.
+    let reportAttributedAsync config (attributed: AttributedEvent) =
+        Sinks.deliverAttributedAsync config.Fallback config.Rules (newId config EventId) config.Sinks attributed
+
+    /// Awaiting form of `reportAttributedAsync`.
+    let reportAttributed config (attributed: AttributedEvent) =
+        reportAttributedAsync config attributed |> Async.RunSynchronously
+
+    /// Guard a boundary like `capture`, attributing the recorded fault to its
+    /// discoverer. `attribute` builds the discovering block from the fault
+    /// (typically `Provenance.discovery`). If it refuses -- malformed
+    /// provenance is rejected, never repaired -- the fault is still recorded,
+    /// unattributed, and the refusal goes to the configured fallback, so
+    /// neither the fault nor the rejection is lost.
+    /// Requirements: AEG-PROV-002, AEG-PROV-007; core 5, 6, 7.
+    let captureAttributed config scope classify (attribute: Fault -> Result<ProvenanceBlock, string>) (operation: unit -> 'T) : Guarded<'T> =
+        try
+            Ok(operation ())
+        with ex ->
+            if isProgrammingDefect ex then reraise ()
+            elif isCancellation ex then reraise ()
+            else
+                let fault = classify scope ex
+
+                let provenance =
+                    match attribute fault with
+                    | Ok block -> Some block
+                    | Result.Error problem ->
+                        config.Fallback $"Aegis provenance rejected for fault {fault.Id.Value}: {problem}"
+                        None
+
+                let attributed = { Event = FaultRecorded fault; Provenance = provenance }
+
+                match config.Persistence with
+                | Detached -> reportAttributedAsync config attributed |> Async.Ignore |> Async.Start
+                | Blocking -> reportAttributed config attributed |> ignore
+
+                Result.Error fault
