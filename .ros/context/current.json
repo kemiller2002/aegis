@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "agent:chatgpt",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-26T09:03:47.000Z",
+  "updatedAt": "2026-09-26T20:49:49.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4754,6 +4754,27 @@
         "EXE-20260926T090253922Z-bb95f3ce"
       ],
       "completedAt": "2026-09-26T09:03:47.000Z"
+    },
+    {
+      "id": "FEAT-ECHELON-PROVENANCE-R12",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Provenance.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/ProvenanceTests.fs"
+        }
+      ],
+      "updatedAt": "2026-09-26T20:49:49.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20260926T204110318Z-32ff901f"
+      ],
+      "completedAt": "2026-09-26T20:49:49.000Z"
     }
   ]
 }

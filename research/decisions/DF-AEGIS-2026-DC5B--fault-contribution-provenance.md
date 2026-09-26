@@ -2,7 +2,7 @@
 id: DF-AEGIS-2026-DC5B
 title: Fault contribution provenance carries the Praxis interchange block
 status: accepted
-version: 1.1.0
+version: 1.2.0
 created: 2026-09-26
 updated: 2026-09-26
 owners:
@@ -37,6 +37,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
+    EXE-20260926T204110318Z-32ff901f:
+      operations: [modified]
+      at: 2026-09-26T20:49:16.991Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.2 and second-review findings (FEAT-ECHELON-PROVENANCE-R12)"
 ---
 
 # Decision Record: fault contribution provenance
@@ -110,8 +120,10 @@ Constraints specific to Aegis:
    contribution identity is neither.
 7. **Conformance through vendored fixtures.** `cases.json` and
    `echelon-chain.json` (and, from contract revision 1.1,
-   `identity-environment.json`) are vendored unchanged from Praxis commit
-   `c2657efb4d54f11d0fd0617cc1bcd5b8418601d5` with their SHA-256 in
+   `identity-environment.json`; from revision 1.2, `text-cases.json`,
+   `lineage-cases.json` and `envelope-key-cases.json`) are vendored unchanged
+   from Praxis commit `b0037183389c8b9392919f58521b9487d1b4d5c6` with their
+   SHA-256 in
    `tests/fixtures/praxis-provenance/SOURCE.json`; a small F# codec in
    `Aegis.Core` (`Provenance.fs`, System.Text.Json only) is tested against
    every case.
@@ -126,6 +138,21 @@ Constraints specific to Aegis:
    `provenanceRejected` instead of the block as a last line of defence. The
    fault form is now built structurally rather than by string replacement,
    which could rewrite text inside a carried block.
+
+9. **Revision 1.2: rules are key rules; text is read as text.** The second
+   review found that the key-oriented default rules (session, token,
+   password, cookie, ...) rejected ordinary finding text such as "Session
+   cookie lacks the Secure flag". Redaction rules now apply to field names
+   only (every name but a contribution key); free-text values get the
+   contract credential check, which also runs at the boundary. Provenance
+   text is classified as text: a repeated member name or an unpaired
+   surrogate is malformed, and `classify`/`receive` never throw. Blank and
+   credential checks use ASCII semantics, key segments are escaped per code
+   point (including `.`), and lineage is checked like contributions. Stored
+   events written with `provenanceRejected` read back as `Rejected`
+   (`Store.storedProvenance`; `Store.provenanceOf` returns
+   `Error(Rejected ...)`), so they are never mistaken for legacy events, and
+   the fold keeps unknown top-level block fields.
 
 ## Alternatives rejected
 

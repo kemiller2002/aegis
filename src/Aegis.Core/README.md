@@ -54,12 +54,14 @@ unchanged and read as unattributed.
 
 ```fsharp
 let identity = ProvenanceIdentity.current ()          // ROS_ACTOR_KIND, ROS_ACTOR, ROS_EXECUTION_ID, ...
-let key = ProvenanceIdentity.keyFor "scan-42" fault.Timestamp identity
-match Provenance.discovery key identity.Actor (Some "static scan") [ "praxis:RQ-APP-2026-A001" ] fault with
+let recorded =
+    ProvenanceIdentity.keyFor "scan-42" fault.Timestamp identity   // Error when the id cannot form a key
+    |> Result.bind (fun key -> Provenance.discovery key identity.Actor (Some "static scan") [ "praxis:RQ-APP-2026-A001" ] fault)
+match recorded with
 | Ok block ->
     match Aegis.reportAttributed config (Provenance.attach block (FaultRecorded fault)) with
     | Ok _ -> ()
-    | Error problem -> eprintfn "%s" problem                    // matched a redaction rule: not written
+    | Error problem -> eprintfn "%s" problem                    // a field name matched a redaction rule: not written
 | Error problem -> eprintfn "provenance rejected: %s" problem   // malformed is never repaired
 
 // Later: fold a fault's events into its accumulated provenance.

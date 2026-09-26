@@ -109,9 +109,9 @@ let ``vendored Praxis fixtures are unchanged (SHA-256 matches SOURCE.json)`` () 
     // AEG-PROV-011: detects any local edit to the vendored contract.
     let source = fixture "SOURCE.json"
     Assert.Equal("kemiller2002/praxis", source["repository"].GetValue<string>())
-    Assert.Equal("c2657efb4d54f11d0fd0617cc1bcd5b8418601d5", source["commit"].GetValue<string>())
+    Assert.Equal("b0037183389c8b9392919f58521b9487d1b4d5c6", source["commit"].GetValue<string>())
     let files = source["files"].AsObject()
-    Assert.Equal(3, files.Count)
+    Assert.Equal(6, files.Count)
 
     for pair in files do
         use sha = SHA256.Create()
@@ -123,7 +123,7 @@ let ``vendored Praxis fixtures are unchanged (SHA-256 matches SOURCE.json)`` () 
 let ``every vendored conformance case reaches the reference verdict and warning count`` () =
     // AEG-PROV-007, AEG-PROV-011.
     let cases = (fixture "cases.json").["cases"].AsArray()
-    Assert.Equal(56, cases.Count)
+    Assert.Equal(70, cases.Count)
 
     let failures =
         [ for item in cases do
@@ -288,7 +288,7 @@ let ``an undeclared actor is recorded as unknown, never guessed`` () =
     let identity = ProvenanceIdentity.fromDeclarations (fun _ -> None)
     Assert.Equal(ProvenanceIdentity.unknownActor, identity.Actor)
     Assert.Equal(None, identity.Execution)
-    let key = ProvenanceIdentity.keyFor "op-1" at identity
+    let key = ProvenanceIdentity.keyFor "op-1" at identity |> ok
     Assert.StartsWith("CTB-20260926-", key)
 
     let block = Provenance.discovery key identity.Actor None [] finding |> ok
@@ -307,11 +307,11 @@ let ``declared identity and execution come only from the whitelisted variables``
     let identity = ProvenanceIdentity.fromDeclarations (fun name -> Map.tryFind name env)
     Assert.Equal(claude, identity.Actor)
     Assert.Equal(Some exeB1, identity.Execution)
-    Assert.Equal(exeB1, ProvenanceIdentity.keyFor "op-1" at identity)
+    Assert.Equal(Ok exeB1, ProvenanceIdentity.keyFor "op-1" at identity)
 
     // An agent with no declared execution is keyed by its operation.
     let noExecution = { identity with Execution = None }
-    Assert.Equal("EXT-op.op_2f1", ProvenanceIdentity.keyFor "op/1" at noExecution)
+    Assert.Equal(Ok "EXT-op.op_2f1", ProvenanceIdentity.keyFor "op/1" at noExecution)
 
     // A human omits provider/model/runtime.
     let human = ProvenanceIdentity.fromDeclarations (fun name -> Map.tryFind name (Map [ "ROS_ACTOR_KIND", "human"; "ROS_ACTOR", "kevin" ]))
@@ -624,7 +624,7 @@ let ``rule 8 - an identity-less process never inherits a run from ROS_EXECUTION_
     let identity = ProvenanceIdentity.fromDeclarations (env [ "ROS_EXECUTION_ID", exeB1 ])
     Assert.Equal(ProvenanceIdentity.unknownActor, identity.Actor)
     Assert.Equal(None, identity.Execution)
-    let key = ProvenanceIdentity.keyFor "op-1" at identity
+    let key = ProvenanceIdentity.keyFor "op-1" at identity |> ok
     Assert.NotEqual<string>(exeB1, key)
     Assert.StartsWith("CTB-", key)
 
@@ -732,11 +732,11 @@ let ``rule 5 - an actor with unknown identity cannot extend a known actor's entr
 
 [<Fact>]
 let ``rule 6 - operation keys are escaped injectively`` () =
-    Assert.Equal("EXT-op.op_201", Provenance.operationKey "op 1")
-    Assert.Equal("EXT-op.gh_2f99", Provenance.operationKey "gh/99")
-    Assert.Equal("EXT-op.a_5fb", Provenance.operationKey "a_b")
-    Assert.Equal("EXT-op.caf_c3_a9", Provenance.operationKey "caf\u00e9")
-    let distinct = [ "a b"; "a/b"; "a_b"; "a-b"; "a_20b" ] |> List.map Provenance.operationKey
+    Assert.Equal(Ok "EXT-op.op_201", Provenance.operationKey "op 1")
+    Assert.Equal(Ok "EXT-op.gh_2f99", Provenance.operationKey "gh/99")
+    Assert.Equal(Ok "EXT-op.a_5fb", Provenance.operationKey "a_b")
+    Assert.Equal(Ok "EXT-op.caf_c3_a9", Provenance.operationKey "caf\u00e9")
+    let distinct = [ "a b"; "a/b"; "a_b"; "a-b"; "a_20b"; "a.b"; "a_2eb" ] |> List.map (Provenance.operationKey >> ok)
     Assert.Equal(distinct.Length, (List.distinct distinct).Length)
     for key in distinct do
         Assert.Equal("foreign-execution", Provenance.keyKind key)
@@ -770,32 +770,36 @@ let ``the fault form is built structurally, never by rewriting text inside a car
 
 [<Fact>]
 let ``a block matching a redaction rule is rejected at attach time and never written`` () =
-    let tokenReason =
-        Provenance.discovery exeA1 gemini (Some "rotated the leaked deploy token") [] finding |> ok
-
+    // Key-name rules apply to member names (finding 8, contract 1.2).
     let tokenField =
-        Provenance.receive (sprintf """{"schema":"praxis.provenance/1","contributions":{},"x-api_key-hint":"see vault"}""") |> ok
+        Provenance.receive """{"schema":"praxis.provenance/1","contributions":{},"x-api_key-hint":"see vault"}""" |> ok
 
-    for block in [ tokenReason; tokenField ] do
+    let sessionInContribution =
+        Provenance.receive (sprintf """{"schema":"praxis.provenance/1","contributions":{"%s":{"operations":["created"],"at":"2026-09-26T09:00:00.000Z","actor":{"kind":"human","id":"kevin"},"x-session-ref":"S-1"}}}""" "CTB-20260926-aaaaaaaa")
+        |> ok
+
+    for block in [ tokenField; sessionInContribution ] do
         Assert.NotEmpty(Provenance.redactionFindings Redaction.defaultRules block)
 
         match Provenance.attachWith Redaction.defaultRules block (FaultRecorded finding) with
         | Error message -> Assert.Contains("redaction rule 'credentials'", message)
         | Ok _ -> failwith "expected the block to be rejected"
 
-    // A custom application rule applies too.
+    // A custom application rule applies to field names too, never to free text.
     let customerRule: Redaction.Rule =
         { Name = "customer"
-          AppliesTo = fun (text: string) -> text.Contains("ACME-CUSTOMER") }
+          AppliesTo = fun (text: string) -> text.Contains("acme-customer") }
 
     let custom = Redaction.withRule customerRule Redaction.defaultRules
-    let customerEvidence = Provenance.discovery exeA1 gemini None [ "crm:ACME-CUSTOMER-17" ] finding |> ok
-    Assert.Empty(Provenance.redactionFindings Redaction.defaultRules customerEvidence)
-    Assert.NotEmpty(Provenance.redactionFindings custom customerEvidence)
+    let customerField = Provenance.receive """{"schema":"praxis.provenance/1","contributions":{},"x-acme-customer":"17"}""" |> ok
+    let customerEvidence = Provenance.discovery exeA1 gemini None [ "crm:acme-customer-17" ] finding |> ok
+    Assert.Empty(Provenance.redactionFindings Redaction.defaultRules customerField)
+    Assert.NotEmpty(Provenance.redactionFindings custom customerField)
+    Assert.Empty(Provenance.redactionFindings custom customerEvidence)
 
     // Serialization never writes the matching block, and says so.
-    let payload = Serialization.attributedEvent Redaction.defaultRules (EventId "E-R") (Provenance.attach tokenReason (FaultRecorded finding))
-    Assert.DoesNotContain("leaked deploy token", payload)
+    let payload = Serialization.attributedEvent Redaction.defaultRules (EventId "E-R") (Provenance.attach tokenField (FaultRecorded finding))
+    Assert.DoesNotContain("see vault", payload)
     let node = JsonNode.Parse payload
     Assert.Null(node["provenance"])
     Assert.Contains("credentials", node["provenanceRejected"].GetValue<string>())
@@ -803,10 +807,330 @@ let ``a block matching a redaction rule is rejected at attach time and never wri
     // reportAttributed rejects before anything reaches a sink.
     let collector = Sinks.Collector()
     let config = { Aegis.configure "Chrona" None [ collector.Sink() ] with Persistence = Blocking; Now = fun () -> at }
-    Assert.True(Result.isError (Aegis.reportAttributed config (Provenance.attach tokenReason (FaultRecorded finding))))
+    Assert.True(Result.isError (Aegis.reportAttributed config (Provenance.attach tokenField (FaultRecorded finding))))
     Assert.Empty collector.Events
     Assert.True(Result.isOk (Aegis.reportAttributed config (Provenance.attach discovered (FaultRecorded finding))))
     Assert.Single collector.Events |> ignore
 
     // A clean discovery block has no findings.
     Assert.Empty(Provenance.redactionFindings Redaction.defaultRules discovered)
+
+// ------------------------------------------------ contract revision 1.2
+
+/// An unpaired UTF-16 surrogate, built at run time (a literal could be
+/// re-encoded by the compiler).
+let private lone (code: int) = string (char code)
+
+let private verdictName verdict =
+    match verdict with
+    | ProvenanceVerdict.Supported _ -> "supported"
+    | ProvenanceVerdict.Unsupported _ -> "unsupported"
+    | ProvenanceVerdict.Malformed _ -> "malformed"
+
+[<Fact>]
+let ``1.2 rule 1 - every vendored text case reaches the reference verdict through classify and receive`` () =
+    // Findings 5 and 10: duplicate member names and unpaired surrogates are
+    // malformed, whatever the major version, and neither function throws.
+    let cases = (fixture "text-cases.json").["cases"].AsArray()
+    Assert.Equal(14, cases.Count)
+
+    let failures =
+        [ for item in cases do
+              let text = item["text"].GetValue<string>()
+              let expected = item["expect"].GetValue<string>()
+              let classified = verdictName (Provenance.classify text)
+
+              let received =
+                  match Provenance.receive text with
+                  | Ok block when block.IsSupported -> "supported"
+                  | Ok _ -> "unsupported"
+                  | Error _ -> "malformed"
+
+              if classified <> expected || received <> expected then
+                  $"{name item}: expected {expected}, classify {classified}, receive {received}" ]
+
+    Assert.Empty failures
+
+[<Fact>]
+let ``finding 5 - a duplicate contribution key cannot smuggle an originator past any reader`` () =
+    let smuggled =
+        """{"schema":"praxis.provenance/1","contributions":{"EXE-A":{"operations":["created"],"at":"2026-09-26T08:00:00.000Z","actor":{"kind":"human","id":"mallory"}},"EXE-A":{"operations":["modified"],"at":"2026-09-26T09:00:00.000Z","actor":{"kind":"human","id":"alice"}}}}"""
+
+    match Provenance.classify smuggled with
+    | ProvenanceVerdict.Malformed problems -> Assert.Contains("repeated", String.Join(" ", problems))
+    | other -> failwith $"expected malformed, got {other}"
+
+    Assert.True(Result.isError (Provenance.receive smuggled))
+    // Appending a contribution given as text with a repeated name is refused too.
+    Assert.True(Result.isError (Provenance.appendJson "CTB-20260926-aaaaaaaa" """{"operations":["reviewed"],"at":"2026-09-26T10:00:00.000Z","actor":{"kind":"human","id":"kevin","id":"mallory"}}""" discovered))
+    // A stored event carrying it is reported, not read.
+    let stored = sprintf """{"schema":"aegis/event/v1","eventId":"E1","eventType":"FaultRecorded","faultId":"SF-0001","provenance":%s}""" smuggled
+    Assert.True(Result.isError (Store.provenanceOf stored))
+
+[<Fact>]
+let ``finding 10 - classify, receive and append never throw on unpaired surrogates`` () =
+    for text in [ "{\"schema\":\"praxis.provenance/2\",\"x-a\":\"\\ud800\"}"
+                  "{\"schema\":\"praxis.provenance/1\",\"contributions\":{},\"x-\\udc00\":1}"
+                  "{\"schema\":\"praxis.provenance/1\",\"contributions\":{},\"x-a\":\"" + lone 0xD800 + "\"}"
+                  "{\"schema\":\"praxis.provenance/1\""
+                  null ] do
+        Assert.Equal("malformed", verdictName (Provenance.classify text))
+        Assert.True(Result.isError (Provenance.receive text))
+
+    // A lone surrogate inside an already-parsed node is malformed too.
+    let node = JsonObject()
+    node["schema"] <- JsonValue.Create "praxis.provenance/2"
+    node["x-a"] <- JsonValue.Create(lone 0xD800)
+    Assert.Equal("malformed", verdictName (Provenance.classifyNode node))
+
+    // A contribution built in code with a lone surrogate is refused, never re-encoded.
+    let unpaired = { Provenance.contribution exeA2 codex (at.AddHours 1.0) [ "remediated" ] with Reason = Some("fix " + lone 0xD800) }
+    Assert.True(Result.isError (Provenance.append unpaired discovered))
+
+[<Fact>]
+let ``finding 8 - ordinary finding reasons and evidence pass redaction, real tokens do not`` () =
+    // The reviewer's repro (review2/ae.fsx).
+    let block reason evidence =
+        sprintf
+            """{"schema":"praxis.provenance/1","contributions":{"EXE-20260926T000000000Z-a1a1a1a1":{"operations":["created","discovered"],"at":"2026-09-26T00:00:00.000Z","actor":{"kind":"agent","id":"google/gemini-cli","provider":"google","model":"unknown","runtime":"gemini-cli"},"reason":"%s","evidence":["%s"]}},"derivedFrom":["git:commit/5e1f0c2"]}"""
+            reason
+            evidence
+
+    for reason, evidence in
+        [ "Session cookie lacks the Secure flag", "semgrep:rule/x"
+          "Hard-coded signing key", "aegis:finding/token-expiry"
+          "Password reset link never expires", "x"
+          "Missing CSRF check", "sarif:run/7" ] do
+        let received = Provenance.receive (block reason evidence) |> ok
+        Assert.Empty(Provenance.redactionFindings Redaction.defaultRules received)
+        Assert.True(Result.isOk (Provenance.attachWith Redaction.defaultRules received (FaultRecorded finding)), reason)
+
+    // captureAttributed keeps the attribution for such a finding.
+    let collector = Sinks.Collector()
+    let rejected = Collections.Generic.List<string>()
+    let config =
+        { Aegis.configure "Chrona" None [ collector.Sink() ] with
+            Persistence = Blocking
+            Now = fun () -> at
+            Fallback = rejected.Add }
+    let scope = Aegis.scope config "Chrona.Session" Map.empty
+    let classify scope ex = { Aegis.faultOf config scope (FaultCode "SEC") SecurityFailure FaultSeverity.Critical ApplicationUnsafe Persistent ManualIntervention "blocked" ex with Diagnostics = finding.Diagnostics }
+    Aegis.captureAttributed config scope classify (Provenance.discovery exeA1 gemini (Some "Session cookie lacks the Secure flag") [ "aegis:finding/token-expiry" ]) (fun () -> failwith "boom") |> ignore
+    Assert.Empty rejected
+    let stored = Store.provenanceOf (collector.Events |> List.exactlyOne) |> ok |> Option.get
+    Assert.Equal(Some "Session cookie lacks the Secure flag", (Provenance.originator stored |> Option.get).Reason)
+
+    // A real token is still refused: at the boundary, on append, and as lineage.
+    let token = "ghp_" + String('A', 36)
+    Assert.True(Result.isError (Provenance.receive (block token "x")))
+    Assert.True(Result.isError (Provenance.discovery exeA1 gemini (Some $"leaked {token}") [] finding))
+    Assert.True(Result.isError (Provenance.discovery exeA1 gemini None [ token ] finding))
+    Assert.True(Provenance.isCredentialLike ("Authorization: Bearer " + String('a', 24)))
+
+[<Fact>]
+let ``1.2 rule 2 - blank and credential checks use ASCII semantics`` () =
+    let withId (id: string) =
+        let actor = JsonObject()
+        actor["kind"] <- JsonValue.Create "human"
+        actor["id"] <- JsonValue.Create id
+        let entry = JsonObject()
+        entry["operations"] <- JsonArray(JsonValue.Create "created")
+        entry["at"] <- JsonValue.Create "2026-09-26T08:00:00.000Z"
+        entry["actor"] <- actor
+        let contributions = JsonObject()
+        contributions["CTB-20260926-00000001"] <- entry
+        let block = JsonObject()
+        block["schema"] <- JsonValue.Create "praxis.provenance/1"
+        block["contributions"] <- contributions
+        verdictName (Provenance.classifyNode block)
+
+    for content in [ "\u0085"; "\ufeff"; "\u001c"; "\u00a0" ] do
+        Assert.Equal("supported", withId content)
+
+    for blank in [ " \t\r\n"; "\u000b\u000c" ] do
+        Assert.Equal("malformed", withId blank)
+
+    Assert.True(Provenance.isCredentialLike ("\u00e9bearer " + String('a', 20)))
+    Assert.True(Provenance.isCredentialLike ("BeArEr\t" + String('a', 20)))
+    Assert.False(Provenance.isCredentialLike ("xbearer " + String('a', 20)))
+    Assert.False(Provenance.isCredentialLike ("_bearer " + String('a', 20)))
+    Assert.False(Provenance.isCredentialLike ("bearer\u0085" + String('a', 20)))
+    Assert.False(Provenance.isCredentialLike ("bearer " + String('\u212a', 20)))
+
+    // Identity declarations: U+0085 is content, ASCII blank is undeclared.
+    Assert.Equal("\u0085", (ProvenanceIdentity.fromDeclarations (env [ "ROS_ACTOR_KIND", "human"; "ROS_ACTOR", "\u0085" ])).Actor.Id)
+    Assert.Equal("unknown", (ProvenanceIdentity.fromDeclarations (env [ "ROS_ACTOR_KIND", "human"; "ROS_ACTOR", " \t" ])).Actor.Id)
+
+[<Fact>]
+let ``1.2 rule 3 - every vendored lineage case reaches the reference result`` () =
+    let cases = (fixture "lineage-cases.json").["cases"].AsArray()
+    Assert.Equal(8, cases.Count)
+
+    let failures =
+        [ for item in cases do
+              let expectedOk = item["ok"].GetValue<bool>()
+              let references = item["references"].AsArray() |> Seq.toList
+
+              // Aegis's API takes a string list, so a non-string reference
+              // is refused by the type system before addLineage is reached.
+              let strings =
+                  references
+                  |> List.map (fun node ->
+                      match node.GetValueKind() with
+                      | Text.Json.JsonValueKind.String -> Some(node.GetValue<string>())
+                      | _ -> None)
+
+              let result =
+                  if strings |> List.exists Option.isNone then
+                      Error "non-string reference"
+                  else
+                      Provenance.receive (item["block"].ToJsonString())
+                      |> Result.mapError (fun problems -> String.Join("; ", problems))
+                      |> Result.bind (Provenance.addLineage (strings |> List.choose id))
+
+              match expectedOk, result with
+              | true, Ok block ->
+                  let expected = item["derivedFrom"].AsArray() |> Seq.map (fun node -> node.GetValue<string>()) |> Seq.toList
+
+                  if Provenance.lineage block <> expected then
+                      $"{name item}: expected {expected}, got {Provenance.lineage block}"
+              | false, Error _ -> ()
+              | true, Error problem -> $"{name item}: expected ok, got {problem}"
+              | false, Ok _ -> $"{name item}: expected a refusal" ]
+
+    Assert.Empty failures
+
+[<Fact>]
+let ``1.2 rule 3 - lineage is checked wherever Aegis adds it`` () =
+    let token = "ghp_" + String('A', 36)
+    let withCommit sha = { finding with Diagnostics = { finding.Diagnostics with Environment = Some { unknownEnvironment with CommitSha = Some sha } } }
+    // A credential in the fault's own commit reference refuses the block; nothing is stored.
+    Assert.True(Result.isError (Provenance.discovery exeA1 gemini None [] (withCommit token)))
+    // A U+0085 commit is content, never silently dropped.
+    let nel = Provenance.discovery exeA1 gemini None [] (withCommit "\u0085") |> ok
+    Assert.Equal<string list>([ "git:commit/\u0085" ], Provenance.lineage nel)
+    Assert.True(Result.isError (Provenance.addLineage [ "RQ-1" + lone 0xD800 ] discovered))
+    Assert.True(Result.isError (Provenance.addLineage [ " \t" ] discovered))
+    Assert.Equal<string list>([ "git:commit/5e1f0c2"; "RQ-1"; "RQ-2" ], Provenance.addLineage [ "RQ-1"; "RQ-2"; "RQ-1" ] discovered |> ok |> Provenance.lineage)
+
+[<Fact>]
+let ``1.2 rule 4 - every vendored envelope key case escapes per code point`` () =
+    // Aegis receives no envelopes, but derives keys with the same
+    // escapeKeySegment; the v1 envelope rule is applied here to check it.
+    let cases = (fixture "envelope-key-cases.json").["cases"].AsArray()
+    Assert.Equal(12, cases.Count)
+
+    let unescape (text: string) (field: string) =
+        let m = Text.RegularExpressions.Regex.Match(text, $"\"{field}\":\"((?:[^\"\\\\]|\\\\.)*)\"")
+        Text.RegularExpressions.Regex.Unescape m.Groups[1].Value
+
+    let failures =
+        [ for item in cases do
+              let operationId, run =
+                  match item["envelope"] with
+                  | null -> unescape (item["envelopeText"].GetValue<string>()) "operationId", None
+                  | envelope ->
+                      let run = envelope["actor"].["runId"]
+
+                      envelope["operationId"].GetValue<string>(),
+                      (if run["state"].GetValue<string>() = "known" && not (Provenance.isBlank (run["value"].GetValue<string>())) then
+                           Some(run["value"].GetValue<string>())
+                       else
+                           None)
+
+              let key =
+                  match run with
+                  | Some value -> Provenance.escapeKeySegment value |> Result.map (fun segment -> $"EXT-run.{segment}")
+                  | None -> Provenance.operationKey operationId
+
+              match item["error"], key with
+              | null, Ok actual when actual = item["key"].GetValue<string>() ->
+                  if Provenance.keyKind actual <> "foreign-execution" then $"{name item}: {actual} is not a valid key"
+              | null, other ->
+                  let expected = item["key"].GetValue<string>()
+                  $"{name item}: expected {expected}, got {other}"
+              | _, Error _ -> ()
+              | _, Ok actual -> $"{name item}: expected an error, got {actual}" ]
+
+    Assert.Empty failures
+
+[<Fact>]
+let ``1.2 rule 4 - dots are escaped, so a run id cannot forge a namespace`` () =
+    Assert.Equal(Ok "EXT-op.vigila_2e7", Provenance.operationKey "vigila.7")
+    Assert.NotEqual(Provenance.operationKey "a.b", Provenance.operationKey "a_2eb")
+    Assert.Equal(Ok "EXT-op.op-_f0_9f_98_80", Provenance.operationKey "op-\U0001F600")
+    Assert.NotEqual(Provenance.operationKey "op-\U0001F600", Provenance.operationKey "op-\U0001F601")
+    Assert.True(Result.isError (Provenance.operationKey ""))
+    Assert.True(Result.isError (Provenance.operationKey("op-" + lone 0xD83D)))
+    Assert.Equal(Ok "EXT-github-actions.run_2e7", Provenance.foreignExecutionKey "github-actions" "run.7")
+    Assert.Equal(Ok ciRun, Provenance.foreignExecutionKey "github-actions" "run-777-1")
+    // An agent whose operation id cannot form a key gets no invented key.
+    let agentIdentity = { Actor = codex; Execution = None }
+    Assert.True(Result.isError (ProvenanceIdentity.keyFor "" at agentIdentity))
+
+[<Fact>]
+let ``1.2 rule 6 - a stored null provenance is malformed, not absent`` () =
+    let stored = """{"schema":"aegis/event/v1","eventId":"E1","eventType":"FaultRecorded","faultId":"SF-0001","provenance":null}"""
+
+    match Store.provenanceOf stored with
+    | Error(Store.Malformed _) -> ()
+    | other -> failwith $"expected Malformed, got {other}"
+
+    Assert.True(Result.isError (Store.provenanceHistory [ stored ]))
+
+[<Fact>]
+let ``suspicion - an event written with provenanceRejected is distinguishable from a legacy event`` () =
+    let rejectedBlock = Provenance.receive """{"schema":"praxis.provenance/1","contributions":{},"x-api_key-hint":"see vault"}""" |> ok
+    let rejected = Serialization.attributedEvent Redaction.defaultRules (EventId "E-REJ") (Provenance.attach rejectedBlock (FaultRecorded finding))
+    let legacy = Serialization.event Redaction.defaultRules (EventId "E-OLD") (FaultRecorded finding)
+
+    match Store.storedProvenance rejected with
+    | Ok(StoredProvenance.Rejected reason) -> Assert.Contains("credentials", reason)
+    | other -> failwith $"expected Rejected, got {other}"
+
+    Assert.Equal(Ok StoredProvenance.Absent, Store.storedProvenance legacy)
+
+    match Store.provenanceOf rejected with
+    | Error(Store.Rejected reason) -> Assert.Contains("rejected when written", reason)
+    | other -> failwith $"expected Rejected, got {other}"
+
+    Assert.Equal(Ok None, Store.provenanceOf legacy)
+
+    let projected = (Store.provenanceHistory [ legacy; rejected ] |> ok)[finding.Id.Value]
+    Assert.False projected.Attributed
+    Assert.Single projected.Rejected |> ignore
+    Assert.Contains("E-REJ", projected.Rejected.Head)
+    let legacyOnly = (Store.provenanceHistory [ legacy ] |> ok)[finding.Id.Value]
+    Assert.Empty legacyOnly.Rejected
+
+    // A stored event may not claim both, and the reason must be a string.
+    let both = rejected.Replace("\"provenanceRejected\"", "\"provenance\":{\"schema\":\"praxis.provenance/1\",\"contributions\":{}},\"provenanceRejected\"")
+    Assert.True(Result.isError (Store.storedProvenance both))
+    Assert.True(Result.isError (Store.storedProvenance (legacy.TrimEnd('}') + ",\"provenanceRejected\":7}")))
+
+[<Fact>]
+let ``suspicion - the fold preserves unknown top-level fields such as subject`` () =
+    let withSubject =
+        (sprintf """{"schema":"praxis.provenance/1","contributions":{"%s":{"operations":["created","discovered"],"at":"2026-09-26T09:00:00.000Z","actor":{"kind":"agent","id":"google/gemini-cli","provider":"google","model":"unknown","runtime":"gemini-cli"}}},"subject":"aegis:finding/SF-0001","x-scanner":{"rule":"sql-1"}}""" exeA1)
+        |> Provenance.receive
+        |> ok
+
+    let later =
+        (sprintf """{"schema":"praxis.provenance/1","contributions":{"%s":{"operations":["remediated"],"at":"2026-09-26T10:00:00.000Z","actor":{"kind":"agent","id":"openai/codex","provider":"openai","model":"gpt-5-codex","runtime":"codex"}}},"subject":"aegis:finding/OTHER","x-ticket":"SEC-7"}""" exeA2)
+        |> Provenance.receive
+        |> ok
+
+    let events = [ Provenance.attach withSubject (FaultRecorded finding); Provenance.attach later (RecoveryStarted(finding.Id, attempt 1 Agent (at.AddHours 1.0))) ]
+    let accumulated = ProvenanceHistory.forFault finding.Id events
+    let json = JsonNode.Parse accumulated.Block.Json
+    Assert.Equal("aegis:finding/SF-0001", json["subject"].GetValue<string>())
+    Assert.Equal("sql-1", json["x-scanner"].["rule"].GetValue<string>())
+    Assert.Equal("SEC-7", json["x-ticket"].GetValue<string>())
+    // The differing later subject is reported, never silently dropped.
+    Assert.Single accumulated.Conflicts |> ignore
+    Assert.Contains("subject", accumulated.Conflicts.Head)
+    Assert.Empty(Provenance.preservationViolations withSubject accumulated.Block)
+
+    // The stored fold agrees.
+    let payloads = events |> List.mapi (fun i e -> Serialization.attributedEvent Redaction.defaultRules (EventId $"E{i}") e)
+    Assert.Equal(accumulated.Block, ((Store.provenanceHistory payloads |> ok)[finding.Id.Value]).Block)

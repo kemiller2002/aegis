@@ -88,6 +88,20 @@
             "modified"
           ],
           "reason": "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
+        },
+        "EXE-20260926T204110318Z-32ff901f": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-09-26T20:49:16.991Z",
+          "operations": [
+            "modified"
+          ],
+          "reason": "Apply Praxis provenance contract revision 1.2 and second-review findings (FEAT-ECHELON-PROVENANCE-R12)"
         }
       }
     },
@@ -110,6 +124,6 @@
     ],
     "title": "Fault contribution provenance carries the Praxis interchange block",
     "updated": "2026-09-26",
-    "version": "1.1.0"
+    "version": "1.2.0"
   }
 ]

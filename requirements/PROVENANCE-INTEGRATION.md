@@ -2,7 +2,7 @@
 id: GV-AEGIS-006
 title: Contribution provenance on faults and security findings
 status: draft
-version: 1.1.0
+version: 1.2.0
 owners:
   - repository-governance
 created: 2026-09-26
@@ -35,6 +35,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
+    EXE-20260926T204110318Z-32ff901f:
+      operations: [modified]
+      at: 2026-09-26T20:49:15.941Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.2 and second-review findings (FEAT-ECHELON-PROVENANCE-R12)"
 ---
 
 # Contribution provenance on faults and security findings
@@ -87,15 +97,21 @@ section "Contribution provenance".
   appending each event's contributions with Praxis's rules: same key merges
   operations and advances `last` only when the actor agrees; no
   re-attribution; no second or late `created`; nothing deleted, reordered or
-  rewritten; unknown fields kept. A contribution the fold refuses is reported
-  as a conflict, never silently dropped. (RQ-ROS-2026-A004)
+  rewritten; unknown fields kept, including unknown top-level fields of each
+  event's block (such as `subject`), where the earliest value wins and a
+  differing later value is reported as a conflict. A contribution the fold
+  refuses is reported as a conflict, never silently dropped. (RQ-ROS-2026-A004)
 
 - **AEG-PROV-005 -- Affected-artifact lineage is not authorship.** The
   artifacts a finding concerns (a Git commit, a file, a Praxis artifact, a
   record in another system) are recorded in `derivedFrom` with namespaced
   references (`git:commit/<sha>`, `aegis:fault/<id>`, `praxis:RQ-...`),
-  separate from contributions. Lineage never contributes authors.
-  (RQ-ROS-2026-A008)
+  separate from contributions. Lineage never contributes authors. Lineage is
+  checked like contributions (contract revision 1.2): the block must be
+  supported, every reference non-blank, well-formed Unicode and
+  credential-free, duplicates are dropped keeping the first, and the result
+  must classify as supported. A refusal is an error; lineage is never dropped
+  silently. (RQ-ROS-2026-A008; DF-ROS-2026-A037 revision 1.2)
 
 - **AEG-PROV-006 -- Evidence provenance.** The diagnostic material that
   supports a discovery (environment metadata, snapshot reference, breadcrumb
@@ -115,16 +131,29 @@ section "Contribution provenance".
   append never returns a block that would classify as anything but
   supported, a same-key merge keeps incoming unknown fields and the later
   `last` and refuses an unknown actor extending a known one, and
-  operation-derived keys are escaped injectively. A block that matches one of
-  the application's redaction rules (a field name or free-text value) is
-  rejected when attached or reported, never redacted in place; the serializer
-  refuses to write one and records `provenanceRejected` instead.
-  (RQ-ROS-2026-A015, A017; DF-ROS-2026-A037 revision 1.1)
+  operation-derived keys are escaped injectively. Praxis contract revision
+  1.2 also applies: provenance is read as JSON text, and text that is not
+  JSON, repeats a member name within any one object, or holds an unpaired
+  UTF-16 surrogate is malformed whatever its major version; `classify` and
+  `receive` never throw; "blank" means empty after trimming ASCII whitespace
+  only, and credential patterns use explicit ASCII classes; key segments are
+  escaped per Unicode code point, with everything but ASCII letters, digits
+  and `-` (so `.` and `_` too) becoming `_xx` per UTF-8 byte, and an id that
+  is empty or not well-formed Unicode cannot form a key. Redaction rules are
+  key-name rules: a block whose field name (other than a contribution key)
+  matches one of the application's redaction rules is rejected when attached
+  or reported, never redacted in place; free-text values get the contract
+  credential check instead, so an ordinary finding ("Session cookie lacks the
+  Secure flag") is accepted and a real token is not. The serializer refuses
+  to write a matching block and records `provenanceRejected` instead.
+  (RQ-ROS-2026-A015, A017; DF-ROS-2026-A037 revisions 1.1 and 1.2)
 
 - **AEG-PROV-008 -- Legacy events stay valid and unattributed.** Events
   written before this capability, and events without a block, remain valid and
   read as *unattributed*. Aegis never backfills or infers historical actors.
-  (RQ-ROS-2026-A004, A007)
+  An event written with `provenanceRejected` reads back as rejected, with its
+  reason, never as unattributed; a stored `"provenance": null` is malformed,
+  not absent. (RQ-ROS-2026-A004, A007; DF-ROS-2026-A037 revision 1.2)
 
 - **AEG-PROV-009 -- Tutela projection carries contribution provenance.** The
   Tutela evidence projection of a security finding MAY carry the fault's
@@ -148,11 +177,34 @@ section "Contribution provenance".
   reaches the same verdict and warning count as the Praxis reference library
   on every vendored `cases.json` case, replays the vendored
   `echelon-chain.json` finding `aegis:finding/SF-0001` with the expected
-  discovered/remediated/validated roles, and a test detects any local edit to
-  the vendored fixtures by SHA-256. (RQ-ROS-2026-A018)
+  discovered/remediated/validated roles, reaches the reference verdict on
+  every `text-cases.json` case and the reference result on every
+  `lineage-cases.json` case, derives every `envelope-key-cases.json` key
+  with its key-segment escaping, and a test detects any local edit to the
+  vendored fixtures by SHA-256. (RQ-ROS-2026-A018)
 
 - **AEG-PROV-012 -- Backward compatibility.** The capability is additive:
   no existing public record, union case or function signature changes, the C#
   consumability surface keeps compiling, and existing consumers of
-  `EchelonFoundry.Aegis.Core` 1.0.0 (including Praxis) are unaffected.
-  (AEG-CORE-036, AEG-CORE-037, AEG-LOG-012)
+  `EchelonFoundry.Aegis.Core` 1.0.0 (including Praxis) are unaffected. The
+  provenance surface itself is unreleased, so revision 1.2 may change it:
+  `Provenance.escapeKeySegment`, `Provenance.operationKey` and
+  `ProvenanceIdentity.keyFor` now return `Result`, and `FaultProvenance`
+  gains `Rejected`. (AEG-CORE-036, AEG-CORE-037, AEG-LOG-012)
+
+## Revision notes
+
+- **1.2.0 (2026-09-26, FEAT-ECHELON-PROVENANCE-R12).** Praxis contract
+  revision 1.2 (Praxis `b003718`) and the second adversarial review.
+  AEG-PROV-007: text-level well-formedness (duplicate member names, unpaired
+  surrogates), `classify`/`receive` never throw, ASCII whitespace and
+  credential semantics, per-code-point key escaping including `.`, and
+  redaction rules applied to field names only with the credential check for
+  values (review finding 8). AEG-PROV-005: lineage is checked. AEG-PROV-004:
+  unknown top-level fields survive the fold. AEG-PROV-008: `provenanceRejected`
+  is distinguishable on read; a stored `null` is malformed. AEG-PROV-011: the
+  new text, lineage and envelope-key fixtures. AEG-PROV-012: note on the
+  unreleased provenance surface.
+- **1.1.0 (2026-09-26, FEAT-ECHELON-PROVENANCE-R2).** Praxis contract
+  revision 1.1 and the first review's findings.
+- **1.0.0 (2026-09-26, FEAT-ECHELON-PROVENANCE).** Initial requirements.

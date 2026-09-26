@@ -1,6 +1,7 @@
 namespace Aegis
 
 open System
+open System.Collections.Generic
 open System.Globalization
 open System.Security.Cryptography
 open System.Text
@@ -119,7 +120,23 @@ type FaultProvenance =
       Carried: ProvenanceBlock list
       /// Contributions the fold refused (re-attribution, a late or second
       /// `created`), reported rather than silently dropped.
-      Conflicts: string list }
+      Conflicts: string list
+      /// Events whose provenance was rejected when written (stored as
+      /// `provenanceRejected`), with the recorded reason: never mistaken for
+      /// a legacy or unattributed event. Requirement: AEG-PROV-008.
+      Rejected: string list }
+
+/// What a stored event says about its contribution provenance.
+/// Requirements: AEG-PROV-007, AEG-PROV-008.
+[<RequireQualifiedAccess>]
+type StoredProvenance =
+    /// No provenance field: a legacy or genuinely unattributed event.
+    | Absent
+    /// A block that passed the boundary on read (supported or unsupported).
+    | Carried of ProvenanceBlock
+    /// The writer refused the block (it matched a redaction rule) and
+    /// recorded `provenanceRejected` with this reason instead.
+    | Rejected of reason: string
 
 /// The `praxis.provenance/1` codec: classify, append, add lineage, check
 /// preservation, and read roles. Pure: inputs are never mutated.
@@ -163,12 +180,35 @@ module Provenance =
           "AKIA[0-9A-Z]{16}"
           "xox[abprs]-[A-Za-z0-9-]{10,}"
           "-----BEGIN [A-Z ]*PRIVATE KEY-----"
-          "(?i)\\bbearer\\s+[A-Za-z0-9._~+/=-]{16,}"
+          // Contract 1.2: ASCII-only semantics -- no word boundary, \\s class or case folding,
+          // whose meaning differs between .NET, JavaScript and Python.
+          "(?:^|[^A-Za-z0-9_])[Bb][Ee][Aa][Rr][Ee][Rr][\\t\\n\\v\\f\\r ]+[A-Za-z0-9._~+/=-]{16,}"
           "eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\\." ]
         |> List.map (fun pattern -> Regex(pattern, RegexOptions.CultureInvariant))
 
     let isCredentialLike (value: string) =
         credentialPatterns |> List.exists (fun pattern -> pattern.IsMatch value)
+
+    /// Contract 1.2: whitespace is ASCII only (tab, LF, VT, FF, CR, space).
+    /// U+0085, U+FEFF, U+001C, U+00A0 and every other character are content.
+    let private asciiWhitespace = [| '\t'; '\n'; '\011'; '\012'; '\r'; ' ' |]
+
+    let asciiTrim (value: string) = value.Trim asciiWhitespace
+
+    /// Empty after trimming ASCII whitespace only.
+    let isBlank (value: string) = isNull value || (asciiTrim value).Length = 0
+
+    let private strictUtf8 = UTF8Encoding(false, true)
+
+    /// Contract 1.2: well-formed Unicode, i.e. no unpaired UTF-16 surrogate
+    /// (which has no UTF-8 form and cannot be carried verbatim).
+    let isWellFormed (value: string) =
+        not (isNull value)
+        && (try
+                strictUtf8.GetByteCount value |> ignore
+                true
+            with :? EncoderFallbackException ->
+                false)
 
     // ------------------------------------------------------------ JSON helpers
 
@@ -183,7 +223,7 @@ module Provenance =
         | _ -> None
 
     let private isNonEmpty (node: JsonNode) =
-        asString node |> Option.exists (fun text -> text.Trim().Length > 0)
+        asString node |> Option.exists (isBlank >> not)
 
     let private present (o: JsonObject) (name: string) = o.ContainsKey name
 
@@ -217,7 +257,7 @@ module Provenance =
         instant value |> Option.defaultValue Int64.MaxValue
 
     let private isKnown (value: string option) =
-        value |> Option.exists (fun text -> text.Trim().Length > 0 && text.Trim() <> Unknown)
+        value |> Option.exists (fun text -> not (isBlank text) && asciiTrim text <> Unknown)
 
     /// UTC, millisecond precision, `Z` suffix: the same canonical form as
     /// every other Aegis timestamp (AEG-LOG-025).
@@ -242,6 +282,30 @@ module Provenance =
 
         walk "" node
 
+    /// Dotted paths of every member name or string value that is not
+    /// well-formed Unicode (contract 1.2). Reading such a value from a parsed
+    /// node can throw; that counts as the same finding.
+    let surrogateFindings (node: JsonNode) =
+        let rec walk (path: string) (current: JsonNode) : string list =
+            match current with
+            | :? JsonObject as item ->
+                item
+                |> Seq.toList
+                |> List.collect (fun pair ->
+                    let child = if path.Length = 0 then pair.Key else $"{path}.{pair.Key}"
+                    (if isWellFormed pair.Key then [] else [ child ]) @ walk child pair.Value)
+            | :? JsonArray as items -> items |> Seq.toList |> List.mapi (fun i value -> walk $"{path}[{i}]" value) |> List.concat
+            | :? JsonValue as value ->
+                try
+                    match value.TryGetValue<string>() with
+                    | true, text when not (isWellFormed text) -> [ path ]
+                    | _ -> []
+                with :? InvalidOperationException ->
+                    [ path ]
+            | _ -> []
+
+        walk "" node
+
     // ----------------------------------------------------------------- keys
 
     /// "execution", "foreign-execution", "contribution" or "invalid".
@@ -256,35 +320,47 @@ module Provenance =
         let m = foreignKey.Match key
         if m.Success then Some m.Groups[1].Value else None
 
-    /// Builds an `EXT-<system>.<run-id>` key, refusing ids it cannot carry.
-    let foreignExecutionKey (system: string) (runId: string) =
-        let key = $"EXT-{system}.{runId}"
-
-        if foreignKey.IsMatch key && foreignSystem key = Some system then
-            Ok key
+    /// Injective key escaping (contract 1.2): per Unicode code point, ASCII
+    /// letters, digits and '-' pass through; everything else, '.' and '_'
+    /// included, becomes `_xx` per UTF-8 byte (lower-case hex). So two
+    /// different ids never map to the same key, a segment never contains a
+    /// '.', and characters outside the BMP are escaped whole: "op 1" ->
+    /// "op_201", "vigila.7" -> "vigila_2e7", U+1F600 -> "_f0_9f_98_80".
+    /// An empty id, or one that is not well-formed Unicode, cannot form a key.
+    let escapeKeySegment (text: string) : Result<string, string> =
+        if isNull text || text.Length = 0 then
+            Error "a key segment must be a non-empty string"
+        elif not (isWellFormed text) then
+            Error "a key segment must be well-formed Unicode (unpaired UTF-16 surrogate)"
         else
-            Error $"cannot form a foreign execution key from system '{system}' and run '{runId}'"
+            let passes (c: int) =
+                (c >= int 'A' && c <= int 'Z') || (c >= int 'a' && c <= int 'z') || (c >= int '0' && c <= int '9') || c = int '-'
 
-    /// Injective key escaping (contract 1.1): '_' and every character a key
-    /// cannot carry become `_xx` per UTF-8 byte (lower-case hex), so two
-    /// different ids never map to the same key. "op 1" -> "op_201".
-    let escapeKeySegment (text: string) =
-        let builder = StringBuilder()
+            text.EnumerateRunes()
+            |> Seq.map (fun rune ->
+                if passes rune.Value then
+                    string (char rune.Value)
+                else
+                    Encoding.UTF8.GetBytes(rune.ToString()) |> Array.map (fun b -> "_" + b.ToString("x2")) |> String.concat "")
+            |> String.concat ""
+            |> Ok
 
-        for rune in text.EnumerateRunes() do
-            let c = rune.Value
+    /// Builds an `EXT-<system>.<run-id>` key, escaping the run id with
+    /// `escapeKeySegment` and refusing a system or id it cannot carry.
+    let foreignExecutionKey (system: string) (runId: string) =
+        escapeKeySegment runId
+        |> Result.bind (fun segment ->
+            let key = $"EXT-{system}.{segment}"
 
-            if (c >= int 'A' && c <= int 'Z') || (c >= int 'a' && c <= int 'z') || (c >= int '0' && c <= int '9') || c = int '.' || c = int '-' then
-                builder.Append(char c) |> ignore
+            if foreignKey.IsMatch key && foreignSystem key = Some system then
+                Ok key
             else
-                for b in Encoding.UTF8.GetBytes(rune.ToString()) do
-                    builder.Append('_').Append(b.ToString("x2")) |> ignore
-
-        builder.ToString()
+                Error $"cannot form a foreign execution key from system '{system}' and run '{runId}'")
 
     /// The key for work known only by an operation id: `EXT-op.<operationId>`,
-    /// escaped injectively.
-    let operationKey (operationId: string) = $"EXT-op.{escapeKeySegment operationId}"
+    /// escaped injectively; Error when the id cannot form a key.
+    let operationKey (operationId: string) =
+        escapeKeySegment operationId |> Result.map (fun segment -> $"EXT-op.{segment}")
 
     /// The key Praxis gives a non-agent contributor outside any execution:
     /// `CTB-<UTC day>-<first 8 hex of sha256(kind \0 id)>`, so one actor's
@@ -412,8 +488,7 @@ module Provenance =
             let keys = many |> List.map (fun pair -> pair.Key) |> String.concat ", "
             [ $"more than one contribution claims 'created': {keys}" ]
 
-    /// Classify a parsed block. Requirement: AEG-PROV-007.
-    let classifyNode (node: JsonNode) : ProvenanceVerdict =
+    let private classifyObject (node: JsonNode) : ProvenanceVerdict =
         match node with
         | :? JsonObject as block ->
             match credentialFindings block with
@@ -462,19 +537,72 @@ module Provenance =
                     | _ -> ProvenanceVerdict.Malformed [ "contributions must be an object keyed by EXE-, EXT-, or CTB- keys" ]
         | _ -> ProvenanceVerdict.Malformed [ "provenance must be a JSON object" ]
 
-    let private parse (json: string) =
+    /// Classify a parsed block. Never throws (contract 1.2): a string that is
+    /// not well-formed Unicode, or a repeated member name that surfaces only
+    /// when the node is enumerated, is malformed. Requirement: AEG-PROV-007.
+    let classifyNode (node: JsonNode) : ProvenanceVerdict =
         try
-            match JsonNode.Parse json with
-            | null -> Error "provenance must be a JSON object"
-            | node -> Ok node
-        with ex ->
-            Error $"provenance is not valid JSON: {ex.Message}"
+            match surrogateFindings node with
+            | [] -> classifyObject node
+            | paths ->
+                paths
+                |> List.map (fun path -> $"{path}: unpaired UTF-16 surrogate; provenance must be well-formed Unicode")
+                |> ProvenanceVerdict.Malformed
+        with
+        | :? ArgumentException as error -> ProvenanceVerdict.Malformed [ $"provenance repeats a member name within one object: {error.Message}" ]
+        | :? InvalidOperationException as error -> ProvenanceVerdict.Malformed [ $"provenance is not well-formed: {error.Message}" ]
 
-    /// Classify a received block's JSON text.
+    /// Member names repeated within any one object, read from the JSON text
+    /// itself (contract 1.2): a node-based reader keeps only one of them, so
+    /// two readers could disagree about which contribution is real.
+    let private duplicateMembers (bytes: byte array) =
+        let mutable reader = Utf8JsonReader(ReadOnlySpan<byte>(bytes), JsonReaderOptions(CommentHandling = JsonCommentHandling.Disallow))
+        let scopes = Stack<HashSet<string> option>()
+        let found = List<string>()
+
+        while reader.Read() do
+            match reader.TokenType with
+            | JsonTokenType.StartObject -> scopes.Push(Some(HashSet<string>(StringComparer.Ordinal)))
+            | JsonTokenType.StartArray -> scopes.Push None
+            | JsonTokenType.EndObject
+            | JsonTokenType.EndArray -> scopes.Pop() |> ignore
+            | JsonTokenType.PropertyName ->
+                let name = reader.GetString()
+
+                match scopes.Peek() with
+                | Some seen when not (seen.Add name) -> found.Add name
+                | _ -> ()
+            // Unescaping a string surfaces an unpaired surrogate escape.
+            | JsonTokenType.String -> reader.GetString() |> ignore
+            | _ -> ()
+
+        found |> Seq.toList
+
+    /// Read provenance JSON text (contract 1.2): text that is not JSON, not
+    /// well-formed Unicode, or that repeats a member name within any one
+    /// object is malformed, whatever its major version. Never throws.
+    let private parse (json: string) : Result<JsonNode, string list> =
+        if isNull json then
+            Error [ "provenance text is required" ]
+        else
+            try
+                match duplicateMembers (strictUtf8.GetBytes json) with
+                | [] ->
+                    match JsonNode.Parse json with
+                    | null -> Error [ "provenance must be a JSON object" ]
+                    | node -> Ok node
+                | names -> Error(names |> List.distinct |> List.map (fun name -> $"'{name}': member name repeated within one object"))
+            with
+            | :? EncoderFallbackException -> Error [ "provenance text is not well-formed Unicode" ]
+            | :? JsonException as error -> Error [ $"provenance is not valid JSON: {error.Message}" ]
+            | :? InvalidOperationException -> Error [ "provenance holds an unpaired UTF-16 surrogate escape" ]
+            | :? ArgumentException as error -> Error [ $"provenance is not valid JSON: {error.Message}" ]
+
+    /// Classify a received block's JSON text. Never throws.
     let classify (json: string) : ProvenanceVerdict =
         match parse json with
         | Ok node -> classifyNode node
-        | Error problem -> ProvenanceVerdict.Malformed [ problem ]
+        | Error problems -> ProvenanceVerdict.Malformed problems
 
     let private ofNode (node: JsonNode) =
         match classifyNode node with
@@ -488,9 +616,7 @@ module Provenance =
     /// kept verbatim; malformed ones are rejected with their problems, never
     /// repaired. Requirement: AEG-PROV-007.
     let receive (json: string) : Result<ProvenanceBlock, string list> =
-        match parse json with
-        | Ok node -> ofNode node
-        | Error problem -> Error [ problem ]
+        parse json |> Result.bind ofNode
 
     /// A new, empty (unattributed) `praxis.provenance/1` block.
     let empty =
@@ -632,16 +758,16 @@ module Provenance =
     let private appendNode (key: string) (contribution: JsonObject) (block: ProvenanceBlock) =
         // Contract 1.1: credential-check the incoming contribution (its key
         // included) before anything else.
-        let secrets =
-            let wrapper = JsonObject()
-            wrapper[key] <- contribution.DeepClone()
-            credentialFindings wrapper
+        let wrapper = JsonObject()
+        wrapper[key] <- contribution.DeepClone()
 
         let problems =
-            if not secrets.IsEmpty then
+            match surrogateFindings wrapper, credentialFindings wrapper with
+            | (_ :: _ as unpaired), _ ->
+                unpaired |> List.map (fun path -> $"{path}: unpaired UTF-16 surrogate; provenance must be well-formed Unicode")
+            | [], (_ :: _ as secrets) ->
                 secrets |> List.map (fun path -> $"{path}: credential-like value; provenance must never carry authentication material")
-            else
-                contributionProblems key contribution
+            | [], [] -> contributionProblems key contribution
 
         if not block.supported then
             Error $"refusing to append to an unsupported provenance block ({block.schema})"
@@ -669,31 +795,86 @@ module Provenance =
         match parse contributionJson with
         | Ok(:? JsonObject as node) -> appendNode key node block
         | Ok _ -> Error $"contributions.{key} must be an object"
-        | Error problem -> Error problem
+        | Error problems -> Error(String.Join("; ", problems))
 
     /// Add lineage references -- never authorship -- keeping existing order.
-    /// Requirement: AEG-PROV-005.
+    /// Held to the same rules as contributions (contract 1.2): the block must
+    /// be supported; every reference must be non-blank (ASCII whitespace),
+    /// well-formed Unicode and credential-free; duplicates are dropped
+    /// keeping the first occurrence; and the result must classify as
+    /// supported. A refusal is an Error -- the lineage is never dropped
+    /// silently. Requirement: AEG-PROV-005.
     let addLineage (references: string list) (block: ProvenanceBlock) =
+        let indexed = references |> List.mapi (fun i reference -> $"derivedFrom[{i}]", reference)
+
         if not block.supported then
             Error $"refusing to add lineage to an unsupported provenance block ({block.schema})"
-        elif references |> List.exists (fun reference -> String.IsNullOrWhiteSpace reference) then
-            Error "derivedFrom must be an array of non-empty strings"
+        elif references |> List.exists isBlank then
+            Error "lineage references must be non-empty strings"
         else
-            let next = (JsonNode.Parse block.text) :?> JsonObject
-            let current = stringsOf next "derivedFrom"
-            let additions = references |> List.distinct |> List.filter (fun reference -> not (List.contains reference current))
+            match
+                indexed |> List.filter (snd >> isWellFormed >> not) |> List.map fst,
+                indexed |> List.filter (snd >> isCredentialLike) |> List.map fst
+            with
+            | (_ :: _ as unpaired), _ -> Error(String.Join(", ", unpaired) + ": unpaired UTF-16 surrogate")
+            | [], (_ :: _ as secrets) ->
+                Error(String.Join(", ", secrets) + ": credential-like value; provenance must never carry authentication material")
+            | [], [] ->
+                let next = (JsonNode.Parse block.text) :?> JsonObject
+                let current = stringsOf next "derivedFrom"
+                let additions = references |> List.distinct |> List.filter (fun reference -> not (List.contains reference current))
 
-            if additions.IsEmpty then
-                Ok block
-            else
-                next["derivedFrom"] <- strings (current @ additions)
-                ofNode next |> Result.mapError (fun problems -> String.Join("; ", problems))
+                if additions.IsEmpty then
+                    Ok block
+                else
+                    next["derivedFrom"] <- strings (current @ additions)
+
+                    match ofNode next with
+                    | Ok result when result.supported -> Ok result
+                    | Ok result -> Error $"the resulting lineage would be unsupported ({result.schema})"
+                    | Error problems -> Error("the resulting lineage would be malformed: " + String.Join("; ", problems))
 
     /// Build a block from contributions (in order) and lineage.
     let build (contributions: ProvenanceContribution list) (derivedFrom: string list) =
         contributions
         |> List.fold (fun state contribution -> state |> Result.bind (append contribution)) (Ok empty)
         |> Result.bind (addLineage derivedFrom)
+
+    let private reservedFields = set [ "schema"; "contributions"; "derivedFrom" ]
+
+    /// Carry `source`'s top-level fields that Aegis does not model (anything
+    /// but schema, contributions and derivedFrom, e.g. `subject`) into
+    /// `block`. A field `block` already holds is kept (the existing value
+    /// wins, as in a same-key merge); a different incoming value is returned
+    /// as a conflict, never silently dropped. The result must classify as
+    /// supported. Requirement: AEG-PROV-004.
+    let carryFields (source: ProvenanceBlock) (block: ProvenanceBlock) : Result<ProvenanceBlock * string list, string> =
+        if not block.supported || not source.supported then
+            Error "refusing to merge fields of an unsupported provenance block"
+        else
+            let next = (JsonNode.Parse block.text) :?> JsonObject
+            let incoming = (JsonNode.Parse source.text) :?> JsonObject
+
+            let additions, conflicts =
+                incoming
+                |> Seq.toList
+                |> List.filter (fun pair -> not (reservedFields.Contains pair.Key))
+                |> List.partition (fun pair -> not (present next pair.Key))
+
+            let conflicts =
+                conflicts
+                |> List.filter (fun pair -> not (JsonNode.DeepEquals(field next pair.Key, pair.Value)))
+                |> List.map (fun pair -> $"field {pair.Key} differs from the recorded value; the earlier value is kept")
+
+            if additions.IsEmpty then
+                Ok(block, conflicts)
+            else
+                additions |> List.iter (fun pair -> next[pair.Key] <- (if isNull pair.Value then null else pair.Value.DeepClone()))
+
+                match ofNode next with
+                | Ok result when result.supported -> Ok(result, conflicts)
+                | Ok result -> Error $"the resulting block would be unsupported ({result.schema})"
+                | Error problems -> Error("the resulting block would be malformed: " + String.Join("; ", problems))
 
     // ------------------------------------------------------------- reading
 
@@ -814,7 +995,7 @@ module Provenance =
           | Some _ -> $"aegis:fault/{fault.Id.Value}#environment"
           | None -> ()
           match fault.Diagnostics.Snapshot with
-          | Some snapshot when not (String.IsNullOrWhiteSpace snapshot.Digest) -> $"aegis:snapshot/{snapshot.Digest}"
+          | Some snapshot when not (isBlank snapshot.Digest) -> $"aegis:snapshot/{snapshot.Digest}"
           | _ -> ()
           if not fault.Diagnostics.Breadcrumbs.IsEmpty then
               $"aegis:fault/{fault.Id.Value}#breadcrumbs" ]
@@ -823,7 +1004,7 @@ module Provenance =
     /// observed against. Lineage, not authorship. Requirement: AEG-PROV-005.
     let lineageOf (fault: Fault) =
         [ match fault.Diagnostics.Environment |> Option.bind (fun e -> e.CommitSha) with
-          | Some sha when not (String.IsNullOrWhiteSpace sha) -> $"git:commit/{sha}"
+          | Some sha when not (isBlank sha) -> $"git:commit/{sha}"
           | _ -> () ]
 
     /// The discovering contribution for a newly recorded fault or finding:
@@ -897,17 +1078,20 @@ module Provenance =
                 []
             |> Result.map (fun block -> { Event = ev; Provenance = Some block })
 
-    /// Where a block matches a redaction rule: any field name (other than a
-    /// contribution key, which the key grammar already constrains) or any
-    /// free-text value (reason, evidence, lineage, actor id/provider/model/
-    /// runtime, unknown fields) that a rule would redact. Provenance is
-    /// carried verbatim, so it is never redacted in place: a block that
-    /// matches is rejected instead. Requirement: AEG-PROV-007.
+    /// Where a block matches a redaction rule. Redaction rules are key-name
+    /// rules, so they apply to member NAMES only: every field name other
+    /// than a contribution key (which the key grammar already constrains) --
+    /// in practice the names of unknown and extension fields. Free-text
+    /// VALUES (reason, evidence, lineage, actor fields, unknown fields) get
+    /// the contract credential check (`isCredentialLike`) instead, so an
+    /// ordinary finding such as "Session cookie lacks the Secure flag" is
+    /// accepted while a real token is still refused. Provenance is carried
+    /// verbatim, so it is never redacted in place: a block that matches is
+    /// rejected instead. Requirement: AEG-PROV-007.
     let redactionFindings (rules: Redaction.Rule list) (block: ProvenanceBlock) =
-        let hit (text: string) = rules |> List.tryFind (fun rule -> rule.AppliesTo text)
-        let structural = set [ "schema"; "at"; "last"; "operations"; "kind" ]
+        let hit (name: string) = rules |> List.tryFind (fun rule -> rule.AppliesTo name)
 
-        let rec walk (path: string) (inContributions: bool) (name: string) (node: JsonNode) : string list =
+        let rec walk (path: string) (contributionKeys: bool) (node: JsonNode) : string list =
             match node with
             | :? JsonObject as item ->
                 item
@@ -916,22 +1100,18 @@ module Provenance =
                     let child = if path.Length = 0 then pair.Key else $"{path}.{pair.Key}"
 
                     let own =
-                        match inContributions, hit pair.Key with
+                        match contributionKeys, hit pair.Key with
                         | false, Some rule -> [ $"{child}: field name matches redaction rule '{rule.Name}'" ]
                         | _ -> []
 
-                    own @ walk child (block.supported && path.Length = 0 && pair.Key = "contributions") pair.Key pair.Value)
-            | :? JsonArray as items ->
-                items |> Seq.toList |> List.mapi (fun i value -> walk $"{path}[{i}]" false name value) |> List.concat
+                    own @ walk child (block.supported && path.Length = 0 && pair.Key = "contributions") pair.Value)
+            | :? JsonArray as items -> items |> Seq.toList |> List.mapi (fun i value -> walk $"{path}[{i}]" false value) |> List.concat
             | _ ->
                 match asString node with
-                | Some text when not (block.supported && structural.Contains name) ->
-                    match hit text with
-                    | Some rule -> [ $"{path}: value matches redaction rule '{rule.Name}'" ]
-                    | None -> []
+                | Some text when isCredentialLike text -> [ $"{path}: value is credential-like" ]
                 | _ -> []
 
-        walk "" false "" (JsonNode.Parse block.text)
+        walk "" false (JsonNode.Parse block.text)
 
     /// Pair an event with a block that already passed the boundary. Prefer
     /// `attachWith`, which also enforces the configured redaction rules.
@@ -1004,7 +1184,7 @@ module ProvenanceIdentity =
     /// ROS_EXECUTION_ID. Undeclared values are "unknown".
     let fromDeclarations (lookup: string -> string option) =
         let read name =
-            lookup name |> Option.filter (fun (value: string) -> value.Trim().Length > 0)
+            lookup name |> Option.filter (Provenance.isBlank >> not)
 
         // Kinds match exactly: "human\n" is not a declaration of "human".
         let declaredKind = read "ROS_ACTOR_KIND" |> Option.filter kindPattern.IsMatch
@@ -1051,12 +1231,14 @@ module ProvenanceIdentity =
 
     /// The contribution key for an act: the declared execution when there is
     /// one; otherwise `EXT-op.<operationId>` for an agent (which must be keyed
-    /// by an execution), or the Praxis `CTB-` key for anyone else.
-    let keyFor (operationId: string) (at: DateTimeOffset) (identity: DeclaredIdentity) =
+    /// by an execution), or the Praxis `CTB-` key for anyone else. Error when
+    /// an agent's operation id cannot form a key (empty, or not well-formed
+    /// Unicode); no key is invented.
+    let keyFor (operationId: string) (at: DateTimeOffset) (identity: DeclaredIdentity) : Result<string, string> =
         match identity.Execution with
-        | Some execution -> execution
+        | Some execution -> Ok execution
         | None when identity.Actor.Kind = "agent" -> Provenance.operationKey operationId
-        | None -> Provenance.outsideExecutionKey at identity.Actor
+        | None -> Ok(Provenance.outsideExecutionKey at identity.Actor)
 
 /// Accumulates one fault's contribution provenance from its event stream.
 /// Pure and append-only: the same events always give the same block.
@@ -1069,7 +1251,8 @@ module ProvenanceHistory =
           Block = Provenance.empty
           Attributed = false
           Carried = []
-          Conflicts = [] }
+          Conflicts = []
+          Rejected = [] }
 
     let private foldBlock (label: string) (state: FaultProvenance) (block: ProvenanceBlock) =
         if not block.IsSupported then
@@ -1093,8 +1276,16 @@ module ProvenanceHistory =
                 | Ok next -> next, conflicts
                 | Error problem -> appended, conflicts @ [ $"{label}: {problem}" ]
 
+            // Top-level fields Aegis does not model (e.g. `subject`) survive
+            // the fold; the earliest value wins and a differing later one is
+            // reported, never silently dropped.
+            let withFields, conflicts =
+                match Provenance.carryFields block withLineage with
+                | Ok(next, differing) -> next, conflicts @ (differing |> List.map (fun problem -> $"{label}: {problem}"))
+                | Error problem -> withLineage, conflicts @ [ $"{label}: {problem}" ]
+
             { state with
-                Block = withLineage
+                Block = withFields
                 Attributed = true
                 Conflicts = conflicts }
 
@@ -1107,6 +1298,18 @@ module ProvenanceHistory =
                 match block with
                 | Some block -> foldBlock label state block
                 | None -> state)
+            (initial faultId)
+
+    /// Fold stored provenance (in stream order) for one fault: a rejected
+    /// block is recorded under `Rejected`, distinct from an absent one.
+    let ofStored (faultId: FaultId) (entries: (string * StoredProvenance) list) =
+        entries
+        |> List.fold
+            (fun state (label, stored) ->
+                match stored with
+                | StoredProvenance.Carried block -> foldBlock label state block
+                | StoredProvenance.Rejected reason -> { state with Rejected = state.Rejected @ [ $"{label}: {reason}" ] }
+                | StoredProvenance.Absent -> state)
             (initial faultId)
 
     /// One fault's accumulated provenance from an attributed event stream.
