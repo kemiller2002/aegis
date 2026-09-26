@@ -109,6 +109,30 @@ public class ConsumabilityTests
         Assert.StartsWith("AG-", presented.Reference);
     }
 
+    [Fact]
+    public void Contribution_provenance_can_be_attached_and_read_from_csharp()
+    {
+        // AEG-PROV-012: the additive provenance surface is usable from C#.
+        var human = ProvenanceIdentity.human("kevin");
+        var key = Provenance.outsideExecutionKey(At, human);
+        var contribution = Provenance.contribution(key, human, At, ListOf("reviewed"));
+        var built = Provenance.build(ListOf(contribution), ListOf("git:commit/5e1f0c2"));
+        Assert.True(built.IsOk);
+
+        var attributed = Provenance.attach(
+            built.ResultValue,
+            AegisEvent.NewFaultAcknowledged(FaultId.NewFaultId("01F1"), RecoveryActor.Operator, At));
+        var payload = Serialization.attributedEvent(Redaction.defaultRules, EventId.NewEventId("01E2"), attributed);
+
+        var read = Store.provenanceOf(payload);
+        Assert.True(read.IsOk);
+        Assert.Equal(built.ResultValue, read.ResultValue.Value);
+        Assert.Equal(key, Provenance.withRole("reviewed", read.ResultValue.Value).Head.Key);
+
+        var malformed = Provenance.receive("{\"schema\":\"praxis.provenance/1\"}");
+        Assert.True(malformed.IsError);
+    }
+
     // ---------------------------------------------------------------- helpers
     //
     // What a C# consumer has to write. Kept together so the cost of the

@@ -2,17 +2,51 @@
 id: GV-AEGIS-003
 title: Requirement traceability and status
 status: draft
-version: 1.2.0
+version: 1.4.0
 owners:
   - repository-governance
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-26
 related_documents:
   - docs/aegis/OPEN-QUESTIONS.md
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
   - research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md
   - aegis-boundaries.json
+  - requirements/PROVENANCE-INTEGRATION.md
+  - research/decisions/DF-AEGIS-2026-DC5B--fault-contribution-provenance.md
 tags: [aegis, traceability, status]
+provenance:
+  contributions:
+    EXE-20260926T081020061Z-1e736e64:
+      operations: [modified]
+      at: 2026-09-26T08:24:24.126Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Add AEG-PROV-001..012 traceability (FEAT-ECHELON-PROVENANCE)"
+    EXE-20260926T090253922Z-bb95f3ce:
+      operations: [modified]
+      at: 2026-09-26T09:03:15.896Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
+    EXE-20260926T204110318Z-32ff901f:
+      operations: [modified]
+      at: 2026-09-26T20:49:17.941Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.2 and second-review findings (FEAT-ECHELON-PROVENANCE-R12)"
 ---
 
 # Requirement traceability and status
@@ -214,6 +248,31 @@ accurate of the two readings.
 | `AEG-LOG-046` | logging §46 | ROS integration for persistence declarations | done | Sde.fs, aegis-boundaries.json, docs/aegis/ | BoundaryTests.fs |  |
 | `AEG-LOG-047` | logging §47 | Recommended architectural principle for persistence | done | (architectural constraints) | BoundaryTests.fs |  |
 | `AEG-LOG-048` | logging §48 | Scope constraint on persistence | done | (architectural constraints) | BoundaryTests.fs |  |
+
+## Contribution provenance
+
+Added by [`DF-AEGIS-2026-DC5B`](../../research/decisions/DF-AEGIS-2026-DC5B--fault-contribution-provenance.md)
+from [`requirements/PROVENANCE-INTEGRATION.md`](../../requirements/PROVENANCE-INTEGRATION.md),
+which cites the Praxis contract (`DF-ROS-2026-A037`, `RQ-ROS-2026-A001`..`A019`)
+instead of restating it. These twelve items are outside the 143 counted above:
+they come from the cross-system provenance upgrade, not the original intake.
+Work items `FEAT-ECHELON-PROVENANCE`, `-R2` (contract revision 1.1) and
+`-R12` (contract revision 1.2).
+
+| Item | Source | Requirement | Status | Implemented in | Tested in | Note |
+| --- | --- | --- | --- | --- | --- | --- |
+| `AEG-PROV-001` | RQ-ROS-2026-A009, A015 | Events carry the `praxis.provenance/1` block | done | Provenance.fs, Serialization.fs, Sinks.fs, Capture.fs | ProvenanceTests.fs | `AttributedEvent`; event schema unchanged |
+| `AEG-PROV-002` | RQ-ROS-2026-A001, A002, A013, A014 | Discovering actor and execution | done | Provenance.fs, Capture.fs | ProvenanceTests.fs | `Provenance.discovery`, `Aegis.captureAttributed` |
+| `AEG-PROV-003` | RQ-ROS-2026-A003, A004, A014 | Later contributors live on later events | done | Provenance.fs | ProvenanceTests.fs | `Provenance.attribute`, `operationsFor`; `RecoveryActor` stays a role |
+| `AEG-PROV-004` | RQ-ROS-2026-A004 | Accumulated provenance is a pure projection | done | Provenance.fs, Store.fs | ProvenanceTests.fs | `ProvenanceHistory`, `Store.provenanceHistory`; unknown top-level fields kept (`Provenance.carryFields`) |
+| `AEG-PROV-005` | RQ-ROS-2026-A008 | Affected-artifact lineage is not authorship | done | Provenance.fs | ProvenanceTests.fs | `addLineage` checked (contract 1.2); all 8 `lineage-cases.json` |
+| `AEG-PROV-006` | RQ-ROS-2026-A004, A017 | Evidence provenance by reference | done | Provenance.fs | ProvenanceTests.fs | `Provenance.evidenceOf` |
+| `AEG-PROV-007` | RQ-ROS-2026-A015, A017 | Receiving rules: supported / unsupported / malformed | done | Provenance.fs, Serialization.fs, Store.fs | ProvenanceTests.fs | all 70 `cases.json` and 14 `text-cases.json` (contract 1.2); redaction rules apply to field names, values get the credential check |
+| `AEG-PROV-008` | RQ-ROS-2026-A004, A007 | Legacy events stay valid and unattributed | done | Serialization.fs, Store.fs | ProvenanceTests.fs, CompatibilityTests.fs | `Store.storedProvenance`: `provenanceRejected` reads as `Rejected`; stored `null` is malformed |
+| `AEG-PROV-009` | RQ-ROS-2026-A010, A019 | Tutela `contributionProvenance` | done | Tutela.fs | ProvenanceTests.fs | never `provenance` or `producerIdentity` |
+| `AEG-PROV-010` | RQ-ROS-2026-A006, A016 | Explicit identity propagation | done | Provenance.fs | ProvenanceTests.fs | `ProvenanceIdentity.fromDeclarations`; `ROS_EXECUTION_ID` needs a declared identity |
+| `AEG-PROV-011` | RQ-ROS-2026-A018 | Conformance to the shared fixtures | done | tests/fixtures/praxis-provenance/ | ProvenanceTests.fs | SHA-256 check (6 files, Praxis b003718), chain replay, text/lineage/envelope-key cases |
+| `AEG-PROV-012` | AEG-CORE-036, AEG-CORE-037, AEG-LOG-012 | Backward compatibility | done | (additive surface) | CompatibilityTests.fs, Aegis.Core.CSharpTests | no released record, case or signature changed; unreleased provenance API changed in 1.2 (see requirement) |
 
 ## Regenerating this
 

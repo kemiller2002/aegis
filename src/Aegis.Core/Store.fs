@@ -92,6 +92,75 @@ module Store =
         with ex ->
             Result.Error(Malformed ex.Message)
 
+    /// What a stored event records about its contribution provenance:
+    /// `Absent` for an event written before provenance existed, or without
+    /// it (unattributed, never inferred); `Carried` for a block, which is
+    /// re-classified on read so malformed provenance (including a stored
+    /// `"provenance": null`) is reported rather than silently dropped; and
+    /// `Rejected` for an event whose block the writer refused and recorded
+    /// as `provenanceRejected` -- distinguishable from a legacy event.
+    /// Requirements: AEG-PROV-007, AEG-PROV-008.
+    let storedProvenance (payload: string) : Result<StoredProvenance, Failure> =
+        try
+            use document = JsonDocument.Parse payload
+            let root = document.RootElement
+
+            if root.ValueKind <> JsonValueKind.Object then
+                Result.Error(Malformed "event is not a JSON object")
+            else
+                match root.TryGetProperty "provenance", root.TryGetProperty "provenanceRejected" with
+                | (true, _), (true, _) -> Result.Error(Malformed "event carries both provenance and provenanceRejected")
+                | (true, value), _ ->
+                    match Provenance.receive (value.GetRawText()) with
+                    | Ok block -> Ok(StoredProvenance.Carried block)
+                    | Result.Error problems -> Result.Error(Malformed("provenance: " + String.Join("; ", problems)))
+                | _, (true, reason) when reason.ValueKind = JsonValueKind.String && not (Provenance.isBlank (reason.GetString())) ->
+                    Ok(StoredProvenance.Rejected(reason.GetString()))
+                | _, (true, _) -> Result.Error(Malformed "provenanceRejected must be a non-empty string")
+                | _ -> Ok StoredProvenance.Absent
+        with ex ->
+            Result.Error(Malformed ex.Message)
+
+    /// The contribution provenance block a stored event carries: `Ok None`
+    /// only for a legacy or unattributed event. An event whose block was
+    /// rejected when written is `Error(Rejected reason)`, never `Ok None`,
+    /// so it cannot be mistaken for an unattributed one; malformed
+    /// provenance is `Error(Malformed ...)`. Requirements: AEG-PROV-007, AEG-PROV-008.
+    let provenanceOf (payload: string) : Result<ProvenanceBlock option, Failure> =
+        storedProvenance payload
+        |> Result.bind (function
+            | StoredProvenance.Absent -> Ok None
+            | StoredProvenance.Carried block -> Ok(Some block)
+            | StoredProvenance.Rejected reason -> Result.Error(Rejected $"provenance was rejected when written: {reason}"))
+
+    /// Accumulate every fault's contribution provenance from stored event
+    /// payloads, in stream order. Unreadable events fail the projection
+    /// rather than vanishing from it; events whose provenance was rejected
+    /// when written are listed under `Rejected`. Requirement: AEG-PROV-004.
+    let provenanceHistory (payloads: string list) : Result<Map<string, FaultProvenance>, Failure> =
+        let read payload =
+            match index payload, storedProvenance payload with
+            | Ok indexed, Ok stored -> Ok(indexed, stored)
+            | Result.Error failure, _
+            | _, Result.Error failure -> Result.Error failure
+
+        let rec collect acc remaining =
+            match remaining with
+            | [] -> Ok(List.rev acc)
+            | payload :: rest ->
+                match read payload with
+                | Ok item -> collect (item :: acc) rest
+                | Result.Error failure -> Result.Error failure
+
+        collect [] payloads
+        |> Result.map (fun items ->
+            items
+            |> List.choose (fun (indexed, stored) ->
+                indexed.FaultId |> Option.map (fun faultId -> faultId, ($"{indexed.EventType} {indexed.EventId.Value}", stored)))
+            |> List.groupBy fst
+            |> List.map (fun (faultId, entries) -> faultId.Value, ProvenanceHistory.ofStored faultId (entries |> List.map snd))
+            |> Map.ofList)
+
     let private severityName =
         function
         | FaultSeverity.Diagnostic -> "Diagnostic"

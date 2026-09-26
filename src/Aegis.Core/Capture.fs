@@ -232,3 +232,55 @@ module Aegis =
     /// recorded. Requirement: core 7.
     let suppress config fault reason =
         report config (FaultSuppressed(fault, reason))
+
+    /// Record an event together with the contribution provenance of the act
+    /// it records (who discovered, remediated, validated, acknowledged ...
+    /// and in which execution). Requirements: AEG-PROV-001, AEG-PROV-003.
+    ///
+    /// A block matching one of the configured redaction rules is rejected
+    /// before anything is written (provenance is carried verbatim, so it is
+    /// never redacted in place): the result is `Error`, and the caller decides
+    /// whether to report the event unattributed. Requirement: AEG-PROV-007.
+    let reportAttributedAsync config (attributed: AttributedEvent) : Async<Result<Sinks.Report, string>> =
+        async {
+            match attributed.Provenance |> Option.map (Provenance.redactionFindings config.Rules) with
+            | Some(_ :: _ as findings) -> return Result.Error("provenance rejected: " + String.Join("; ", findings))
+            | _ ->
+                let! report = Sinks.deliverAttributedAsync config.Fallback config.Rules (newId config EventId) config.Sinks attributed
+                return Ok report
+        }
+
+    /// Awaiting form of `reportAttributedAsync`.
+    let reportAttributed config (attributed: AttributedEvent) =
+        reportAttributedAsync config attributed |> Async.RunSynchronously
+
+    /// Guard a boundary like `capture`, attributing the recorded fault to its
+    /// discoverer. `attribute` builds the discovering block from the fault
+    /// (typically `Provenance.discovery`). If it refuses -- malformed
+    /// provenance is rejected, never repaired -- the fault is still recorded,
+    /// unattributed, and the refusal goes to the configured fallback, so
+    /// neither the fault nor the rejection is lost.
+    /// Requirements: AEG-PROV-002, AEG-PROV-007; core 5, 6, 7.
+    let captureAttributed config scope classify (attribute: Fault -> Result<ProvenanceBlock, string>) (operation: unit -> 'T) : Guarded<'T> =
+        try
+            Ok(operation ())
+        with ex ->
+            if isProgrammingDefect ex then reraise ()
+            elif isCancellation ex then reraise ()
+            else
+                let fault = classify scope ex
+
+                let provenance =
+                    match attribute fault |> Result.bind (fun block -> Provenance.attachWith config.Rules block (FaultRecorded fault)) with
+                    | Ok attached -> attached.Provenance
+                    | Result.Error problem ->
+                        config.Fallback $"Aegis provenance rejected for fault {fault.Id.Value}: {problem}"
+                        None
+
+                let attributed = { Event = FaultRecorded fault; Provenance = provenance }
+
+                match config.Persistence with
+                | Detached -> reportAttributedAsync config attributed |> Async.Ignore |> Async.Start
+                | Blocking -> reportAttributed config attributed |> ignore
+
+                Result.Error fault

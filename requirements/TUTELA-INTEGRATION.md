@@ -11,3 +11,4 @@ Requirements:
 - Contradictory Aegis observations MUST remain visible.
 - Adapter failures MUST create an unknown/indeterminate condition rather than silently dropping evidence.
 - Integration schema/version MUST be explicit.
+- Contribution provenance (who discovered, remediated, validated) MAY travel as `contributionProvenance`; it MUST NOT be presented as Tutela `provenance` or `producerIdentity` (AEG-PROV-009, requirements/PROVENANCE-INTEGRATION.md).

@@ -1,6 +1,8 @@
 namespace Aegis
 
 open System
+open System.Text
+open System.Text.Json
 
 /// Minimal, storage-neutral projection of an Aegis fault into Tutela evidence.
 /// Aegis reports an observation. Tutela remains responsible for deciding
@@ -59,3 +61,67 @@ module Tutela =
                           "The projection intentionally excludes fault context and technical details to avoid propagating sensitive values." ]
                       AegisFaultId = fault.Id.Value
                       AegisCode = fault.Code.Value }
+
+    /// Evidence together with the finding's contribution provenance
+    /// (discoverer, remediator, validator, ... and their executions).
+    ///
+    /// Carried as `contributionProvenance`, never as Tutela's `provenance`
+    /// (which means issuer/run attestation) and never as `producerIdentity`:
+    /// contribution identity is self-reported and is not authentication,
+    /// authorization or evidence weight.
+    /// Requirement: AEG-PROV-009.
+    type AttributedEvidence =
+        { Evidence: Evidence
+          ContributionProvenance: ProvenanceBlock option }
+
+    [<Literal>]
+    let ContributionProvenanceField = "contributionProvenance"
+
+    /// Project a security finding with its accumulated contribution
+    /// provenance (see `ProvenanceHistory`). The projection rules are exactly
+    /// those of `tryProjectFault`.
+    let tryProjectAttributedFault (producerVersion: string) (provenance: ProvenanceBlock option) (fault: Fault) =
+        tryProjectFault producerVersion fault
+        |> Result.map (fun evidence ->
+            { Evidence = evidence
+              ContributionProvenance = provenance })
+
+    /// The projection as `tutela/evidence/v1` JSON. Aegis has no attested
+    /// producer identity, artifact digest or issuer attestation, so
+    /// `producerIdentity`, `artifactDigest` and `provenance` are absent rather
+    /// than invented; a consumer must supply them or treat the record as
+    /// incomplete. `contributionProvenance` is the block, verbatim.
+    let toJson (attributed: AttributedEvidence) =
+        let evidence = attributed.Evidence
+        use stream = new IO.MemoryStream()
+        use writer = new Utf8JsonWriter(stream)
+        writer.WriteStartObject()
+        writer.WriteString("schema", evidence.Schema)
+        writer.WriteString("id", evidence.Id)
+        writer.WriteString("type", evidence.EvidenceType)
+        writer.WriteString("source", evidence.Source)
+        writer.WriteString("subjectRef", evidence.SubjectRef)
+        writer.WriteString("observedAt", evidence.ObservedAt.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"))
+        writer.WriteString("producer", evidence.Producer)
+        writer.WriteString("method", evidence.Method)
+        writer.WriteString("result", evidence.Result)
+        writer.WriteBoolean("redacted", evidence.Redacted)
+        writer.WritePropertyName "limitations"
+        writer.WriteStartArray()
+
+        for limitation in evidence.Limitations do
+            writer.WriteStringValue limitation
+
+        writer.WriteEndArray()
+        writer.WriteString("aegisFaultId", evidence.AegisFaultId)
+        writer.WriteString("aegisCode", evidence.AegisCode)
+
+        match attributed.ContributionProvenance with
+        | Some block ->
+            writer.WritePropertyName ContributionProvenanceField
+            writer.WriteRawValue block.Json
+        | None -> ()
+
+        writer.WriteEndObject()
+        writer.Flush()
+        Encoding.UTF8.GetString(stream.ToArray())

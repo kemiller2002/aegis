@@ -128,6 +128,15 @@ module Sinks =
             return report fallback (Serialization.eventTypeName ev) (List.ofArray outcomes)
         }
 
+    /// Deliver one event with its contribution provenance. Identical to
+    /// `deliverAsync` when the event carries none. Requirement: AEG-PROV-001.
+    let deliverAttributedAsync (fallback: string -> unit) (rules: Redaction.Rule list) (eventId: EventId) (sinks: Sink list) (attributed: AttributedEvent) =
+        async {
+            let payload = Serialization.attributedEvent rules eventId attributed
+            let! outcomes = sinks |> List.map (attempt payload) |> Async.Parallel
+            return report fallback (Serialization.eventTypeName attributed.Event) (List.ofArray outcomes)
+        }
+
     /// Deliver several events, using each sink's batch path where it has one.
     /// Requirement: logging 19.
     let deliverBatchAsync (fallback: string -> unit) (rules: Redaction.Rule list) (ids: EventId list) (sinks: Sink list) (events: AegisEvent list) =
