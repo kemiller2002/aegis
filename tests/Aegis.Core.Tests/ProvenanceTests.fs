@@ -109,9 +109,9 @@ let ``vendored Praxis fixtures are unchanged (SHA-256 matches SOURCE.json)`` () 
     // AEG-PROV-011: detects any local edit to the vendored contract.
     let source = fixture "SOURCE.json"
     Assert.Equal("kemiller2002/praxis", source["repository"].GetValue<string>())
-    Assert.Equal("a42c44e8ae0e6e16fdd513141460b700e5fa6648", source["commit"].GetValue<string>())
+    Assert.Equal("c2657efb4d54f11d0fd0617cc1bcd5b8418601d5", source["commit"].GetValue<string>())
     let files = source["files"].AsObject()
-    Assert.Equal(2, files.Count)
+    Assert.Equal(3, files.Count)
 
     for pair in files do
         use sha = SHA256.Create()
@@ -123,7 +123,7 @@ let ``vendored Praxis fixtures are unchanged (SHA-256 matches SOURCE.json)`` () 
 let ``every vendored conformance case reaches the reference verdict and warning count`` () =
     // AEG-PROV-007, AEG-PROV-011.
     let cases = (fixture "cases.json").["cases"].AsArray()
-    Assert.True(cases.Count >= 40, "expected the full conformance set")
+    Assert.Equal(56, cases.Count)
 
     let failures =
         [ for item in cases do
@@ -311,7 +311,7 @@ let ``declared identity and execution come only from the whitelisted variables``
 
     // An agent with no declared execution is keyed by its operation.
     let noExecution = { identity with Execution = None }
-    Assert.Equal("EXT-op.op-1", ProvenanceIdentity.keyFor "op/1" at noExecution)
+    Assert.Equal("EXT-op.op_2f1", ProvenanceIdentity.keyFor "op/1" at noExecution)
 
     // A human omits provider/model/runtime.
     let human = ProvenanceIdentity.fromDeclarations (fun name -> Map.tryFind name (Map [ "ROS_ACTOR_KIND", "human"; "ROS_ACTOR", "kevin" ]))
@@ -353,7 +353,15 @@ let ``serialization round-trips the block verbatim, including unknown fields`` (
         |> Seq.find (fun item -> item["name"].GetValue<string>() = "unknown-fields-preserved")
 
     let block = Provenance.receive (preserved["block"].ToJsonString()) |> ok
-    let payload = Serialization.attributedEvent Redaction.defaultRules (EventId "E2") (Provenance.attach block (FaultRecorded finding))
+
+    // The case's future `attestation.signature` field matches Aegis's default
+    // `credentials` redaction rule, so with the default rules it is refused
+    // rather than redacted in place (provenance is carried verbatim)...
+    Assert.True(Result.isError (Provenance.attachWith Redaction.defaultRules block (FaultRecorded finding)))
+
+    // ...and with rules that do not match, it round-trips verbatim.
+    let noRules: Redaction.Rule list = []
+    let payload = Serialization.attributedEvent noRules (EventId "E2") (Provenance.attach block (FaultRecorded finding))
     Assert.Equal("aegis/event/v1", (JsonNode.Parse payload).["schema"].GetValue<string>())
 
     match Store.provenanceOf payload with
@@ -363,7 +371,7 @@ let ``serialization round-trips the block verbatim, including unknown fields`` (
     | other -> failwith $"expected the block back, got {other}"
 
     // The fault form carries it too, under the fault schema.
-    let faultPayload = Serialization.attributedFault Redaction.defaultRules finding block
+    let faultPayload = Serialization.attributedFault noRules finding block
     Assert.Equal("aegis/fault/v1", (JsonNode.Parse faultPayload).["schema"].GetValue<string>())
     Assert.Equal(Ok(Some block), Store.provenanceOf faultPayload)
 
@@ -602,3 +610,203 @@ let ``the Tutela projection carries the block as contributionProvenance, never a
     let plain = JsonNode.Parse(Tutela.toJson { attributed with ContributionProvenance = None })
     Assert.Null(plain["contributionProvenance"])
     Assert.Equal(Error Tutela.NotSecurityRelevant, Tutela.tryProjectAttributedFault "1.1.0" None { finding with Category = DomainFailure })
+
+// ------------------------------------------------ contract revision 1.1
+
+let private env (pairs: (string * string) list) =
+    let map = Map pairs
+    fun name -> Map.tryFind name map
+
+[<Fact>]
+let ``rule 8 - an identity-less process never inherits a run from ROS_EXECUTION_ID`` () =
+    // Finding (a): a service started from an agent shell must not attribute
+    // every fault to that agent's execution.
+    let identity = ProvenanceIdentity.fromDeclarations (env [ "ROS_EXECUTION_ID", exeB1 ])
+    Assert.Equal(ProvenanceIdentity.unknownActor, identity.Actor)
+    Assert.Equal(None, identity.Execution)
+    let key = ProvenanceIdentity.keyFor "op-1" at identity
+    Assert.NotEqual<string>(exeB1, key)
+    Assert.StartsWith("CTB-", key)
+
+    // Declaring a kind or an id makes the run the process's own assertion.
+    Assert.Equal(Some exeB1, (ProvenanceIdentity.fromDeclarations (env [ "ROS_EXECUTION_ID", exeB1; "ROS_ACTOR_KIND", "agent" ])).Execution)
+    Assert.Equal(Some exeB1, (ProvenanceIdentity.fromDeclarations (env [ "ROS_EXECUTION_ID", exeB1; "ROS_ACTOR", "acme/bot" ])).Execution)
+
+[<Fact>]
+let ``rule 1 - a declared kind with a trailing newline is not a declaration`` () =
+    // Finding (b).
+    for kind in [ "human\n"; "x-bot\n"; "agent\n" ] do
+        let identity = ProvenanceIdentity.fromDeclarations (env [ "ROS_ACTOR_KIND", kind; "ROS_EXECUTION_ID", exeB1 ])
+        Assert.Equal("unknown", identity.Actor.Kind)
+        Assert.Equal(None, identity.Execution)
+
+    let withNewline = { Provenance.contribution "CTB-20260926-aaaaaaaa" { kevin with Kind = "human\n" } at [ "reviewed" ] with Reason = None }
+    Assert.True(Result.isError (Provenance.append withNewline discovered))
+    Assert.True(Result.isError (Provenance.append (Provenance.contribution (exeB1 + "\n") claude at [ "reviewed" ]) discovered))
+    Assert.True(Result.isError (Provenance.append (Provenance.contribution exeB1 claude (at.AddHours 1.0) [ "reviewed\n" ]) discovered))
+
+[<Fact>]
+let ``identity discovery reads only variables in the vendored identity environment list`` () =
+    let listed =
+        (fixture "identity-environment.json").["variables"].AsArray()
+        |> Seq.map (fun node -> node.GetValue<string>())
+        |> Set.ofSeq
+
+    let read = Collections.Generic.HashSet<string>()
+    ProvenanceIdentity.fromDeclarations (fun name -> read.Add name |> ignore; None) |> ignore
+    Assert.NotEmpty read
+    Assert.Empty(read |> Seq.filter (fun name -> not (listed.Contains name)))
+
+[<Fact>]
+let ``rule 2 - timestamps are calendar-valid and ordered at millisecond precision`` () =
+    let block at = sprintf """{"schema":"praxis.provenance/1","contributions":{"CTB-20260926-aaaaaaaa":{"operations":["created"],"at":"%s","actor":{"kind":"human","id":"kevin"}}}}""" at
+
+    for invalid in [ "2026-02-30T08:00:00.000Z"; "2026-09-26T24:00:00.000Z"; "0000-01-01T00:00:00.000Z"; "2026-09-26T08:00:00.000Z\n"; "2026-09-26T08:60:00.000Z" ] do
+        Assert.True(Result.isError (Provenance.receive (block (invalid.Replace("\n", "\\n")))), invalid)
+
+    for valid in [ "9999-12-31T23:59:59.999999999Z"; "2024-02-29T00:00:00Z"; "2026-09-26T08:00:00.0009Z" ] do
+        Assert.True(Result.isOk (Provenance.receive (block valid)), valid)
+
+    // 08:00:00.0009 truncates to 08:00:00.000, so a contribution at .000 does not precede the creation.
+    let created = Provenance.receive (block "2026-09-26T08:00:00.0009Z") |> ok
+    let same = Provenance.appendJson "CTB-20260926-bbbbbbbb" """{"operations":["reviewed"],"at":"2026-09-26T08:00:00.000Z","actor":{"kind":"human","id":"ana"}}""" created
+    Assert.True(Result.isOk same)
+
+[<Fact>]
+let ``rule 3 - null never means absent`` () =
+    for fieldJson in [ "\"last\":null"; "\"reason\":null"; "\"evidence\":null" ] do
+        let contribution = sprintf """{"operations":["reviewed"],"at":"2026-09-26T10:00:00.000Z","actor":{"kind":"human","id":"kevin"},%s}""" fieldJson
+        Assert.True(Result.isError (Provenance.appendJson "CTB-20260926-aaaaaaaa" contribution discovered), fieldJson)
+
+    Assert.True(Result.isError (Provenance.appendJson "CTB-20260926-aaaaaaaa" """{"operations":["reviewed"],"at":"2026-09-26T10:00:00.000Z","actor":{"kind":"human","id":"kevin","provider":null}}""" discovered))
+
+[<Fact>]
+let ``rule 4 - an append never returns a block classify would reject`` () =
+    // Credential in an unknown field of the incoming contribution.
+    let leaky = """{"operations":["reviewed"],"at":"2026-09-26T10:00:00.000Z","actor":{"kind":"human","id":"kevin"},"x-note":"AKIAABCDEFGHIJKLMNOP"}"""
+    Assert.True(Result.isError (Provenance.appendJson "CTB-20260926-aaaaaaaa" leaky discovered))
+
+    // A contribution dated before the creation.
+    let early = Provenance.append (Provenance.contribution exeB1 claude (at.AddHours -1.0) [ "reviewed" ]) discovered
+    Assert.True(Result.isError early)
+
+    // `created` merged into an existing non-creator entry that has earlier contributions before it.
+    let history =
+        Provenance.build
+            [ Provenance.contribution exeB1 claude at [ "reviewed" ]
+              Provenance.contribution exeA2 codex (at.AddHours 1.0) [ "modified" ] ]
+            []
+        |> ok
+
+    Assert.True(Result.isError (Provenance.append (Provenance.contribution exeA2 codex (at.AddHours 2.0) [ "created" ]) history))
+
+    // Everything that is accepted classifies as supported.
+    let accepted = Provenance.append (Provenance.contribution exeA2 codex (at.AddHours 2.0) [ "remediated" ]) discovered |> ok
+    Assert.Equal(ProvenanceVerdict.Supported [], Provenance.classify accepted.Json)
+
+[<Fact>]
+let ``rule 5 - merging a key keeps incoming unknown fields and the later last`` () =
+    // Finding (c): later events' extension fields and `last` survive the fold.
+    let first = """{"operations":["remediated"],"at":"2026-09-26T10:00:00.000Z","actor":{"kind":"agent","id":"openai/codex","provider":"openai","model":"gpt-5-codex","runtime":"codex"},"x-attempt":"1"}"""
+    let second = """{"operations":["resolved"],"at":"2026-09-26T10:30:00.000Z","last":"2026-09-26T11:00:00.000Z","actor":{"kind":"agent","id":"openai/codex","provider":"openai","model":"gpt-5-codex","runtime":"codex"},"x-attempt":"2","x-ticket":"SEC-7"}"""
+    let blockOf json = sprintf """{"schema":"praxis.provenance/1","contributions":{"%s":%s}}""" exeA2 json |> Provenance.receive |> ok
+
+    let events =
+        [ Provenance.attach discovered (FaultRecorded finding)
+          Provenance.attach (blockOf first) (RecoveryStarted(finding.Id, attempt 1 Agent (at.AddHours 1.0)))
+          Provenance.attach (blockOf second) (FaultResolved(finding.Id, { Timestamp = at.AddHours 1.5; Kind = ResolvedManually; Action = None; Verified = false })) ]
+
+    let accumulated = ProvenanceHistory.forFault finding.Id events
+    Assert.Empty accumulated.Conflicts
+    let entry = (JsonNode.Parse accumulated.Block.Json).["contributions"].[exeA2]
+    Assert.Equal("1", entry["x-attempt"].GetValue<string>()) // existing wins on conflict
+    Assert.Equal("SEC-7", entry["x-ticket"].GetValue<string>())
+    Assert.Equal("2026-09-26T11:00:00.000Z", entry["last"].GetValue<string>())
+    Assert.Equal<string list>([ "remediated"; "resolved" ], (Provenance.contributions accumulated.Block |> List.find (fun c -> c.Key = exeA2)).Operations)
+
+[<Fact>]
+let ``rule 5 - an actor with unknown identity cannot extend a known actor's entry`` () =
+    let anonymousAgent = ProvenanceIdentity.agent "unknown" "unknown" "unknown" "unknown"
+    Assert.True(Result.isError (Provenance.append (Provenance.contribution exeA1 anonymousAgent (at.AddHours 1.0) [ "modified" ]) discovered))
+    Assert.True(Result.isError (Provenance.append (Provenance.contribution exeA1 ProvenanceIdentity.unknownActor (at.AddHours 1.0) [ "modified" ]) discovered))
+
+[<Fact>]
+let ``rule 6 - operation keys are escaped injectively`` () =
+    Assert.Equal("EXT-op.op_201", Provenance.operationKey "op 1")
+    Assert.Equal("EXT-op.gh_2f99", Provenance.operationKey "gh/99")
+    Assert.Equal("EXT-op.a_5fb", Provenance.operationKey "a_b")
+    Assert.Equal("EXT-op.caf_c3_a9", Provenance.operationKey "caf\u00e9")
+    let distinct = [ "a b"; "a/b"; "a_b"; "a-b"; "a_20b" ] |> List.map Provenance.operationKey
+    Assert.Equal(distinct.Length, (List.distinct distinct).Length)
+    for key in distinct do
+        Assert.Equal("foreign-execution", Provenance.keyKind key)
+
+// --------------------------------------------------- finding (d): serialization
+
+let private legacyFaultForm (payload: string) (f: Fault) =
+    payload
+        .Replace($"\"schema\":\"{Schema.Event}\"", $"\"schema\":\"{Schema.Fault}\"")
+        .Replace($"\"eventId\":\"{f.Id.Value}\",", "")
+        .Replace("\"eventType\":\"FaultRecorded\",", "")
+
+[<Fact>]
+let ``the fault form is built structurally, never by rewriting text inside a carried block`` () =
+    // Unchanged output for a fault without provenance.
+    let plain = Serialization.fault Redaction.defaultRules finding
+    Assert.Equal(legacyFaultForm (Serialization.event Redaction.defaultRules (EventId finding.Id.Value) (FaultRecorded finding)) finding, plain)
+
+    // An unsupported-major block whose text contains exactly what the old
+    // string replacement removed must survive verbatim.
+    let future =
+        sprintf """{"schema":"praxis.provenance/2","eventType":"FaultRecorded","eventId":"%s","note":"aegis/event/v1","x":1}""" finding.Id.Value
+
+    let block = Provenance.receive future |> ok
+    let payload = Serialization.attributedFault Redaction.defaultRules finding block
+    let node = JsonNode.Parse payload
+    Assert.Equal("aegis/fault/v1", node["schema"].GetValue<string>())
+    Assert.Null(node["eventId"])
+    Assert.Null(node["eventType"])
+    Assert.True(JsonNode.DeepEquals(JsonNode.Parse future, node["provenance"]))
+
+[<Fact>]
+let ``a block matching a redaction rule is rejected at attach time and never written`` () =
+    let tokenReason =
+        Provenance.discovery exeA1 gemini (Some "rotated the leaked deploy token") [] finding |> ok
+
+    let tokenField =
+        Provenance.receive (sprintf """{"schema":"praxis.provenance/1","contributions":{},"x-api_key-hint":"see vault"}""") |> ok
+
+    for block in [ tokenReason; tokenField ] do
+        Assert.NotEmpty(Provenance.redactionFindings Redaction.defaultRules block)
+
+        match Provenance.attachWith Redaction.defaultRules block (FaultRecorded finding) with
+        | Error message -> Assert.Contains("redaction rule 'credentials'", message)
+        | Ok _ -> failwith "expected the block to be rejected"
+
+    // A custom application rule applies too.
+    let customerRule: Redaction.Rule =
+        { Name = "customer"
+          AppliesTo = fun (text: string) -> text.Contains("ACME-CUSTOMER") }
+
+    let custom = Redaction.withRule customerRule Redaction.defaultRules
+    let customerEvidence = Provenance.discovery exeA1 gemini None [ "crm:ACME-CUSTOMER-17" ] finding |> ok
+    Assert.Empty(Provenance.redactionFindings Redaction.defaultRules customerEvidence)
+    Assert.NotEmpty(Provenance.redactionFindings custom customerEvidence)
+
+    // Serialization never writes the matching block, and says so.
+    let payload = Serialization.attributedEvent Redaction.defaultRules (EventId "E-R") (Provenance.attach tokenReason (FaultRecorded finding))
+    Assert.DoesNotContain("leaked deploy token", payload)
+    let node = JsonNode.Parse payload
+    Assert.Null(node["provenance"])
+    Assert.Contains("credentials", node["provenanceRejected"].GetValue<string>())
+
+    // reportAttributed rejects before anything reaches a sink.
+    let collector = Sinks.Collector()
+    let config = { Aegis.configure "Chrona" None [ collector.Sink() ] with Persistence = Blocking; Now = fun () -> at }
+    Assert.True(Result.isError (Aegis.reportAttributed config (Provenance.attach tokenReason (FaultRecorded finding))))
+    Assert.Empty collector.Events
+    Assert.True(Result.isOk (Aegis.reportAttributed config (Provenance.attach discovered (FaultRecorded finding))))
+    Assert.Single collector.Events |> ignore
+
+    // A clean discovery block has no findings.
+    Assert.Empty(Provenance.redactionFindings Redaction.defaultRules discovered)

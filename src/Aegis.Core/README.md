@@ -56,7 +56,10 @@ unchanged and read as unattributed.
 let identity = ProvenanceIdentity.current ()          // ROS_ACTOR_KIND, ROS_ACTOR, ROS_EXECUTION_ID, ...
 let key = ProvenanceIdentity.keyFor "scan-42" fault.Timestamp identity
 match Provenance.discovery key identity.Actor (Some "static scan") [ "praxis:RQ-APP-2026-A001" ] fault with
-| Ok block -> Aegis.reportAttributed config (Provenance.attach block (FaultRecorded fault)) |> ignore
+| Ok block ->
+    match Aegis.reportAttributed config (Provenance.attach block (FaultRecorded fault)) with
+    | Ok _ -> ()
+    | Error problem -> eprintfn "%s" problem                    // matched a redaction rule: not written
 | Error problem -> eprintfn "provenance rejected: %s" problem   // malformed is never repaired
 
 // Later: fold a fault's events into its accumulated provenance.

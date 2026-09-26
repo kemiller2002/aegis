@@ -27,6 +27,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Add AEG-PROV-001..012 traceability (FEAT-ECHELON-PROVENANCE)"
+    EXE-20260926T090253922Z-bb95f3ce:
+      operations: [modified]
+      at: 2026-09-26T09:03:15.896Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
 ---
 
 # Requirement traceability and status
@@ -246,10 +256,10 @@ Work item `FEAT-ECHELON-PROVENANCE`.
 | `AEG-PROV-004` | RQ-ROS-2026-A004 | Accumulated provenance is a pure projection | done | Provenance.fs, Store.fs | ProvenanceTests.fs | `ProvenanceHistory`, `Store.provenanceHistory` |
 | `AEG-PROV-005` | RQ-ROS-2026-A008 | Affected-artifact lineage is not authorship | done | Provenance.fs | ProvenanceTests.fs |  |
 | `AEG-PROV-006` | RQ-ROS-2026-A004, A017 | Evidence provenance by reference | done | Provenance.fs | ProvenanceTests.fs | `Provenance.evidenceOf` |
-| `AEG-PROV-007` | RQ-ROS-2026-A015, A017 | Receiving rules: supported / unsupported / malformed | done | Provenance.fs, Serialization.fs, Store.fs | ProvenanceTests.fs | all vendored `cases.json` |
+| `AEG-PROV-007` | RQ-ROS-2026-A015, A017 | Receiving rules: supported / unsupported / malformed | done | Provenance.fs, Serialization.fs, Store.fs | ProvenanceTests.fs | all 56 vendored `cases.json` (contract 1.1); redaction rules reject |
 | `AEG-PROV-008` | RQ-ROS-2026-A004, A007 | Legacy events stay valid and unattributed | done | Serialization.fs, Store.fs | ProvenanceTests.fs, CompatibilityTests.fs |  |
 | `AEG-PROV-009` | RQ-ROS-2026-A010, A019 | Tutela `contributionProvenance` | done | Tutela.fs | ProvenanceTests.fs | never `provenance` or `producerIdentity` |
-| `AEG-PROV-010` | RQ-ROS-2026-A006, A016 | Explicit identity propagation | done | Provenance.fs | ProvenanceTests.fs | `ProvenanceIdentity.fromDeclarations` |
+| `AEG-PROV-010` | RQ-ROS-2026-A006, A016 | Explicit identity propagation | done | Provenance.fs | ProvenanceTests.fs | `ProvenanceIdentity.fromDeclarations`; `ROS_EXECUTION_ID` needs a declared identity |
 | `AEG-PROV-011` | RQ-ROS-2026-A018 | Conformance to the shared fixtures | done | tests/fixtures/praxis-provenance/ | ProvenanceTests.fs | SHA-256 check, chain replay |
 | `AEG-PROV-012` | AEG-CORE-036, AEG-CORE-037, AEG-LOG-012 | Backward compatibility | done | (additive surface) | CompatibilityTests.fs, Aegis.Core.CSharpTests | no existing record, case or signature changed |
 

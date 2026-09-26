@@ -236,8 +236,19 @@ module Aegis =
     /// Record an event together with the contribution provenance of the act
     /// it records (who discovered, remediated, validated, acknowledged ...
     /// and in which execution). Requirements: AEG-PROV-001, AEG-PROV-003.
-    let reportAttributedAsync config (attributed: AttributedEvent) =
-        Sinks.deliverAttributedAsync config.Fallback config.Rules (newId config EventId) config.Sinks attributed
+    ///
+    /// A block matching one of the configured redaction rules is rejected
+    /// before anything is written (provenance is carried verbatim, so it is
+    /// never redacted in place): the result is `Error`, and the caller decides
+    /// whether to report the event unattributed. Requirement: AEG-PROV-007.
+    let reportAttributedAsync config (attributed: AttributedEvent) : Async<Result<Sinks.Report, string>> =
+        async {
+            match attributed.Provenance |> Option.map (Provenance.redactionFindings config.Rules) with
+            | Some(_ :: _ as findings) -> return Result.Error("provenance rejected: " + String.Join("; ", findings))
+            | _ ->
+                let! report = Sinks.deliverAttributedAsync config.Fallback config.Rules (newId config EventId) config.Sinks attributed
+                return Ok report
+        }
 
     /// Awaiting form of `reportAttributedAsync`.
     let reportAttributed config (attributed: AttributedEvent) =
@@ -260,8 +271,8 @@ module Aegis =
                 let fault = classify scope ex
 
                 let provenance =
-                    match attribute fault with
-                    | Ok block -> Some block
+                    match attribute fault |> Result.bind (fun block -> Provenance.attachWith config.Rules block (FaultRecorded fault)) with
+                    | Ok attached -> attached.Provenance
                     | Result.Error problem ->
                         config.Fallback $"Aegis provenance rejected for fault {fault.Id.Value}: {problem}"
                         None

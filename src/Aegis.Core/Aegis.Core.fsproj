@@ -21,8 +21,8 @@
        storage SDK. Storage adapters live outside this project. -->
   <ItemGroup>
     <Compile Include="Types.fs" />
-    <Compile Include="Provenance.fs" />
     <Compile Include="Redaction.fs" />
+    <Compile Include="Provenance.fs" />
     <Compile Include="Serialization.fs" />
     <Compile Include="Lifecycle.fs" />
     <Compile Include="Offline.fs" />

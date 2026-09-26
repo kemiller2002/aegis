@@ -129,16 +129,21 @@ module Provenance =
     [<Literal>]
     let SchemaTag = "praxis.provenance/1"
 
-    let private schemaPattern = Regex("^praxis\\.provenance/([1-9][0-9]*)$", RegexOptions.CultureInvariant)
-    let private executionKey = Regex("^EXE-[A-Za-z0-9._-]+$", RegexOptions.CultureInvariant)
-    let private contributionKey = Regex("^CTB-[A-Za-z0-9._-]+$", RegexOptions.CultureInvariant)
-    let private foreignKey = Regex("^EXT-([a-z][a-z0-9-]*)\\.([A-Za-z0-9._-]+)$", RegexOptions.CultureInvariant)
-    let private kindPattern = Regex("^(agent|human|automation|unknown|x-[a-z0-9][a-z0-9-]*)$", RegexOptions.CultureInvariant)
-    let private operationGrammar = Regex("^[a-z][a-z0-9-]*$", RegexOptions.CultureInvariant)
-    let private extension = Regex("^x-[a-z0-9][a-z0-9-]*$", RegexOptions.CultureInvariant)
+    let private schemaPattern = Regex("^praxis\\.provenance/([1-9][0-9]*)\\z", RegexOptions.CultureInvariant)
+    let private executionKey = Regex("^EXE-[A-Za-z0-9._-]+\\z", RegexOptions.CultureInvariant)
+    let private contributionKey = Regex("^CTB-[A-Za-z0-9._-]+\\z", RegexOptions.CultureInvariant)
+    let private foreignKey = Regex("^EXT-([a-z][a-z0-9-]*)\\.([A-Za-z0-9._-]+)\\z", RegexOptions.CultureInvariant)
+    let private kindPattern = Regex("^(agent|human|automation|unknown|x-[a-z0-9][a-z0-9-]*)\\z", RegexOptions.CultureInvariant)
+    let private operationGrammar = Regex("^[a-z][a-z0-9-]*\\z", RegexOptions.CultureInvariant)
+    let private extension = Regex("^x-[a-z0-9][a-z0-9-]*\\z", RegexOptions.CultureInvariant)
 
+    // Contract 1.1: every pattern is anchored with \z, because .NET's `$`
+    // also matches before a trailing newline ("human\n" must be malformed).
     let private timestampPattern =
-        Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$", RegexOptions.CultureInvariant)
+        Regex(
+            "^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\\.([0-9]{1,9}))?Z\\z",
+            RegexOptions.CultureInvariant
+        )
 
     [<Literal>]
     let private Unknown = "unknown"
@@ -187,21 +192,29 @@ module Provenance =
         | true, value -> value
         | _ -> null
 
+    /// Milliseconds since 0001-01-01 for a calendar-valid UTC timestamp
+    /// (year 0001-9999, no Feb 30, no 24:00), or None. Ordering is at
+    /// millisecond precision: extra fraction digits are truncated, never
+    /// rounded (contract 1.1). Never throws.
     let private instant (value: string) =
-        if timestampPattern.IsMatch value then
-            // .NET parses at most seven fractional digits; the grammar allows nine.
-            let trimmed = Regex.Replace(value, "\\.([0-9]{7})[0-9]+Z$", ".$1Z")
+        let m = timestampPattern.Match value
 
-            match DateTimeOffset.TryParse(trimmed, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) with
-            | true, parsed -> Some parsed
-            | _ -> None
-        else
+        if not m.Success then
             None
+        else
+            let number (group: int) = Int32.Parse(m.Groups[group].Value, CultureInfo.InvariantCulture)
+            let year, month, day = number 1, number 2, number 3
+            let hour, minute, second = number 4, number 5, number 6
+            let fraction = m.Groups[7].Value.PadRight(3, '0').Substring(0, 3)
+
+            if year < 1 || month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59 then None
+            elif day < 1 || day > DateTime.DaysInMonth(year, month) then None
+            else
+                let date = DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc)
+                Some(date.Ticks / TimeSpan.TicksPerMillisecond + int64 (Int32.Parse(fraction, CultureInfo.InvariantCulture)))
 
     let private order (value: string) =
-        match instant value with
-        | Some parsed -> parsed.UtcTicks
-        | None -> Int64.MaxValue
+        instant value |> Option.defaultValue Int64.MaxValue
 
     let private isKnown (value: string option) =
         value |> Option.exists (fun text -> text.Trim().Length > 0 && text.Trim() <> Unknown)
@@ -252,11 +265,26 @@ module Provenance =
         else
             Error $"cannot form a foreign execution key from system '{system}' and run '{runId}'"
 
+    /// Injective key escaping (contract 1.1): '_' and every character a key
+    /// cannot carry become `_xx` per UTF-8 byte (lower-case hex), so two
+    /// different ids never map to the same key. "op 1" -> "op_201".
+    let escapeKeySegment (text: string) =
+        let builder = StringBuilder()
+
+        for rune in text.EnumerateRunes() do
+            let c = rune.Value
+
+            if (c >= int 'A' && c <= int 'Z') || (c >= int 'a' && c <= int 'z') || (c >= int '0' && c <= int '9') || c = int '.' || c = int '-' then
+                builder.Append(char c) |> ignore
+            else
+                for b in Encoding.UTF8.GetBytes(rune.ToString()) do
+                    builder.Append('_').Append(b.ToString("x2")) |> ignore
+
+        builder.ToString()
+
     /// The key for work known only by an operation id: `EXT-op.<operationId>`,
-    /// with characters a key cannot carry replaced by '-'.
-    let operationKey (operationId: string) =
-        let safe = Regex.Replace(operationId, "[^A-Za-z0-9._-]", "-")
-        $"EXT-op.{safe}"
+    /// escaped injectively.
+    let operationKey (operationId: string) = $"EXT-op.{escapeKeySegment operationId}"
 
     /// The key Praxis gives a non-agent contributor outside any execution:
     /// `CTB-<UTC day>-<first 8 hex of sha256(kind \0 id)>`, so one actor's
@@ -334,13 +362,13 @@ module Provenance =
                   if (List.distinct codes).Length <> codes.Length then
                       $"{prefix}.operations must not repeat an operation"
               if not (at |> Option.exists (fun value -> (instant value).IsSome)) then
-                  $"{prefix}.at must be an ISO-8601 UTC timestamp"
+                  $"{prefix}.at must be a calendar-valid ISO-8601 UTC timestamp"
               if present entry "last" then
                   match asString (field entry "last") with
-                  | Some last when timestampPattern.IsMatch last ->
+                  | Some last when (instant last).IsSome ->
                       if order last < (at |> Option.map order |> Option.defaultValue Int64.MaxValue) then
                           $"{prefix}.last must not precede at"
-                  | _ -> $"{prefix}.last must be an ISO-8601 UTC timestamp"
+                  | _ -> $"{prefix}.last must be a calendar-valid ISO-8601 UTC timestamp"
               if not (present entry "actor") then
                   $"{prefix}.actor is required"
               match field entry "actor" with
@@ -548,27 +576,50 @@ module Provenance =
             let existingActor = actorOf (field existing "actor")
             let incomingActor = actorOf (field contribution "actor")
             let existingOps = operationsOf existing
+            let existingAt = atOf existing
+
+            let earlier =
+                contributions
+                |> Seq.exists (fun pair -> pair.Key <> key && order (atOf pair.Value) < order existingAt)
 
             if not (actorsAgree existingActor incomingActor) then
                 Error $"contribution '{key}' is already attributed to {existingActor.Kind}:{existingActor.Id}; refusing to re-attribute it"
-            elif incomingOps |> List.contains "created" && not (existingOps |> List.contains "created") && not (creators contributions).IsEmpty then
-                Error "the record already has an originator; record 'modified' instead of 'created'"
+            // Contract 1.1: "unknown" never contradicts, but it never proves
+            // the same run either, so it cannot extend a known actor's entry.
+            elif
+                (isKnown (Some existingActor.Id) && not (isKnown (Some incomingActor.Id)))
+                || (existingActor.Kind <> Unknown && incomingActor.Kind = Unknown)
+            then
+                Error $"contribution '{key}' belongs to {existingActor.Kind}:{existingActor.Id}; an actor with unknown identity cannot extend it"
+            elif
+                incomingOps |> List.contains "created"
+                && not (existingOps |> List.contains "created")
+                && (not (creators contributions).IsEmpty || earlier)
+            then
+                Error "the record's originator is already recorded or precedes this contribution; record 'modified' instead of 'created'"
             else
                 let before = compact existing
                 let operations = existingOps @ (incomingOps |> List.filter (fun op -> not (List.contains op existingOps)))
                 let existingEvidence = stringsOf existing "evidence"
                 let evidence = existingEvidence @ (stringsOf contribution "evidence" |> List.filter (fun item -> not (List.contains item existingEvidence)))
-                let latest = asString (field existing "last") |> Option.defaultWith (fun () -> atOf existing)
+
+                // `last` is the later of the existing (last ?? at) and incoming (last ?? at).
+                let existingLatest = asString (field existing "last") |> Option.defaultValue existingAt
+                let incomingLatest = asString (field contribution "last") |> Option.defaultValue incomingAt
+                let latest = if order incomingLatest > order existingLatest then incomingLatest else existingLatest
+
+                // Unknown (and optional) incoming fields are kept; the existing entry wins on conflict.
+                for pair in contribution |> Seq.toList do
+                    if pair.Key <> "last" && not (present existing pair.Key) then
+                        existing[pair.Key] <- (if isNull pair.Value then null else pair.Value.DeepClone())
+
                 existing["operations"] <- strings operations
 
                 if not evidence.IsEmpty then
                     existing["evidence"] <- strings evidence
 
-                if order incomingAt > order latest then
-                    existing["last"] <- JsonValue.Create incomingAt
-
-                if not (present existing "reason") && present contribution "reason" then
-                    existing["reason"] <- (field contribution "reason").DeepClone()
+                if order latest > order existingAt then
+                    existing["last"] <- JsonValue.Create latest
 
                 Ok(compact existing <> before)
         | _ -> Error $"contribution '{key}' is not an object"
@@ -579,12 +630,18 @@ module Provenance =
     /// or late `created` is refused; nothing else is touched.
     /// Returns the new block and whether anything changed.
     let private appendNode (key: string) (contribution: JsonObject) (block: ProvenanceBlock) =
+        // Contract 1.1: credential-check the incoming contribution (its key
+        // included) before anything else.
+        let secrets =
+            let wrapper = JsonObject()
+            wrapper[key] <- contribution.DeepClone()
+            credentialFindings wrapper
+
         let problems =
-            contributionProblems key contribution
-            @ (if (credentialFindings contribution).IsEmpty then
-                   []
-               else
-                   [ "credential-like value; provenance must never carry authentication material" ])
+            if not secrets.IsEmpty then
+                secrets |> List.map (fun path -> $"{path}: credential-like value; provenance must never carry authentication material")
+            else
+                contributionProblems key contribution
 
         if not block.supported then
             Error $"refusing to append to an unsupported provenance block ({block.schema})"
@@ -593,11 +650,14 @@ module Provenance =
         else
             let next = (JsonNode.Parse block.text) :?> JsonObject
 
+            // Contract 1.1: whatever an append returns must itself classify
+            // as supported, so the result is re-classified before it is returned.
             merge key contribution next
             |> Result.bind (fun changed ->
-                ofNode next
-                |> Result.map (fun result -> result, changed)
-                |> Result.mapError (fun invalid -> String.Join("; ", invalid)))
+                match ofNode next with
+                | Ok result when result.supported -> Ok(result, changed)
+                | Ok result -> Error $"the resulting history would be unsupported ({result.schema})"
+                | Error invalid -> Error("the resulting history would be malformed: " + String.Join("; ", invalid)))
 
     /// Append one contribution. Requirements: AEG-PROV-003, AEG-PROV-004.
     let append (contribution: ProvenanceContribution) (block: ProvenanceBlock) =
@@ -837,8 +897,53 @@ module Provenance =
                 []
             |> Result.map (fun block -> { Event = ev; Provenance = Some block })
 
-    /// Pair an event with a block that already passed the boundary.
+    /// Where a block matches a redaction rule: any field name (other than a
+    /// contribution key, which the key grammar already constrains) or any
+    /// free-text value (reason, evidence, lineage, actor id/provider/model/
+    /// runtime, unknown fields) that a rule would redact. Provenance is
+    /// carried verbatim, so it is never redacted in place: a block that
+    /// matches is rejected instead. Requirement: AEG-PROV-007.
+    let redactionFindings (rules: Redaction.Rule list) (block: ProvenanceBlock) =
+        let hit (text: string) = rules |> List.tryFind (fun rule -> rule.AppliesTo text)
+        let structural = set [ "schema"; "at"; "last"; "operations"; "kind" ]
+
+        let rec walk (path: string) (inContributions: bool) (name: string) (node: JsonNode) : string list =
+            match node with
+            | :? JsonObject as item ->
+                item
+                |> Seq.toList
+                |> List.collect (fun pair ->
+                    let child = if path.Length = 0 then pair.Key else $"{path}.{pair.Key}"
+
+                    let own =
+                        match inContributions, hit pair.Key with
+                        | false, Some rule -> [ $"{child}: field name matches redaction rule '{rule.Name}'" ]
+                        | _ -> []
+
+                    own @ walk child (block.supported && path.Length = 0 && pair.Key = "contributions") pair.Key pair.Value)
+            | :? JsonArray as items ->
+                items |> Seq.toList |> List.mapi (fun i value -> walk $"{path}[{i}]" false name value) |> List.concat
+            | _ ->
+                match asString node with
+                | Some text when not (block.supported && structural.Contains name) ->
+                    match hit text with
+                    | Some rule -> [ $"{path}: value matches redaction rule '{rule.Name}'" ]
+                    | None -> []
+                | _ -> []
+
+        walk "" false "" (JsonNode.Parse block.text)
+
+    /// Pair an event with a block that already passed the boundary. Prefer
+    /// `attachWith`, which also enforces the configured redaction rules.
     let attach (block: ProvenanceBlock) (ev: AegisEvent) = { Event = ev; Provenance = Some block }
+
+    /// Pair an event with a block, rejecting a block that matches a
+    /// redaction rule rather than redacting it in place (provenance is
+    /// carried verbatim). Requirement: AEG-PROV-007.
+    let attachWith (rules: Redaction.Rule list) (block: ProvenanceBlock) (ev: AegisEvent) =
+        match redactionFindings rules block with
+        | [] -> Ok(attach block ev)
+        | findings -> Error("provenance rejected: " + String.Join("; ", findings))
 
     /// An event with no provenance: legacy, or genuinely unattributed.
     let unattributed (ev: AegisEvent) = { Event = ev; Provenance = None }
@@ -856,7 +961,7 @@ type DeclaredIdentity =
 module ProvenanceIdentity =
 
     let private kindPattern =
-        Regex("^(agent|human|automation|unknown|x-[a-z0-9][a-z0-9-]*)$", RegexOptions.CultureInvariant)
+        Regex("^(agent|human|automation|unknown|x-[a-z0-9][a-z0-9-]*)\\z", RegexOptions.CultureInvariant)
 
     [<Literal>]
     let private Unknown = "unknown"
@@ -899,14 +1004,17 @@ module ProvenanceIdentity =
     /// ROS_EXECUTION_ID. Undeclared values are "unknown".
     let fromDeclarations (lookup: string -> string option) =
         let read name =
-            lookup name |> Option.map (fun (value: string) -> value.Trim()) |> Option.filter (fun value -> value.Length > 0)
+            lookup name |> Option.filter (fun (value: string) -> value.Trim().Length > 0)
 
-        let kind = read "ROS_ACTOR_KIND" |> Option.filter kindPattern.IsMatch |> Option.defaultValue Unknown
+        // Kinds match exactly: "human\n" is not a declaration of "human".
+        let declaredKind = read "ROS_ACTOR_KIND" |> Option.filter kindPattern.IsMatch
+        let declaredId = read "ROS_ACTOR"
+        let kind = declaredKind |> Option.defaultValue Unknown
         let provider = read "ROS_TELEMETRY_PROVIDER"
         let runtime = read "ROS_TELEMETRY_RUNTIME"
 
         let id =
-            match read "ROS_ACTOR", provider, runtime with
+            match declaredId, provider, runtime with
             | Some declared, _, _ -> declared
             | None, Some p, Some r when kind <> "human" && p <> Unknown && r <> Unknown -> $"{p}/{r}"
             | _ -> Unknown
@@ -921,8 +1029,14 @@ module ProvenanceIdentity =
                   Model = Some(defaultArg (read "ROS_TELEMETRY_MODEL") Unknown)
                   Runtime = Some(defaultArg runtime Unknown) }
 
+        // Contract 1.1 rule 8: an identity-less process (say, a service
+        // started from an agent's shell) must not inherit that agent's run
+        // from its environment, or every fault it records would be
+        // attributed to the agent. ROS_EXECUTION_ID counts only when the
+        // process also declares a kind or an id.
         let execution =
             read "ROS_EXECUTION_ID"
+            |> Option.filter (fun _ -> declaredKind.IsSome || declaredId.IsSome)
             |> Option.filter (fun key ->
                 match Provenance.keyKind key with
                 | "execution"

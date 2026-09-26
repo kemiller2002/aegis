@@ -2,7 +2,7 @@
 id: DF-AEGIS-2026-DC5B
 title: Fault contribution provenance carries the Praxis interchange block
 status: accepted
-version: 1.0.0
+version: 1.1.0
 created: 2026-09-26
 updated: 2026-09-26
 owners:
@@ -27,6 +27,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Echelon provenance upgrade for Aegis (FEAT-ECHELON-PROVENANCE)"
+    EXE-20260926T090253922Z-bb95f3ce:
+      operations: [modified]
+      at: 2026-09-26T09:03:14.902Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
 ---
 
 # Decision Record: fault contribution provenance
@@ -99,11 +109,23 @@ Constraints specific to Aegis:
    attestation and `producerIdentity` means an attested producer; self-reported
    contribution identity is neither.
 7. **Conformance through vendored fixtures.** `cases.json` and
-   `echelon-chain.json` are vendored unchanged from Praxis commit
-   `a42c44e8ae0e6e16fdd513141460b700e5fa6648` with their SHA-256 in
+   `echelon-chain.json` (and, from contract revision 1.1,
+   `identity-environment.json`) are vendored unchanged from Praxis commit
+   `c2657efb4d54f11d0fd0617cc1bcd5b8418601d5` with their SHA-256 in
    `tests/fixtures/praxis-provenance/SOURCE.json`; a small F# codec in
    `Aegis.Core` (`Provenance.fs`, System.Text.Json only) is tested against
    every case.
+
+8. **Redaction rules reject, they do not rewrite (revision 1.1).**
+   Provenance is carried verbatim, so the application's `Redaction.Rule`s are
+   applied to a block's field names and free-text values (reason, evidence,
+   lineage, actor id/provider/model/runtime, unknown fields) and a match
+   rejects the block: `Provenance.attachWith` and `Aegis.reportAttributed`
+   return an error, `Aegis.captureAttributed` records the fault unattributed
+   and reports the refusal to the fallback, and the serializer writes
+   `provenanceRejected` instead of the block as a last line of defence. The
+   fault form is now built structurally rather than by string replacement,
+   which could rewrite text inside a carried block.
 
 ## Alternatives rejected
 
@@ -133,6 +155,12 @@ Constraints specific to Aegis:
   `artifactDigest` and attested `provenance`; this decision does not add them.
 - **Limitation:** `Lifecycle.Projected` does not carry provenance; use
   `ProvenanceHistory` beside it rather than widening a published record.
+
+- **Limitation:** Aegis's default `credentials` rule matches the name
+  `signature`, so a future Praxis attestation field named `signature` is
+  refused under the default rules. An application that wants to carry
+  attestations must use rules that do not match it; revisit when Praxis
+  defines attestation fields.
 
 ## Revisit when
 

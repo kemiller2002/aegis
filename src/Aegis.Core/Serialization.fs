@@ -150,13 +150,21 @@ module Serialization =
             w.WriteEndObject()
 
     /// The one event writer behind `event` and `attributedEvent`.
-    let private write (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) (provenance: ProvenanceBlock option) =
+    let private write (asFault: bool) (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) (provenance: ProvenanceBlock option) =
         use stream = new IO.MemoryStream()
         use writer = new Utf8JsonWriter(stream)
         writer.WriteStartObject()
-        writer.WriteString("schema", Schema.Event)
-        writer.WriteString("eventId", eventId.Value)
-        writer.WriteString("eventType", eventTypeName ev)
+
+        // The fault form is the event form built structurally with the fault
+        // schema and without the event-only identifiers -- never by string
+        // replacement, which could rewrite matching text inside a carried
+        // provenance block.
+        if asFault then
+            writer.WriteString("schema", Schema.Fault)
+        else
+            writer.WriteString("schema", Schema.Event)
+            writer.WriteString("eventId", eventId.Value)
+            writer.WriteString("eventType", eventTypeName ev)
 
         match ev with
         | SinkFailed (sinkName, code, message) ->
@@ -369,10 +377,17 @@ module Serialization =
         // malformed, so nothing unvalidated reaches a sink. An event without
         // one is exactly what it was before provenance existed.
         // Requirements: AEG-PROV-001, AEG-PROV-007, AEG-PROV-008.
+        // A block that matches a redaction rule is never written, and never
+        // silently vanishes either: the event records that it was rejected.
+        // `Provenance.attachWith` / `Aegis.reportAttributed` reject such a
+        // block before it gets here; this is the last line of defence.
         match provenance with
         | Some block ->
-            writer.WritePropertyName "provenance"
-            writer.WriteRawValue block.Json
+            match Provenance.redactionFindings rules block with
+            | [] ->
+                writer.WritePropertyName "provenance"
+                writer.WriteRawValue block.Json
+            | findings -> writer.WriteString("provenanceRejected", String.Join("; ", findings))
         | None -> ()
 
         writer.WriteEndObject()
@@ -381,24 +396,18 @@ module Serialization =
 
     /// Serialize one event. `eventId` is distinct from the fault id, so all
     /// events for one fault can be reconstructed. Requirements: logging 13, 23, 24.
-    let event (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) = write rules eventId ev None
+    let event (rules: Redaction.Rule list) (eventId: EventId) (ev: AegisEvent) = write false rules eventId ev None
 
     /// Serialize one event with the contribution provenance of the act it
     /// records, under the `provenance` field. Requirement: AEG-PROV-001.
     let attributedEvent (rules: Redaction.Rule list) (eventId: EventId) (attributed: AttributedEvent) =
-        write rules eventId attributed.Event attributed.Provenance
+        write false rules eventId attributed.Event attributed.Provenance
 
     /// Serialize a fault on its own, carrying the fault schema version so
     /// future tooling never depends implicitly on the current shape.
     /// Requirement: core 37.
     let private faultWith (rules: Redaction.Rule list) (f: Fault) (provenance: ProvenanceBlock option) =
-        let asEvent = write rules (EventId f.Id.Value) (FaultRecorded f) provenance
-        // Reuse the event shape's field layout, restamped with the fault
-        // schema and without the event-only identifiers.
-        asEvent
-            .Replace($"\"schema\":\"{Schema.Event}\"", $"\"schema\":\"{Schema.Fault}\"")
-            .Replace($"\"eventId\":\"{f.Id.Value}\",", "")
-            .Replace("\"eventType\":\"FaultRecorded\",", "")
+        write true rules (EventId f.Id.Value) (FaultRecorded f) provenance
 
     /// Serialize a fault on its own. Requirement: core 37.
     let fault (rules: Redaction.Rule list) (f: Fault) = faultWith rules f None

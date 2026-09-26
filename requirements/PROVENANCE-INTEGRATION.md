@@ -2,7 +2,7 @@
 id: GV-AEGIS-006
 title: Contribution provenance on faults and security findings
 status: draft
-version: 1.0.0
+version: 1.1.0
 owners:
   - repository-governance
 created: 2026-09-26
@@ -25,6 +25,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Echelon provenance upgrade for Aegis (FEAT-ECHELON-PROVENANCE)"
+    EXE-20260926T090253922Z-bb95f3ce:
+      operations: [modified]
+      at: 2026-09-26T09:03:13.875Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Apply Praxis provenance contract revision 1.1 and review findings (FEAT-ECHELON-PROVENANCE-R2)"
 ---
 
 # Contribution provenance on faults and security findings
@@ -99,7 +109,17 @@ section "Contribution provenance".
   verbatim, never merged into), `malformed` (rejected with a clear error when
   the block is built, attached or appended, never repaired or dropped).
   Credential-like values anywhere make a block malformed. Serialization writes
-  the block verbatim. (RQ-ROS-2026-A015, A017)
+  the block verbatim. Praxis contract revision 1.1 applies: exact matching
+  (no trailing newline in keys, codes, kinds or tags), calendar-valid
+  timestamps ordered at millisecond precision, `null` is never absence, an
+  append never returns a block that would classify as anything but
+  supported, a same-key merge keeps incoming unknown fields and the later
+  `last` and refuses an unknown actor extending a known one, and
+  operation-derived keys are escaped injectively. A block that matches one of
+  the application's redaction rules (a field name or free-text value) is
+  rejected when attached or reported, never redacted in place; the serializer
+  refuses to write one and records `provenanceRejected` instead.
+  (RQ-ROS-2026-A015, A017; DF-ROS-2026-A037 revision 1.1)
 
 - **AEG-PROV-008 -- Legacy events stay valid and unattributed.** Events
   written before this capability, and events without a block, remain valid and
@@ -118,7 +138,11 @@ section "Contribution provenance".
   `ROS_ACTOR`, `ROS_TELEMETRY_PROVIDER`, `ROS_TELEMETRY_MODEL`,
   `ROS_TELEMETRY_RUNTIME`, `ROS_EXECUTION_ID`, or values the caller passes).
   Anything undeclared is recorded as `unknown`; nothing is guessed and Praxis
-  need not be installed. (RQ-ROS-2026-A006, A016)
+  need not be installed. `ROS_EXECUTION_ID` is honoured only when the process
+  also declares a kind or an id, so an identity-less process (for example a
+  service started from an agent's shell) never inherits that agent's run.
+  Discovery reads only variables in the vendored
+  `identity-environment.json`. (RQ-ROS-2026-A006, A016)
 
 - **AEG-PROV-011 -- Conformance to the shared fixtures.** Aegis's codec
   reaches the same verdict and warning count as the Praxis reference library
