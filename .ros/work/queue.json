@@ -3476,6 +3476,23 @@
       "createdBy": "agent:chatgpt",
       "source": "agent-discovery",
       "sourceReference": "public-repository-upgrade-2026-09-21"
+    },
+    {
+      "id": "AEG-DOK-001",
+      "title": "Adopt the Dokimos quality gate (pinned release 0.1.0)",
+      "description": "Second-repository proof for Dokimos DOK-OPS-025: pinned action, pinned package checksum, durable evidence on dokimos-evidence.",
+      "tags": [
+        "quality",
+        "dokimos"
+      ],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-09-29T17:30:06Z",
+      "updatedAt": "2026-09-29T17:30:06Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

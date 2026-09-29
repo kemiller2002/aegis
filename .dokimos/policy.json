@@ -1,0 +1,40 @@
+{
+  "$schema": "https://echelonfoundry.com/dokimos/schemas/policy",
+  "baseline": "default",
+  "introducedFindings": {
+    "disposition": "warn"
+  },
+  "observedNotRatcheted": [
+    "tests.total",
+    "tests.passed",
+    "build.compiler-warnings"
+  ],
+  "ratchets": [
+    {
+      "bestAccepted": 0,
+      "disposition": "fail",
+      "metricId": "build.compiler-errors",
+      "metricVersion": 1,
+      "preference": "lower-is-better"
+    },
+    {
+      "bestAccepted": 0,
+      "disposition": "fail",
+      "metricId": "tests.failed",
+      "metricVersion": 1,
+      "preference": "lower-is-better"
+    }
+  ],
+  "regressions": {
+    "disposition": "warn"
+  },
+  "requiredEvidence": [
+    "build.compiler-errors",
+    "tests.total",
+    "tests.failed"
+  ],
+  "schemaVersion": "1.1.0",
+  "suppressions": [],
+  "thresholds": [],
+  "unavailableBehavior": "not-evaluated"
+}
