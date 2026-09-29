@@ -1,0 +1,6 @@
+{
+  "Contract": "dokimos.store",
+  "Immutability": "Files are created once and never replaced. A different snapshot under an existing identity is rejected.",
+  "Layout": "snapshots/<sha256(snapshot-id)[0..24]>.json; baselines/<name>/<accepted-at>.json",
+  "SchemaVersion": "1.0.0"
+}
