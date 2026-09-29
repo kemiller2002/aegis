@@ -7,10 +7,17 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: aegis-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   dotnet:
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for commit batch
+        run: sleep 600
+
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
