@@ -98,7 +98,7 @@
 | AEG-CORE-039 | Application availability impact model | complete | requirement, aegis-core, model, epic-e01 | high |
 | AEG-CORE-040 | Close out initial-pass open design questions | complete | requirement, aegis-core, traceability, epic-e14 | medium |
 | AEG-DOC-001 | Commit the requirement traceability matrix | complete | documentation, traceability | medium |
-| AEG-DOK-001 | Adopt the Dokimos quality gate (pinned release 0.1.0) | ready | quality, dokimos | medium |
+| AEG-DOK-001 | Adopt the Dokimos quality gate (pinned release 0.1.0) | complete | quality, dokimos | medium |
 | AEG-EPIC-E00 | E00: Governing constraints and scope | complete | epic, aegis-synthesis, wave-1 | high |
 | AEG-EPIC-E01 | E01: Fault model and classification vocabulary | complete | epic, aegis-synthesis, wave-2 | high |
 | AEG-EPIC-E02 | E02: Redaction and privacy core | complete | epic, aegis-synthesis, wave-3 | high |
