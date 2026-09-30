@@ -1,0 +1,9 @@
+{
+  "AcceptedAt": "2026-09-30T07:26:15.1690488+00:00",
+  "Actor": "kemiller2002",
+  "Contract": "dokimos.baseline-acceptance",
+  "Name": "default",
+  "Reason": "First Dokimos baseline for aegis: Dokimos adopted (PR #5, e1c1380); approved by repository owner.",
+  "SchemaVersion": "1.0.0",
+  "SnapshotId": "kemiller2002/aegis@e1c13801f97741c1dfd827b13d5bf7fd2d188b7e:8b809bd30e272c84"
+}
