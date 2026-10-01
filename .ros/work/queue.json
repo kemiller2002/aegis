@@ -3493,6 +3493,24 @@
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "GH-10",
+      "title": "Adopt Echelon release contract for Conditor distribution",
+      "description": null,
+      "tags": [
+        "distribution",
+        "registry",
+        "conditor"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-01T05:52:31.909Z",
+      "updatedAt": "2026-10-01T05:52:33.000Z",
+      "createdBy": "agent:openai-chatgpt",
+      "source": "github-issue",
+      "sourceReference": "https://github.com/kemiller2002/aegis/issues/10"
     }
   ]
 }
