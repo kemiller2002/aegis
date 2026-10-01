@@ -34,8 +34,9 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
+  attestations: write
 
 concurrency:
   group: publish-aegis-nuget
@@ -124,6 +125,32 @@ jobs:
           chmod +x scripts/preflight-nuget-publish.sh
           scripts/preflight-nuget-publish.sh "${{ needs.build.outputs.version }}" dist
 
+      - name: Create immutable checksums
+        shell: bash
+        run: |
+          (cd dist && sha256sum *.nupkg *.snupkg | sort -k2 > checksums.txt)
+          cat dist/checksums.txt
+
+      - name: Generate shared Echelon release manifest
+        uses: kemiller2002/echelon-registry/actions/release-contract@d615f2d0a3dee428aa072c92a5a2de8062b373ed
+        with:
+          release-input: release/echelon.release-input.json
+          artifact-dir: dist
+          output: dist/echelon-release.json
+          version: ${{ needs.build.outputs.version }}
+          tag: aegis-v${{ needs.build.outputs.version }}
+          commit: ${{ github.sha }}
+          release-stage: stable
+
+      - name: Attest packed release bytes
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dist/*.nupkg
+            dist/*.snupkg
+            dist/checksums.txt
+            dist/echelon-release.json
+
       - name: NuGet login (OIDC -> short-lived API key)
         id: login
         uses: NuGet/login@v1
@@ -146,3 +173,28 @@ jobs:
               exit 1
             fi
           done
+
+      - name: Publish immutable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.build.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="aegis-v$VERSION"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            tmp="$(mktemp -d)"
+            gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern checksums.txt --dir "$tmp"
+            cmp "$tmp/checksums.txt" dist/checksums.txt
+            echo "$tag already exists with identical package bytes."
+          else
+            gh release create "$tag" \
+              dist/*.nupkg \
+              dist/*.snupkg \
+              dist/checksums.txt \
+              dist/echelon-release.json \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "Aegis $VERSION" \
+              --notes "Aegis $VERSION: immutable NuGet package family with Echelon release metadata and provenance."
+          fi

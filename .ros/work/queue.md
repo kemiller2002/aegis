@@ -186,6 +186,7 @@
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | AEG-TRACE-001 | Record how the requirement matrix maps onto backlog state | complete | documentation, traceability | medium |
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling, ordo | high |
+| GH-10 | Adopt Echelon release contract for Conditor distribution | complete | distribution, registry, conditor | high |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |
 | SDE-INSTALL-1-2-0 | Install SDE 1.2.0 method documentation | complete | sde, scaffold | medium |

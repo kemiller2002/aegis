@@ -9,7 +9,7 @@
     <Authors>Echelon Foundry</Authors>
     <Company>Echelon Foundry</Company>
     <Copyright>Copyright Echelon Foundry</Copyright>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/kemiller2002/aegis</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kemiller2002/aegis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

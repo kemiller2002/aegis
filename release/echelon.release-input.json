@@ -1,0 +1,57 @@
+{
+  "schema": "echelon.release-input/v1",
+  "systemId": "aegis",
+  "distributionClass": "nuget-library",
+  "executable": null,
+  "compatibilityAliases": [],
+  "provides": [],
+  "distribution": {
+    "mechanism": "github-release",
+    "package": "EchelonFoundry.Aegis.Core",
+    "url": null
+  },
+  "artifacts": [
+    {
+      "name": "EchelonFoundry.Aegis.Core.{version}.nupkg",
+      "purpose": "package",
+      "platform": null,
+      "mediaType": "application/zip"
+    },
+    {
+      "name": "EchelonFoundry.Aegis.Core.{version}.snupkg",
+      "purpose": "package",
+      "platform": null,
+      "mediaType": "application/zip"
+    },
+    {
+      "name": "EchelonFoundry.Aegis.Store.GitHub.{version}.nupkg",
+      "purpose": "package",
+      "platform": null,
+      "mediaType": "application/zip"
+    },
+    {
+      "name": "EchelonFoundry.Aegis.Store.GitHub.{version}.snupkg",
+      "purpose": "package",
+      "platform": null,
+      "mediaType": "application/zip"
+    },
+    {
+      "name": "EchelonFoundry.Aegis.Integration.GitHub.{version}.nupkg",
+      "purpose": "package",
+      "platform": null,
+      "mediaType": "application/zip"
+    },
+    {
+      "name": "EchelonFoundry.Aegis.Integration.GitHub.{version}.snupkg",
+      "purpose": "package",
+      "platform": null,
+      "mediaType": "application/zip"
+    },
+    {
+      "name": "checksums.txt",
+      "purpose": "checksums",
+      "platform": null,
+      "mediaType": "text/plain"
+    }
+  ]
+}
