@@ -22,6 +22,7 @@
     <Compile Include="FaultDiagnosticsTests.fs" />
     <Compile Include="SinkTypesTests.fs" />
     <Compile Include="CatalogCoverageTests.fs" />
+    <Compile Include="FailureSemanticsTests.fs" />
   </ItemGroup>
 
   <!-- Test-only dependencies. The core itself stays dependency-free
