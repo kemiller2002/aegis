@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "aegis",
-  "nextSeq": 1,
+  "nextSeq": 2,
   "items": [
     {
       "id": "SDE-INSTALL-1-2-0",
@@ -3490,6 +3490,20 @@
       "attachments": [],
       "createdAt": "2026-09-29T17:30:06Z",
       "updatedAt": "2026-09-30T07:30:01Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0001",
+      "title": "Remove stale Limen installation (Limen 0.7.0 upgrade; implements DF-AEGIS-2026-DBBD decision 2)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-05T16:58:45.918Z",
+      "updatedAt": "2026-10-05T17:00:26.000Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null

@@ -185,8 +185,11 @@
 | AEG-STORE-ADAPTERS-001 | Decide how to build the remaining store adapters | complete | storage, decision, scope | medium |
 | AEG-SYNTH-001 | Synthesize Aegis requirements into dependency-ordered implementation epics | complete | synthesis, planning | high |
 | AEG-TRACE-001 | Record how the requirement matrix maps onto backlog state | complete | documentation, traceability | medium |
+| AEGIS-RELEASE-2-0-0 | AEGIS-RELEASE-2-0-0 | complete |  |  |
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling, ordo | high |
+| GH-13 | GH-13 | complete |  |  |
 | REQ-INTAKE-001 | Attribute pre-ROS Aegis requirements documents | complete | documentation, attribution | medium |
 | ROS-INSTALL-3-0-0 | ROS-INSTALL-3-0-0 | complete |  |  |
 | SDE-INSTALL-1-2-0 | Install SDE 1.2.0 method documentation | complete | sde, scaffold | medium |
 | TSWK-INSTALL-001 | Install typescript-wasm-kernel scaffolding | complete | scaffold, install | medium |
+| WI-0001 | Remove stale Limen installation (Limen 0.7.0 upgrade; implements DF-AEGIS-2026-DBBD decision 2) | complete |  | medium |
