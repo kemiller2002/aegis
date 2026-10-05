@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-10-05T12:39:36.000Z",
+  "updatedAt": "2026-10-05T17:00:26.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4787,6 +4787,27 @@
         "EXE-20261005T123731522Z-713d9bef"
       ],
       "completedAt": "2026-10-05T12:39:36.000Z"
+    },
+    {
+      "id": "WI-0001",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/BoundaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-05T17:00:26.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T165907772Z-dceb03df"
+      ],
+      "completedAt": "2026-10-05T17:00:26.000Z"
     }
   ]
 }
