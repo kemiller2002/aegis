@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-09-30T07:30:01Z",
+  "updatedAt": "2026-10-05T09:41:28.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4733,6 +4733,35 @@
         "EXE-20260929T173008129Z-87df149e"
       ],
       "completedAt": "2026-09-30T07:30:01Z"
+    },
+    {
+      "id": "GH-13",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Store.GitHub/GitHubStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FailureSemanticsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-05T09:41:28.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T091828914Z-71a8efce"
+      ],
+      "completedAt": "2026-10-05T09:41:28.000Z"
     }
   ]
 }

@@ -2,11 +2,11 @@
 id: GV-AEGIS-001
 title: Using Aegis
 status: draft
-version: 1.1.0
+version: 1.2.0
 owners:
   - repository-governance
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-10-05
 related_documents:
   - docs/aegis/REQUIREMENTS-STATUS.md
   - docs/aegis/AGENT-INTEGRATION.md
@@ -152,6 +152,74 @@ Translation never discards the original: the exception type, message, stack
 trace and inner exception are preserved as the fault's `Cause`, kept apart
 from anything a user sees.
 
+## Explicit failure semantics
+
+Since 1.1.0 these rules are enforced by code and tests, not convention
+(aegis#13, AEGIS-QUAL-002..006):
+
+- **A timeout is a failure, not a cancellation.** `Aegis.isCancellation` is
+  true only for a cancellation nobody can mistake for a timeout.
+  HttpClient reports its own `Timeout` as a `TaskCanceledException` wrapping
+  a `TimeoutException`; `Aegis.isTimeout` recognises it, `capture` records
+  it as a fault, and `guard` no longer drops it. `Aegis.withTimeouts`
+  composes over a classifier to give every timeout the stable
+  `AEGIS.NETWORK.TIMEOUT` infrastructure code.
+- **A persistence failure is visible to the caller.** `captureReported` /
+  `captureReportedAsync` return the fault *and* a `Delivery`:
+  `Persisted`, `RequiredSinkFailed` (a Required sink did not write the
+  record) or `NotAwaited` (Detached mode: the outcome is unknown). Use them
+  wherever a Required sink must hold the record. `capture` keeps its
+  original shape for compatibility and does not carry the delivery.
+- **The final boundary names every exit.** `guardOutcome` /
+  `guardOutcomeAsync` return `Termination.Completed`, `Termination.Cancelled`
+  (the caller's own cancellation only) or `Termination.Faulted` with the
+  delivery outcome. `guard` returns the same decision as `unit`.
+- **Short-lived processes do not lose detached faults silently.** The
+  default persistence mode stays `Detached` (unchanged for long-running
+  hosts). A command-line tool either opts into
+  `Aegis.forCommandLine config` (Blocking delivery, sink failures written to
+  standard error), or calls `Aegis.flush timeout` before exit;
+  `FlushOutcome.TimedOut` says deliveries may be lost, and
+  `Aegis.detachedStatus ()` counts detached deliveries whose Required sink
+  failed.
+- **Partial failure is not success.** A store query that cannot read every
+  record answers `Store.Malformed`, naming each unreadable record
+  (`Store.complete`). `GitHubStore.queryDetailed` returns the readable
+  records *and* the unreadable list, for a caller that wants both.
+- **Replay is idempotent.** The GitHub sink stores and queues each event
+  under the event id inside its payload, and an append that finds the
+  identical record already stored succeeds without writing. A batch that
+  half-committed completes on replay instead of conflicting with itself; a
+  *different* record at the same path is still a `Conflict`.
+- **Retry exhaustion is terminal and recorded.** `Recovery.attempt` returns
+  `Refused (AttemptsExhausted n, [RecoveryConcluded ...])`, and likewise for
+  `UnsafeToRepeat`; `Recovery.isTerminal` identifies both.
+- **Every Aegis fault code is catalogued.** `Catalog.builtIn` holds an entry
+  for every `FaultCode "AEGIS.*"` in the source; a test fails if a new code
+  is added without one.
+
+### Compatibility for consumers upgrading from 1.0.0
+
+Source-compatible: no public signature was removed or changed, and the new
+union types require qualified access (`Delivery.Persisted`,
+`Termination.Completed`, `FlushOutcome.Flushed`) so they cannot shadow a
+consumer's own case names. Behaviour changes, each of which turns a silent
+outcome into an explicit one:
+
+| Before (1.0.0) | After (1.1.0) |
+|---|---|
+| An HttpClient timeout escaped `capture` as `TaskCanceledException`, and `guard` dropped it. | It reaches `classify`, is recorded, and is returned as a fault. |
+| `GitHubFailure.ofException` mapped an HttpClient timeout to `InvalidResponse`. | It maps to `Timeout` (`AEGIS.NETWORK.TIMEOUT`, retryable). |
+| `GitHubStore` query returned `Ok` and skipped unreadable records. | It returns `Error (Store.Malformed ...)` naming them; use `queryDetailed` for the readable part. |
+| The GitHub sink filed events under a freshly minted id. | It files them under the payload's own event id. |
+| Re-appending an identical stored record was a `Conflict`. | It succeeds without writing. |
+| An exhausted or unsafe-to-repeat recovery carried no event. | It carries one `RecoveryConcluded (..., FailedWith ...)` event. |
+
+Praxis and other consumers pinned to 1.0.0 are unaffected until they move
+the pin. A CLI that upgrades should adopt `forCommandLine` or `flush` and,
+where it renders a fault reference, prefer `captureReported` so it does not
+print a reference for a record that was never persisted.
+
 ## How recovery works
 
 Aegis proposes; it does not decide. Authorization is injected, and the default
@@ -162,7 +230,12 @@ let authority = { Recovery.Authorize = fun fault action -> sdeDecides fault acti
 
 match Recovery.attempt authority Agent now 1 idempotent perform verify fault with
 | Recovery.Attempt attempted -> record attempted.Events
-| Recovery.Refused (reason, _) -> explain reason
+| Recovery.Refused (reason, events) ->
+    // A terminal refusal (Recovery.isTerminal: retries exhausted, or unsafe
+    // to repeat) carries a RecoveryConcluded event. Record it: retry
+    // exhaustion must never end silently.
+    record events
+    explain reason
 ```
 
 Three rules that are easy to get wrong:
