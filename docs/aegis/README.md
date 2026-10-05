@@ -154,7 +154,7 @@ from anything a user sees.
 
 ## Explicit failure semantics
 
-Since 1.1.0 these rules are enforced by code and tests, not convention
+Since 2.0.0 these rules are enforced by code and tests, not convention
 (aegis#13, AEGIS-QUAL-002..006):
 
 - **A timeout is a failure, not a cancellation.** `Aegis.isCancellation` is
@@ -200,20 +200,44 @@ Since 1.1.0 these rules are enforced by code and tests, not convention
 
 ### Compatibility for consumers upgrading from 1.0.0
 
-Source-compatible: no public signature was removed or changed, and the new
-union types require qualified access (`Delivery.Persisted`,
+**2.0.0 is a major release.** No public signature was removed or changed,
+and the new union types require qualified access (`Delivery.Persisted`,
 `Termination.Completed`, `FlushOutcome.Flushed`) so they cannot shadow a
-consumer's own case names. Behaviour changes, each of which turns a silent
-outcome into an explicit one:
+consumer's own case names — so a consumer still compiles. But the
+behaviour is not compatible: a `GitHubStore` query that used to succeed,
+returning `Ok` with unreadable records silently skipped, now fails closed
+with `Error (Store.Malformed ...)`. A call that succeeded on 1.0.0 can fail
+on 2.0.0, so the version is a major one rather than 1.1.0. Every other
+change below turns a silent outcome into an explicit one:
 
-| Before (1.0.0) | After (1.1.0) |
+| Before (1.0.0) | After (2.0.0) |
 |---|---|
+| `GitHubStore` query returned `Ok` and skipped unreadable records. | **Breaking:** it returns `Error (Store.Malformed ...)` naming them; use `queryDetailed` for the readable part. |
 | An HttpClient timeout escaped `capture` as `TaskCanceledException`, and `guard` dropped it. | It reaches `classify`, is recorded, and is returned as a fault. |
 | `GitHubFailure.ofException` mapped an HttpClient timeout to `InvalidResponse`. | It maps to `Timeout` (`AEGIS.NETWORK.TIMEOUT`, retryable). |
-| `GitHubStore` query returned `Ok` and skipped unreadable records. | It returns `Error (Store.Malformed ...)` naming them; use `queryDetailed` for the readable part. |
 | The GitHub sink filed events under a freshly minted id. | It files them under the payload's own event id. |
 | Re-appending an identical stored record was a `Conflict`. | It succeeds without writing. |
 | An exhausted or unsafe-to-repeat recovery carried no event. | It carries one `RecoveryConcluded (..., FailedWith ...)` event. |
+
+#### Migrating store queries
+
+A consumer that relied on the 1.0.0 behaviour — take whatever records can be
+read and carry on — calls `GitHubStore.queryDetailed` instead of the store's
+`Query`. It returns the readable records *and* the unreadable list together,
+so the partial answer is still available but no longer silent:
+
+```fsharp
+match! GitHubStore.queryDetailed config operations query with
+| Error storeError -> handle storeError                 // e.g. Store.Unavailable
+| Ok outcome ->
+    consume outcome.Matched                             // the readable records
+    for unreadable in outcome.Unreadable do              // { Path; Reason }
+        reportUnreadable unreadable.Path unreadable.Reason
+```
+
+`Store.complete outcome` collapses the same outcome back to the fail-closed
+answer (`Ok` only when every record was read). A consumer that only wants
+complete answers needs no change beyond handling `Store.Malformed`.
 
 Praxis and other consumers pinned to 1.0.0 are unaffected until they move
 the pin. A CLI that upgrades should adopt `forCommandLine` or `flush` and,

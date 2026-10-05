@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "claude",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-10-05T09:41:28.000Z",
+  "updatedAt": "2026-10-05T12:39:36.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4762,6 +4762,31 @@
         "EXE-20261005T091828914Z-71a8efce"
       ],
       "completedAt": "2026-10-05T09:41:28.000Z"
+    },
+    {
+      "id": "AEGIS-RELEASE-2-0-0",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "implementation",
+          "path": "docs/aegis/README.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/GitHubStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-05T12:39:36.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T123731522Z-713d9bef"
+      ],
+      "completedAt": "2026-10-05T12:39:36.000Z"
     }
   ]
 }
