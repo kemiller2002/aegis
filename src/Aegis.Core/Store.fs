@@ -120,10 +120,38 @@ module Store =
           |> Option.forall (fun u -> event.Timestamp |> Option.forall (fun t -> t <= u)) ]
         |> List.forall id
 
+    /// A stored record that could not be read. Requirement: logging 40.
+    type Unreadable = { Path: string; Reason: string }
+
+    /// A query's answer with its completeness made explicit: records that
+    /// could not be read are listed, never silently dropped, so "no events"
+    /// and "events unreadable" stay distinguishable.
+    /// Requirements: logging 40; aegis#13 AEGIS-QUAL-002.
+    type QueryOutcome =
+        { Matched: string list
+          Unreadable: Unreadable list }
+
+    /// Collapse an outcome to the `T.Query` contract. Partial failure is not
+    /// success: any unreadable record makes the whole answer `Malformed`,
+    /// naming every record that was skipped.
+    let complete (outcome: QueryOutcome) =
+        match outcome.Unreadable with
+        | [] -> Ok outcome.Matched
+        | unreadable ->
+            let listed =
+                unreadable
+                |> List.map (fun u -> $"{u.Path} ({u.Reason})")
+                |> String.concat "; "
+
+            Result.Error(Malformed $"query incomplete: {List.length unreadable} stored record(s) could not be read: {listed}")
+
     /// The durable store contract, expressed as functions so adapters need no
     /// inheritance and tests need no mocking framework.
     /// Requirements: logging 3, 28.
     type T =
         { Append: EventId -> string -> Async<Result<unit, Failure>>
           AppendBatch: (EventId * string) list -> Async<Result<unit, Failure>>
+          /// An adapter must not answer `Ok` when it could not read every
+          /// candidate record: a partial answer is `Malformed` (see
+          /// `complete`). Requirement: logging 40.
           Query: Query -> Async<Result<string list, Failure>> }

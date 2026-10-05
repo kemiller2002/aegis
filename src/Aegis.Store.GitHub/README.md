@@ -19,6 +19,14 @@ dotnet add package EchelonFoundry.Aegis.Store.GitHub
   its own — you supply whatever client you already use to talk to GitHub.
 - **An async sink.** It advertises batch support and integrates directly
   with `Aegis.Core`'s sink runtime.
+- **Idempotent replay.** Events are stored and queued under the event id
+  inside their payload. Re-appending the identical record succeeds without
+  writing, so a batch that half-committed completes on replay; a different
+  record at the same path is still a `Conflict`.
+- **Partial failure is not success.** A query that cannot read every stored
+  record returns `Store.Malformed` naming the unreadable ones.
+  `GitHubStore.queryDetailed` returns the readable records and the
+  unreadable list together.
 
 ```fsharp
 let operations : Aegis.Store.GitHub.Operations = {
@@ -37,4 +45,4 @@ part of this repository — they belong outside it, built against the same
 engine's driver. See
 [`DF-AEGIS-2026-DBBD`](https://github.com/kemiller2002/aegis/blob/main/research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md).
 
-Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: Apache-2.0
+Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: MIT

@@ -2,7 +2,7 @@
 id: GV-AEGIS-004
 title: Agent integration guide
 status: draft
-version: 1.0.0
+version: 1.1.0
 owners:
   - repository-governance
 created: 2026-09-17
@@ -107,8 +107,18 @@ For the top-level entry point of a process (a command loop, a startup
 routine, a UI event dispatcher) use `guard` / `guardAsync` instead: they are
 the last line of defence, always report what they catch (blocking, so a
 detached write is not lost as the process exits), still re-raise a
-programming defect after recording it, and swallow cancellation without
-recording it.
+programming defect after recording it, and do not record the caller's own
+cancellation. A timeout is not a cancellation: it is recorded. Prefer
+`guardOutcome` / `guardOutcomeAsync` where the caller can act on the result:
+they return `Termination.Completed | Cancelled | Faulted` with whether the
+fault's record persisted.
+
+For a **short-lived process** (a CLI), configure with
+`Aegis.forCommandLine (Aegis.configure ...)` so delivery is awaited, or call
+`Aegis.flush (TimeSpan.FromSeconds 5.)` before exit and treat
+`FlushOutcome.TimedOut` as possible loss. Where a sink is `Required`, use
+`captureReported` and handle `Delivery.RequiredSinkFailed` — the fault was
+raised but its record does not exist.
 
 `classify` is the one piece every call site supplies itself: what fault code,
 category, severity and recovery policy this particular failure deserves.
@@ -170,6 +180,9 @@ network — see core 27 (deterministic testability with replaceable sinks).
 - [ ] No domain-modeled outcome (something your own DU already expresses) was
       routed through Aegis instead.
 - [ ] `classify` supplies a real `FaultCode`, not a placeholder string.
+- [ ] A short-lived process uses `Aegis.forCommandLine` or calls `Aegis.flush`
+      before exit.
+- [ ] Every `Recovery.Refused (_, events)` records its events.
 - [ ] Tests use `Sinks.Collector`, not real sinks or console assertions.
 - [ ] If this PR introduces a new integration assembly, it declares one
       `Translation.Mapping` rather than classifying at every call site.

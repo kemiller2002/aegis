@@ -43,7 +43,9 @@ module GitHubFailure =
     /// the boundary. Requirements: core 16; additional 23.
     let ofException (ex: exn) =
         match ex with
-        | :? TimeoutException -> Timeout
+        // HttpClient reports its own Timeout as a TaskCanceledException
+        // wrapping a TimeoutException; it is a timeout, not a cancellation.
+        | timeout when Aegis.isTimeout timeout -> Timeout
         | :? Net.Http.HttpRequestException -> NetworkUnavailable
         | :? Text.Json.JsonException as json -> InvalidResponse $"malformed response: {json.Message}"
         | :? UriFormatException as uri -> InvalidResponse $"invalid request target: {uri.Message}"

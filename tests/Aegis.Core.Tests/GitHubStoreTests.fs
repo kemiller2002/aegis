@@ -17,6 +17,9 @@ type private Fake() =
     member val ExistsFails = false with get, set
     member val PutFails = false with get, set
     member val ListFails = false with get, set
+    /// Commits succeed until this many have been made, then fail: a batch
+    /// that half-applies. Requirement: logging 37.
+    member val CommitLimit = Int32.MaxValue with get, set
     member _.Files = files
     member _.Commits = commits |> List.ofSeq
     member _.Seed(path, content) = files.[path] <- content
@@ -28,7 +31,7 @@ type private Fake() =
           PutFile =
             fun path content _ ->
                 async {
-                    if this.PutFails then
+                    if this.PutFails || commits.Count >= this.CommitLimit then
                         return Result.Error "github write rejected"
                     else
                         files.[path] <- content
@@ -38,7 +41,7 @@ type private Fake() =
           PutFiles =
             fun entries _ ->
                 async {
-                    if this.PutFails then
+                    if this.PutFails || commits.Count >= this.CommitLimit then
                         return Result.Error "github write rejected"
                     else
                         for path, content in entries do
@@ -264,14 +267,18 @@ let ``query results come back in stored order`` () =
     | other -> failwith $"unexpected {other}"
 
 [<Fact>]
-let ``a malformed stored record is skipped rather than failing the query`` () =
-    // Requirement: logging 40 -- malformed storage responses.
+let ``a malformed stored record fails the query explicitly instead of being skipped`` () =
+    // Requirement: logging 40 -- malformed storage responses. Partial
+    // failure is not success (aegis#13 AEGIS-QUAL-002): a query that could
+    // not read every record must not answer as though it had. This test
+    // previously asserted `Ok` with the broken record silently dropped,
+    // which made "no events" indistinguishable from "events unreadable".
     let fake, store = seeded ()
     fake.Seed("aegis/2026/09/07/broken.json", "{ this is not json")
 
     match store.Query Store.anyEvent |> Async.RunSynchronously with
-    | Ok results -> Assert.Equal(3, List.length results)
-    | other -> failwith $"unexpected {other}"
+    | Result.Error (Store.Malformed detail) -> Assert.Contains("aegis/2026/09/07/broken.json", detail)
+    | other -> failwith $"expected Malformed naming the unreadable record, got {other}"
 
 [<Fact>]
 let ``an unavailable repository fails the query explicitly`` () =
@@ -315,3 +322,104 @@ let ``a query on a field the event lacks does not match`` () =
         Assert.False(Store.matches { Store.anyEvent with Operation = Some "Other.Operation" } indexed)
         Assert.False(Store.matches { Store.anyEvent with EventType = Some "FaultResolved" } indexed)
     | Result.Error e -> failwith $"{e}"
+
+// ------------------------------------------------- idempotent replay (logging 32)
+
+[<Fact>]
+let ``the sink stores an event under the event id inside its payload`` () =
+    // The payload already carries its eventId; minting a second id for the
+    // file name made every retry of the same event a new file.
+    let fake = Fake()
+    let store = create config fake.Operations
+    let queue = ref (Offline.create 10)
+    let sink = sink store Sinks.Required queue (fun () -> EventId "MINTED")
+
+    sink.Write(payloadFor "01PAYLOAD" "F1" "C" at) |> Async.RunSynchronously
+
+    Assert.True(fake.Files.ContainsKey "aegis/2026/09/07/01PAYLOAD.json")
+    Assert.False(fake.Files.ContainsKey "aegis/2026/09/07/MINTED.json")
+
+[<Fact>]
+let ``replaying a half-committed batch completes it without duplicates or conflicts`` () =
+    let fake = Fake(CommitLimit = 1)
+    let store = create { config with CommitStrategy = Batched 2 } fake.Operations
+    let items = [ for n in 1..4 -> EventId $"01E{n}", payloadFor $"01E{n}" "F1" "C" at ]
+
+    // The first chunk commits, the second fails.
+    match store.AppendBatch items |> Async.RunSynchronously with
+    | Result.Error (Store.Unavailable _) -> ()
+    | other -> failwith $"expected the half-applied batch to fail, got {other}"
+
+    Assert.Equal(2, fake.Files.Count)
+
+    // The same batch, replayed once the outage clears.
+    fake.CommitLimit <- Int32.MaxValue
+    Assert.Equal(Ok(), store.AppendBatch items |> Async.RunSynchronously)
+    Assert.Equal(4, fake.Files.Count)
+    // Only the uncommitted chunk was written on replay.
+    Assert.Equal(2, List.length fake.Commits)
+
+[<Fact>]
+let ``a replayed event with identical content is idempotent, a different one is a conflict`` () =
+    let fake = Fake()
+    let store = create config fake.Operations
+    let payload = payloadFor "01A" "F1" "C" at
+
+    Assert.Equal(Ok(), store.Append (EventId "01A") payload |> Async.RunSynchronously)
+    Assert.Equal(Ok(), store.Append (EventId "01A") payload |> Async.RunSynchronously)
+    Assert.Single fake.Commits |> ignore
+
+    match store.Append (EventId "01A") (payloadFor "01A" "F2" "OTHER" at) |> Async.RunSynchronously with
+    | Result.Error (Store.Conflict _) -> ()
+    | other -> failwith $"expected a conflict for different content, got {other}"
+
+[<Fact>]
+let ``a deferred batch is queued under the payload ids so its replay is idempotent`` () =
+    let fake = Fake(CommitLimit = 1)
+    let store = create { config with CommitStrategy = Batched 1 } fake.Operations
+    let queue = ref (Offline.create 10)
+    let minted = ref 0
+
+    let sink =
+        sink store Sinks.Required queue (fun () ->
+            minted.Value <- minted.Value + 1
+            EventId $"MINTED{minted.Value}")
+
+    let payloads = [ payloadFor "01E1" "F1" "C" at; payloadFor "01E2" "F1" "C" at ]
+
+    let failed =
+        try
+            sink.WriteBatch.Value payloads |> Async.RunSynchronously
+            false
+        with _ ->
+            true
+
+    Assert.True(failed, "a deferred batch must still report that it did not persist")
+    Assert.Equal<EventId list>([ EventId "01E1"; EventId "01E2" ], Offline.pendingIds queue.Value)
+
+    // Drain through the sink once the outage clears: nothing conflicts and
+    // nothing is written twice.
+    fake.CommitLimit <- Int32.MaxValue
+    let drained = Offline.drainAsync sink.Write queue.Value |> Async.RunSynchronously
+    Assert.Equal(None, drained.Failed)
+    Assert.Equal(2, fake.Files.Count)
+    Assert.Equal(0, minted.Value)
+
+[<Fact>]
+let ``queryDetailed returns the readable records and lists the unreadable ones`` () =
+    let fake, _ = seeded ()
+    fake.Seed("aegis/2026/09/07/broken.json", "{ this is not json")
+
+    match queryDetailed config fake.Operations Store.anyEvent |> Async.RunSynchronously with
+    | Ok outcome ->
+        Assert.Equal(3, List.length outcome.Matched)
+        Assert.Equal<string list>([ "aegis/2026/09/07/broken.json" ], outcome.Unreadable |> List.map (fun u -> u.Path))
+    | other -> failwith $"unexpected {other}"
+
+[<Fact>]
+let ``a complete query outcome is success and an incomplete one is not`` () =
+    Assert.Equal(Ok [ "a" ], Store.complete { Store.Matched = [ "a" ]; Store.Unreadable = [] })
+
+    match Store.complete { Store.Matched = [ "a" ]; Store.Unreadable = [ { Store.Path = "p"; Store.Reason = "r" } ] } with
+    | Result.Error (Store.Malformed detail) -> Assert.Contains("p (r)", detail)
+    | other -> failwith $"expected Malformed, got {other}"

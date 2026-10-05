@@ -28,12 +28,31 @@ match Aegis.capture config scope classifyGitHubFailure (fun () -> repository.loa
 ```
 
 `capture`, `report`, `guard` and `suppress` (and their async pairs) are the
-whole API. A fault is a single structured type: severity, failure domain,
+core of the API. A fault is a single structured type: severity, failure domain,
 blast radius, retention, redacted context, and a causal chain back to what
 actually broke. Recovery is proposed as data — Aegis never applies a
 transition itself — and presentation is intent, not markup, so the same
 fault can drive a UI, a CLI, or an agent without either side knowing about
 the other.
+
+## Failures are explicit, including persistence failures
+
+- A **timeout is a fault, not a cancellation** — HttpClient's own timeout
+  (`TaskCanceledException` wrapping `TimeoutException`) is recorded by
+  `capture` and `guard`. `Aegis.withTimeouts` gives it the stable code
+  `AEGIS.NETWORK.TIMEOUT`.
+- **`captureReported`** returns the fault together with its `Delivery`:
+  `Persisted`, `RequiredSinkFailed` or `NotAwaited`. Use it when a Required
+  sink must hold the record.
+- **`guardOutcome`** names every exit of the final boundary:
+  `Termination.Completed | Cancelled | Faulted`.
+- **Short-lived processes:** `Aegis.forCommandLine config` awaits delivery
+  and writes sink failures to stderr; or call `Aegis.flush timeout` before
+  exit. The default stays `Detached` for long-running hosts.
+- `Catalog.builtIn` covers every `AEGIS.*` code the library raises.
+
+See [Explicit failure semantics](https://github.com/kemiller2002/aegis/blob/main/docs/aegis/README.md#explicit-failure-semantics)
+for the 1.0.0 → 1.1.0 compatibility table.
 
 ## Test it by replacing the sinks
 
@@ -61,4 +80,4 @@ declares.
 - [Agent integration](https://github.com/kemiller2002/aegis/blob/main/docs/aegis/AGENT-INTEGRATION.md) — for an AI agent adding Aegis to a codebase.
 - [Requirement traceability](https://github.com/kemiller2002/aegis/blob/main/docs/aegis/REQUIREMENTS-STATUS.md) — what is implemented and tested, and what is not.
 
-Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: Apache-2.0
+Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: MIT
