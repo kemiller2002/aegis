@@ -52,7 +52,7 @@ the other.
 - `Catalog.builtIn` covers every `AEGIS.*` code the library raises.
 
 See [Explicit failure semantics](https://github.com/kemiller2002/aegis/blob/main/docs/aegis/README.md#explicit-failure-semantics)
-for the 1.0.0 → 1.1.0 compatibility table.
+for the 1.0.0 → 2.0.0 compatibility table and migration note.
 
 ## Test it by replacing the sinks
 
