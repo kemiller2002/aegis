@@ -82,18 +82,75 @@ module GitHubStore =
         | Batched size when size > 0 -> items |> List.chunkBySize size
         | Batched _ -> [ items ]
 
+    /// What a path already holds, relative to the payload about to be
+    /// written there.
+    type private Existing =
+        | Vacant
+        /// The identical record is already stored: a replay, so writing again
+        /// is unnecessary and reporting a conflict would be wrong.
+        | AlreadyStored
+        | Occupied
+
+    let private inspect (ops: Operations) (path: string) (payload: string) =
+        async {
+            match! ops.Exists path with
+            | Result.Error reason -> return Result.Error(Store.Unavailable reason)
+            | Ok false -> return Ok Vacant
+            | Ok true ->
+                match! ops.ListPrefix path with
+                | Result.Error reason -> return Result.Error(Store.Unavailable reason)
+                | Ok files ->
+                    let identical = files |> List.exists (fun (p, content) -> p = path && content = payload)
+                    return Ok(if identical then AlreadyStored else Occupied)
+        }
+
+    /// Every stored record under the root, with the ones that could not be
+    /// read listed rather than dropped. Requirements: logging 27, 29, 40.
+    let queryDetailed (config: Config) (ops: Operations) (q: Store.Query) =
+        async {
+            match! ops.ListPrefix config.RootPath with
+            | Result.Error reason -> return Result.Error(Store.Unavailable reason)
+            | Ok files ->
+                // Search structured fields, never the human-readable text.
+                // Requirements: additional 41; logging 27, 29.
+                let indexed =
+                    files
+                    |> List.sortBy fst // path is date-bucketed then sortable id
+                    |> List.map (fun (path, content) -> path, content, Store.index content)
+
+                return
+                    Ok
+                        { Store.Matched =
+                            indexed
+                            |> List.choose (fun (_, content, result) ->
+                                match result with
+                                | Ok entry when Store.matches q entry -> Some content
+                                | _ -> None)
+                          Store.Unreadable =
+                            indexed
+                            |> List.choose (fun (path, _, result) ->
+                                match result with
+                                | Result.Error (Store.Malformed reason) -> Some { Store.Path = path; Store.Reason = reason }
+                                | Result.Error other -> Some { Store.Path = path; Store.Reason = string other }
+                                | Ok _ -> None) }
+        }
+
     /// Build the store. Append refuses to overwrite: because event files are
-    /// immutable and uniquely named, a collision is abnormal and is reported
-    /// rather than resolved by overwriting. Requirement: logging 36.
+    /// immutable and uniquely named, a different record at the same path is
+    /// abnormal and is reported rather than resolved by overwriting. The
+    /// identical record already being present is a replay, and succeeds
+    /// without writing, so retrying an append is idempotent.
+    /// Requirements: logging 32, 36.
     let create (config: Config) (ops: Operations) : Store.T =
         let appendOne (eventId: EventId) (payload: string) =
             async {
                 let path = pathForPayload config eventId payload
 
-                match! ops.Exists path with
-                | Result.Error reason -> return Result.Error(Store.Unavailable reason)
-                | Ok true -> return Result.Error(Store.Conflict path)
-                | Ok false ->
+                match! inspect ops path payload with
+                | Result.Error failure -> return Result.Error failure
+                | Ok AlreadyStored -> return Ok()
+                | Ok Occupied -> return Result.Error(Store.Conflict path)
+                | Ok Vacant ->
                     match! ops.PutFile path payload (message config eventId) with
                     | Ok () -> return Ok()
                     | Result.Error reason -> return Result.Error(Store.Unavailable reason)
@@ -102,23 +159,27 @@ module GitHubStore =
         let appendMany (items: (EventId * string) list) =
             async {
                 // Conflicts are checked before any commit, so a batch cannot
-                // half-apply because of a known collision.
+                // half-apply because of a known collision. Records already
+                // stored by an earlier, partly applied attempt are skipped,
+                // so replaying the whole batch completes it rather than
+                // conflicting with itself.
                 let paths = items |> List.map (fun (id, payload) -> pathForPayload config id payload, payload)
 
-                let rec checkAll remaining =
+                let rec checkAll remaining pending =
                     async {
                         match remaining with
-                        | [] -> return Ok()
-                        | (path, _) :: rest ->
-                            match! ops.Exists path with
-                            | Result.Error reason -> return Result.Error(Store.Unavailable reason)
-                            | Ok true -> return Result.Error(Store.Conflict path)
-                            | Ok false -> return! checkAll rest
+                        | [] -> return Ok(List.rev pending)
+                        | (path, payload) :: rest ->
+                            match! inspect ops path payload with
+                            | Result.Error failure -> return Result.Error failure
+                            | Ok Occupied -> return Result.Error(Store.Conflict path)
+                            | Ok AlreadyStored -> return! checkAll rest pending
+                            | Ok Vacant -> return! checkAll rest ((path, payload) :: pending)
                     }
 
-                match! checkAll paths with
+                match! checkAll paths [] with
                 | Result.Error failure -> return Result.Error failure
-                | Ok () ->
+                | Ok pending ->
                     let rec commit remaining =
                         async {
                             match remaining with
@@ -135,46 +196,40 @@ module GitHubStore =
                                 | Result.Error reason -> return Result.Error(Store.Unavailable reason)
                         }
 
-                    return! commit (groups config.CommitStrategy paths)
-            }
-
-        let query (q: Store.Query) =
-            async {
-                match! ops.ListPrefix config.RootPath with
-                | Result.Error reason -> return Result.Error(Store.Unavailable reason)
-                | Ok files ->
-                    // Search structured fields, never the human-readable text.
-                    // Requirements: additional 41; logging 27, 29.
-                    let matched =
-                        files
-                        |> List.sortBy fst // path is date-bucketed then sortable id
-                        |> List.choose (fun (_, content) ->
-                            match Store.index content with
-                            | Ok indexed when Store.matches q indexed -> Some content
-                            | Ok _ -> None
-                            | Result.Error _ -> None)
-
-                    return Ok matched
+                    return! commit (groups config.CommitStrategy pending)
             }
 
         { Append = appendOne
           AppendBatch = appendMany
-          Query = query }
+          // Partial failure is not success: an unreadable record fails the
+          // query, naming it. `queryDetailed` returns the readable part
+          // alongside the list of unreadable records.
+          Query = fun q -> async { let! outcome = queryDetailed config ops q in return Result.bind Store.complete outcome } }
+
+    /// The id a serialized event already carries. Aegis serializes the event
+    /// id into every payload, so a retry of the same event reuses it; the
+    /// minted id is only a fallback for a payload that carries none.
+    let private eventIdOf (nextId: unit -> EventId) (payload: string) =
+        match Store.index payload with
+        | Ok indexed -> indexed.EventId
+        | Result.Error _ -> nextId ()
 
     /// A sink that writes through the store, queueing when the store is
     /// unavailable so a transient outage defers rather than loses events.
+    /// Events are stored and queued under the id inside their payload, so a
+    /// deferred or partly committed write replays idempotently.
     /// Asynchronous throughout: nothing here blocks the caller.
-    /// Requirements: logging 15, 18, 19, 20.
+    /// Requirements: logging 15, 18, 19, 20, 32.
     let sink (store: Store.T) (level: Sinks.Level) (queue: Offline.Queue ref) (nextId: unit -> EventId) =
         let writeOne payload =
             async {
-                let eventId = nextId ()
+                let eventId = eventIdOf nextId payload
 
                 match! store.Append eventId payload with
                 | Ok () -> return ()
                 | Result.Error (Store.Conflict path) ->
-                    // Abnormal: a uniquely named immutable record already
-                    // exists. Surface it rather than overwrite.
+                    // Abnormal: a different record already holds this
+                    // uniquely named path. Surface it rather than overwrite.
                     return failwith $"conflict: {path} already exists"
                 | Result.Error failure ->
                     // Defer rather than lose it, then tell the runtime this
@@ -195,11 +250,14 @@ module GitHubStore =
           Sinks.WriteBatch =
             Some(fun payloads ->
                 async {
-                    let items = payloads |> List.map (fun payload -> nextId (), payload)
+                    let items = payloads |> List.map (fun payload -> eventIdOf nextId payload, payload)
 
                     match! store.AppendBatch items with
                     | Ok () -> return ()
                     | Result.Error failure ->
+                        // The whole batch is queued under its own ids. Any
+                        // part that did commit is recognised on replay and
+                        // not written twice.
                         for id, payload in items do
                             queue.Value <- Offline.enqueue id payload queue.Value
 
