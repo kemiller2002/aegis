@@ -133,7 +133,21 @@ module Recovery =
 
     type Result =
         | Attempt of Attempted
+        /// The events are what must be recorded so the refusal is auditable.
+        /// A terminal refusal always carries one; see `isTerminal`.
         | Refused of Refusal * AegisEvent list
+
+    /// Whether a refusal ends recovery for this fault for good: retrying is
+    /// exhausted or unsafe, so the failure is now terminal and must be
+    /// recorded as such rather than left for each caller to remember.
+    /// Requirements: core 7, 21; aegis#13 AEGIS-QUAL-005.
+    let isTerminal =
+        function
+        | AttemptsExhausted _
+        | UnsafeToRepeat -> true
+        | NotAuthorized _
+        | NeedsApproval _
+        | NothingToDo -> false
 
     let private maxAttempts =
         function
@@ -178,12 +192,22 @@ module Recovery =
             | Denied reason -> Refused(NotAuthorized reason, [])
             | RequiresApproval reason -> Refused(NeedsApproval reason, [])
             | Authorized ->
+                // A terminal refusal concludes the recovery explicitly, so
+                // retry exhaustion is never silent.
+                let concluded reason =
+                    [ RecoveryConcluded(fault.Id, attemptNumber, FailedWith reason, at) ]
+
                 if attemptNumber > maxAttempts action then
-                    Refused(AttemptsExhausted(maxAttempts action), [])
+                    let permitted = maxAttempts action
+
+                    Refused(
+                        AttemptsExhausted permitted,
+                        concluded $"recovery exhausted: the policy permits {permitted} attempt(s)"
+                    )
                 // A failed read may be repeated; a partially completed write
                 // may not. Requirement: core 21.
                 elif not idempotent && attemptNumber > 1 then
-                    Refused(UnsafeToRepeat, [])
+                    Refused(UnsafeToRepeat, concluded "recovery stopped: repeating a non-idempotent action is unsafe")
                 else
                     let started = record AwaitingVerification
 
