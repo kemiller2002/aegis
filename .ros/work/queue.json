@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "aegis",
-  "nextSeq": 3,
+  "nextSeq": 4,
   "items": [
     {
       "id": "SDE-INSTALL-1-2-0",
@@ -3528,6 +3528,30 @@
         "id": "anthropic/claude-code",
         "provider": "anthropic",
         "model": "claude-opus-5-5",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0003",
+      "title": "Move aegis to Ordo 1.4.1",
+      "description": null,
+      "tags": [
+        "ordo",
+        "toolchain"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-06T13:02:25.545Z",
+      "updatedAt": "2026-10-06T13:03:03.000Z",
+      "createdBy": "anthropic/claude-code",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
         "runtime": "claude-code"
       },
       "source": "manual",
