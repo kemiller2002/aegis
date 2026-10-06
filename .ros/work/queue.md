@@ -194,3 +194,4 @@
 | TSWK-INSTALL-001 | Install typescript-wasm-kernel scaffolding | complete | scaffold, install | medium |
 | WI-0001 | Remove stale Limen installation (Limen 0.7.0 upgrade; implements DF-AEGIS-2026-DBBD decision 2) | complete |  | medium |
 | WI-0002 | Move aegis to Praxis 3.7.1 (ROS -> Praxis rename) and Ordo 1.4.0 | complete | praxis, ordo, toolchain | medium |
+| WI-0003 | Move aegis to Ordo 1.4.1 | ready | ordo, toolchain | medium |
