@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "protocolVersion": "1.0.0",
   "repository": "aegis",
-  "actor": "claude",
+  "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-10-05T17:00:26.000Z",
+  "updatedAt": "2026-10-06T12:19:18.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4808,6 +4808,51 @@
         "EXE-20261005T165907772Z-dceb03df"
       ],
       "completedAt": "2026-10-05T17:00:26.000Z"
+    },
+    {
+      "id": "WI-0002",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/ros.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/sde.json"
+        },
+        {
+          "type": "documentation",
+          "path": "AGENTS.md"
+        }
+      ],
+      "updatedAt": "2026-10-06T12:19:18.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261006T121835554Z-f53b401c"
+      ],
+      "latestCheckpoint": {
+        "id": "3426190a212a3b063ea5341c",
+        "recordedAt": "2026-10-06T12:19:16.000Z",
+        "executionId": "EXE-20261006T121835554Z-f53b401c",
+        "repository": "aegis",
+        "branch": "chore/praxis-3.7.1",
+        "commit": "a49065ba2e5fdd94fb3494ad3070b70d636f4edf",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "chore/praxis-3.7.1",
+        "remoteCommit": "a49065ba2e5fdd94fb3494ad3070b70d636f4edf",
+        "summary": "upgrade applied, verified, pushed",
+        "nextAction": "complete, PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-06T12:19:18.000Z"
     }
   ]
 }
