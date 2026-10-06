@@ -195,3 +195,4 @@
 | WI-0001 | Remove stale Limen installation (Limen 0.7.0 upgrade; implements DF-AEGIS-2026-DBBD decision 2) | complete |  | medium |
 | WI-0002 | Move aegis to Praxis 3.7.1 (ROS -> Praxis rename) and Ordo 1.4.0 | complete | praxis, ordo, toolchain | medium |
 | WI-0003 | Move aegis to Ordo 1.4.1 | complete | ordo, toolchain | medium |
+| WI-0004 | Move aegis to Praxis 3.7.2, Ordo 1.4.2, Visual Engineering 1.0.1 and adopt Conditor | ready |  | medium |
