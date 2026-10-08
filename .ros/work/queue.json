@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "aegis",
-  "nextSeq": 5,
+  "nextSeq": 6,
   "items": [
     {
       "id": "SDE-INSTALL-1-2-0",
@@ -3567,6 +3567,27 @@
       "attachments": [],
       "createdAt": "2026-10-06T16:24:42.584Z",
       "updatedAt": "2026-10-06T16:30:27Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0005",
+      "title": "Move aegis to Ordo 1.5.0 via echelon-current 1.2.0 (conditor upgrade --current)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:13:15.386Z",
+      "updatedAt": "2026-10-08T07:14:20.477Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
