@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-10-06T16:30:27Z",
+  "updatedAt": "2026-10-08T07:14:20.477Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4944,6 +4944,60 @@
       },
       "completedAt": "2026-10-06T16:30:27Z",
       "conclusion": "Toolchain at praxis 3.7.2 / ordo 1.4.2; conditor.json adopted; verifiers pass."
+    },
+    {
+      "id": "WI-0005",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "conditor.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".conditor/lock.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".conditor/authority/resolved-release-set.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/toolchain.json"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/praxis-validation.yml"
+        }
+      ],
+      "updatedAt": "2026-10-08T07:14:20.477Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T071317085Z-fa5a8ae9"
+      ],
+      "latestCheckpoint": {
+        "id": "85c399b7c9fb4fdbf8566c8d",
+        "recordedAt": "2026-10-08T07:14:19.090Z",
+        "executionId": "EXE-20261008T071317085Z-fa5a8ae9",
+        "repository": "aegis",
+        "branch": "chore/ordo-1.5.0",
+        "commit": "7f0af09e3990b1997a434e153c536d365bdb3082",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "chore/ordo-1.5.0",
+        "remoteCommit": "7f0af09e3990b1997a434e153c536d365bdb3082",
+        "summary": "conditor upgrade --current to echelon-current 1.2.0 (Ordo 1.4.2 -> 1.5.0) committed and pushed; local checks passed",
+        "nextAction": "Open the PR, get CI green and merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T07:14:20.477Z",
+      "conclusion": "Ordo 1.5.0 through echelon-current 1.2.0; local checks passed (log: /tmp/claude-0/-home-user-praxis/7bcb3038-90cc-534e-8e5b-9be62aa1de8c/scratchpad/sweep/logs/aegis.log)"
     }
   ]
 }
