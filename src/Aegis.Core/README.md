@@ -80,4 +80,4 @@ declares.
 - [Agent integration](https://github.com/kemiller2002/aegis/blob/main/docs/aegis/AGENT-INTEGRATION.md) — for an AI agent adding Aegis to a codebase.
 - [Requirement traceability](https://github.com/kemiller2002/aegis/blob/main/docs/aegis/REQUIREMENTS-STATUS.md) — what is implemented and tested, and what is not.
 
-Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: MIT
+Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: PolyForm-Noncommercial-1.0.0

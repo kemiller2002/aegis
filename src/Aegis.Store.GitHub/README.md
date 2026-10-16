@@ -45,4 +45,4 @@ part of this repository — they belong outside it, built against the same
 engine's driver. See
 [`DF-AEGIS-2026-DBBD`](https://github.com/kemiller2002/aegis/blob/main/research/decisions/DF-AEGIS-2026-DBBD--aegis-repository-scope.md).
 
-Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: MIT
+Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: PolyForm-Noncommercial-1.0.0

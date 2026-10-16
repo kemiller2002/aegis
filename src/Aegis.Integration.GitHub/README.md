@@ -26,4 +26,4 @@ match GitHubFailure.ofStatus response with
 | None -> ()
 ```
 
-Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: MIT
+Source: [github.com/kemiller2002/aegis](https://github.com/kemiller2002/aegis) · License: PolyForm-Noncommercial-1.0.0

@@ -58,4 +58,6 @@ consuming it as a package.
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+Source available under PolyForm Noncommercial 1.0.0 for permitted noncommercial uses. Commercial use requires a separate license from Echelon Foundry. Previously distributed versions remain subject to the licenses under which they were released.
+
+Commercial licensing information is forthcoming.
