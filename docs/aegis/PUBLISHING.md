@@ -12,6 +12,18 @@ related_documents:
   - .github/workflows/publish-nuget.yml
   - scripts/preflight-nuget-publish.sh
 tags: [aegis, documentation, publishing, nuget]
+provenance:
+  contributions:
+    EXE-20261125T021113113Z-82c428ee:
+      operations: [modified]
+      at: 2026-11-25T02:12:32.076Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Document license-file packaging required for nuget.org"
 ---
 
 # Publishing Aegis to NuGet
@@ -96,6 +108,14 @@ sibling project —
 against the live registry before this convention was adopted). The
 `EchelonFoundry.` prefix is free across the whole namespace and matches the
 `@echelon-foundry` npm scope this organization already publishes under.
+
+## License metadata
+
+Since 2.0.0 the packages are licensed under PolyForm Noncommercial 1.0.0; 1.0.0
+was MIT. nuget.org accepts a license *expression* only for OSI- or
+FSF-approved licenses, and PolyForm Noncommercial is neither. The packages
+therefore embed the repository's `LICENSE` file (`PackageLicenseFile` in
+`Directory.Build.props`) instead of declaring `PackageLicenseExpression`.
 
 ## Versioning
 
