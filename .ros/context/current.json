@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-11-25T02:11:12.000Z",
+  "updatedAt": "2026-11-25T02:12:42.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5002,13 +5002,34 @@
     {
       "id": "WI-0006",
       "type": "mechanical",
-      "state": "active",
-      "semanticState": "active",
+      "state": "complete",
+      "semanticState": "complete",
       "evidence": [],
-      "updatedAt": "2026-11-25T02:11:12.000Z",
+      "updatedAt": "2026-11-25T02:12:42.000Z",
       "telemetryExecutionIds": [
         "EXE-20261125T021113113Z-82c428ee"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "9996c0946cf953cb285105e6",
+        "recordedAt": "2026-11-25T02:12:41.000Z",
+        "executionId": "EXE-20261125T021113113Z-82c428ee",
+        "repository": "aegis",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "74e1744e711346e94690d711a752c345f3d88b31",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "74e1744e711346e94690d711a752c345f3d88b31",
+        "summary": "Attribution reconciled and license-file packaging fixed; pushed",
+        "nextAction": "Complete WI-0006, open PR, merge, tag aegis-v2.0.0",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-25T02:12:42.000Z"
     }
   ]
 }
