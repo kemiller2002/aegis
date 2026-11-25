@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-11-25T02:12:42.000Z",
+  "updatedAt": "2026-11-25T12:33:03.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5030,6 +5030,47 @@
         }
       },
       "completedAt": "2026-11-25T02:12:42.000Z"
+    },
+    {
+      "id": "WI-0007",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Aegis.Core.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/Aegis.Core.Tests.fsproj"
+        }
+      ],
+      "updatedAt": "2026-11-25T12:33:03.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261125T123227156Z-c38621a0"
+      ],
+      "latestCheckpoint": {
+        "id": "f5cc66ecd3f66fed9c1a30c0",
+        "recordedAt": "2026-11-25T12:32:49.000Z",
+        "executionId": "EXE-20261125T123227156Z-c38621a0",
+        "repository": "aegis",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "2bc3b5efcd65510dfa6b1e0fb624a6d861a8e3ce",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "2bc3b5efcd65510dfa6b1e0fb624a6d861a8e3ce",
+        "summary": "2.0.1 FSharp.Core floor fix pushed",
+        "nextAction": "Complete WI-0007, PR, merge, publish 2.0.1",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-25T12:33:03.000Z"
     }
   ]
 }

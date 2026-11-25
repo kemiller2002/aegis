@@ -15,6 +15,18 @@ related_documents:
   - research/decisions/DF-AEGIS-2026-0CA3--aegis-implementation-sequencing.md
   - aegis-boundaries.json
 tags: [aegis, documentation, faults]
+provenance:
+  contributions:
+    EXE-20261125T123227156Z-c38621a0:
+      operations: [modified]
+      at: 2026-11-25T12:32:29.226Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Aegis 2.0.1: FSharp.Core floor"
 ---
 
 # Using Aegis
@@ -199,6 +211,13 @@ Since 2.0.0 these rules are enforced by code and tests, not convention
   is added without one.
 
 ### Compatibility for consumers upgrading from 1.0.0
+
+**Use 2.0.1, not 2.0.0.** 2.0.0's packages require FSharp.Core 11.0.101 or
+later: they were packed on a build machine whose newest SDK was .NET 11.
+Every consumer built with the .NET 10 SDK therefore fails restore with
+NU1605 (package downgrade). 2.0.1 changes nothing else. Its packages pin the
+FSharp.Core floor at 10.1.400, the floor 1.0.0 shipped with, whichever SDK
+packs them.
 
 **2.0.0 is a major release.** No public signature was removed or changed,
 and the new union types require qualified access (`Delivery.Persisted`,
