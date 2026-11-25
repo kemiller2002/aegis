@@ -7,7 +7,7 @@
     <WarningsAsErrors />
     <Description>GitHub integration failure model and translation into the Aegis fault model.</Description>
     <PackageId>EchelonFoundry.Aegis.Integration.GitHub</PackageId>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <PackageTags>fault-handling;aegis;github;fsharp</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- The package's FSharp.Core floor is pinned, not taken from whichever

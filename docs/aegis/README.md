@@ -27,6 +27,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Aegis 2.0.1: FSharp.Core floor"
+    EXE-20261125T152025088Z-f5a8daa0:
+      operations: [modified]
+      at: 2026-11-25T15:22:25.309Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Aegis 2.0.2: detached capture makes no blocking wait"
 ---
 
 # Using Aegis
@@ -212,7 +222,14 @@ Since 2.0.0 these rules are enforced by code and tests, not convention
 
 ### Compatibility for consumers upgrading from 1.0.0
 
-**Use 2.0.1, not 2.0.0.** 2.0.0's packages require FSharp.Core 11.0.101 or
+**Use 2.0.2.** In 2.0.0 and 2.0.1, `capture` and `captureReported` waited
+synchronously for the fault record even with the default `Detached`
+persistence. A single-threaded host such as WebAssembly cannot complete that
+wait, so the first fault froze the page. From 2.0.2 a detached capture starts
+the record and returns without any blocking wait; only `Blocking`
+(`forCommandLine`) waits. Nothing else changes.
+
+**Do not use 2.0.0.** 2.0.0's packages require FSharp.Core 11.0.101 or
 later: they were packed on a build machine whose newest SDK was .NET 11.
 Every consumer built with the .NET 10 SDK therefore fails restore with
 NU1605 (package downgrade). 2.0.1 changes nothing else. Its packages pin the

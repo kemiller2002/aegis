@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-11-25T12:33:03.000Z",
+  "updatedAt": "2026-11-25T15:22:28Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5071,6 +5071,47 @@
         }
       },
       "completedAt": "2026-11-25T12:33:03.000Z"
+    },
+    {
+      "id": "WI-0008",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Aegis.Core.Tests/FailureSemanticsTests.fs"
+        }
+      ],
+      "updatedAt": "2026-11-25T15:22:28Z",
+      "telemetryExecutionIds": [
+        "EXE-20261125T152025088Z-f5a8daa0"
+      ],
+      "latestCheckpoint": {
+        "id": "a82123167e8103834ced20e8",
+        "recordedAt": "2026-11-25T15:22:28Z",
+        "executionId": "EXE-20261125T152025088Z-f5a8daa0",
+        "repository": "aegis",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "98b2ece9b9085050e88ebdb5cfc7fb2d576f9662",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "98b2ece9b9085050e88ebdb5cfc7fb2d576f9662",
+        "summary": "Detached capture no longer blocks; 349/349 tests; builds 0 warnings on SDK 10 and 11; packages keep FSharp.Core 10.1.400",
+        "nextAction": "Merge, publish 2.0.2",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-25T15:22:28Z"
     }
   ]
 }
