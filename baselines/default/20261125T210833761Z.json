@@ -1,0 +1,9 @@
+{
+  "AcceptedAt": "2026-11-25T21:08:33.7612873+00:00",
+  "Actor": "kemiller2002",
+  "Contract": "dokimos.baseline-acceptance",
+  "Name": "default",
+  "Reason": "Re-baseline after upgrading the Dokimos gate from 0.1.0 to 0.11.1 (aegis#28, WI-0010); previous baseline was collected by Dokimos 0.1.0.",
+  "SchemaVersion": "1.0.0",
+  "SnapshotId": "kemiller2002/aegis@0b4bbb46a1a4e537c258b2efcc9b86c6b4651a39:6bbb0b709e00172e"
+}
