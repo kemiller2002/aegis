@@ -201,4 +201,4 @@
 | WI-0007 | Release Aegis 2.0.1: pin the FSharp.Core floor at 10.1.400 (2.0.0 required 11.0.101) | complete |  | medium |
 | WI-0008 | Release Aegis 2.0.2: a detached capture makes no blocking wait (WebAssembly hang) | complete |  | medium |
 | WI-0009 | Upgrade to echelon-current 1.42.0 (praxis 3.7.2->3.25.0, ordo 1.5.0->1.20.0) | complete |  | medium |
-| WI-0010 | Move Dokimos CI gate from 0.1.0 to 0.11.1 (echelon-current 1.42.0) | ready |  | medium |
+| WI-0010 | Move Dokimos CI gate from 0.1.0 to 0.11.1 (echelon-current 1.42.0) | complete |  | medium |

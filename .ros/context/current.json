@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-11-25T20:37:25Z",
+  "updatedAt": "2026-11-25T20:41:29Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5157,13 +5157,47 @@
     {
       "id": "WI-0010",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-25T20:37:25Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".github/workflows/dokimos.yml"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Aegis.Core/Capture.fs"
+        },
+        {
+          "type": "tests",
+          "path": ".dokimos/EVIDENCE.md"
+        }
+      ],
+      "updatedAt": "2026-11-25T20:41:29Z",
       "telemetryExecutionIds": [
         "EXE-20261125T203726885Z-7b26159d"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "4d89f16e0f8f8d694f59bdb6",
+        "recordedAt": "2026-11-25T20:41:02Z",
+        "executionId": "EXE-20261125T203726885Z-7b26159d",
+        "repository": "aegis",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "cd600ffdaae90fd9f5dd6c2e5df48e8ddc822203",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "cd600ffdaae90fd9f5dd6c2e5df48e8ddc822203",
+        "summary": "Dokimos workflow and installation record moved to 0.11.1; Capture.fs mutable bindings removed; build 0 warnings, 349 tests pass; local gate passed-with-warnings (Catalog.fs hotspot)",
+        "nextAction": "Complete WI-0010 and open the draft PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-25T20:41:29Z"
     }
   ]
 }
