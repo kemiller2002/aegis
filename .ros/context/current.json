@@ -4,7 +4,7 @@
   "repository": "aegis",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-09-16T17:42:10.734Z",
-  "updatedAt": "2026-11-25T15:22:28Z",
+  "updatedAt": "2026-11-25T17:52:22Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5112,6 +5112,47 @@
         }
       },
       "completedAt": "2026-11-25T15:22:28Z"
+    },
+    {
+      "id": "WI-0009",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".conditor/lock.json"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/build.yml"
+        }
+      ],
+      "updatedAt": "2026-11-25T17:52:22Z",
+      "telemetryExecutionIds": [
+        "EXE-20261125T175005018Z-7b024d16"
+      ],
+      "latestCheckpoint": {
+        "id": "c85a256bc27f642041964de3",
+        "recordedAt": "2026-11-25T17:52:19Z",
+        "executionId": "EXE-20261125T175005018Z-7b024d16",
+        "repository": "aegis",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "1108d0f21ae205e7f524edcb0119ee4f443062b9",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/aegis"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "1108d0f21ae205e7f524edcb0119ee4f443062b9",
+        "summary": "Conditor upgraded aegis to echelon-current 1.42.0 (praxis 3.25.0, ordo 1.20.0); build and 349 tests pass; praxis validate passes",
+        "nextAction": "complete the work item and open a draft PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-25T17:52:22Z"
     }
   ]
 }

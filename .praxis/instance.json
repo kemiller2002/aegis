@@ -1,0 +1,12 @@
+{
+  "schema": "praxis.instance/1",
+  "instanceId": "pxi-6beffa587e6e423692392de8ccd215d4",
+  "createdAt": "2026-11-25T17:50:26.867Z",
+  "createdWith": "3.25.0",
+  "repository": {
+    "provider": "github",
+    "repositoryId": null,
+    "repository": "kemiller2002/aegis"
+  },
+  "predecessors": []
+}
