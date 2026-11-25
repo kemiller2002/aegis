@@ -1,13 +1,20 @@
 {
-  "ActionRef": "2923d18917ed06601d996febd1793ab7a1fcd8e8",
-  "ConfigurationVersion": 1,
+  "ActionRef": "fecbe0c51dda4d87a78e43a034c38c00e6045c7b",
+  "BuildTarget": "Aegis.sln",
+  "ConfigurationVersion": 2,
   "Contract": "dokimos.installation",
-  "DokimosVersion": "0.1.0",
+  "DefaultBranch": "main",
+  "DokimosVersion": "0.11.1",
   "EvidenceBranch": "dokimos-evidence",
   "InitialBaseline": "The first default-branch run persists a snapshot; accept it with workflow_dispatch accept-baseline=true.",
-  "PackageSha256": "9fcc30e71e843a20c8b69fcc204e574d590c077b25899c2808e59a9173dba536",
+  "Ownership": {
+    "InstallationRecord": "dokimos-owned",
+    "Policy": "created-if-missing; user-owned after creation",
+    "Workflow": "dokimos-owned"
+  },
+  "PackageSha256": null,
   "Policy": ".dokimos/policy.json",
-  "SchemaVersion": "1.0.0",
+  "SchemaVersion": "1.1.0",
   "Sources": [
     "src"
   ],

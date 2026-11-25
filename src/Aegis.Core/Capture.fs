@@ -110,14 +110,16 @@ module internal DetachedDeliveries =
     open System.Threading
     open System.Threading.Tasks
 
+    // Counters are cells updated only through Interlocked, so no binding in
+    // this module is ever reassigned.
     let private inFlight = ConcurrentDictionary<int64, Task>()
-    let mutable private nextKey = 0L
-    let mutable private completed = 0L
-    let mutable private requiredFailures = 0L
-    let mutable private faulted = 0L
+    let private nextKey = ref 0L
+    let private completed = ref 0L
+    let private requiredFailures = ref 0L
+    let private faulted = ref 0L
 
     let track (delivery: Async<Sinks.Report>) =
-        let key = Interlocked.Increment(&nextKey)
+        let key = Interlocked.Increment(&nextKey.contents)
         let finished = TaskCompletionSource<unit>(TaskCreationOptions.RunContinuationsAsynchronously)
         // Registered before delivery starts, so a flush can never miss it.
         inFlight.[key] <- finished.Task
@@ -129,12 +131,12 @@ module internal DetachedDeliveries =
                         let! report = delivery
 
                         if report.RequiredFailed then
-                            Interlocked.Increment(&requiredFailures) |> ignore
+                            Interlocked.Increment(&requiredFailures.contents) |> ignore
                     with _ ->
                         // Counted, so the loss is observable.
-                        Interlocked.Increment(&faulted) |> ignore
+                        Interlocked.Increment(&faulted.contents) |> ignore
                 finally
-                    Interlocked.Increment(&completed) |> ignore
+                    Interlocked.Increment(&completed.contents) |> ignore
                     inFlight.TryRemove key |> ignore
                     finished.TrySetResult() |> ignore
             }
@@ -142,9 +144,9 @@ module internal DetachedDeliveries =
 
     let status () =
         { Pending = inFlight.Count
-          Completed = Interlocked.Read(&completed)
-          RequiredFailures = Interlocked.Read(&requiredFailures)
-          Faulted = Interlocked.Read(&faulted) }
+          Completed = Interlocked.Read(&completed.contents)
+          RequiredFailures = Interlocked.Read(&requiredFailures.contents)
+          Faulted = Interlocked.Read(&faulted.contents) }
 
     let flush (timeout: TimeSpan) =
         let pending = inFlight.Values |> Seq.toArray
