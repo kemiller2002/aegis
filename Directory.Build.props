@@ -9,7 +9,11 @@
     <Authors>Echelon Foundry</Authors>
     <Company>Echelon Foundry</Company>
     <Copyright>Copyright Echelon Foundry</Copyright>
-    <PackageLicenseExpression>PolyForm-Noncommercial-1.0.0</PackageLicenseExpression>
+    <!-- nuget.org accepts license expressions only for OSI- or FSF-approved
+         licenses (https://learn.microsoft.com/nuget/nuget-org/licenses.nuget.org);
+         PolyForm-Noncommercial-1.0.0 is neither, and licenses.nuget.org does not
+         host it. The license text is therefore embedded as a file. -->
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/kemiller2002/aegis</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kemiller2002/aegis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -21,5 +25,9 @@
          embeds a machine-specific source path into the package; unset here means off
          by default for local builds. -->
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
 
 </Project>
