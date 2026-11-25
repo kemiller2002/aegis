@@ -1,4 +1,4 @@
-# Installed by `dokimos init` (Dokimos 0.1.0). Pinned: do not float these versions.
+# Managed by Dokimos (installed by `dokimos init`; Dokimos 0.11.1). Pinned: do not float these versions.
 name: Dokimos
 
 on:
@@ -38,10 +38,9 @@ jobs:
       - name: Test (TRX captured as evidence)
         continue-on-error: true
         run: dotnet test Aegis.sln --configuration Release --no-build --logger trx --results-directory artifacts/dokimos/test-results
-      - uses: kemiller2002/dokimos/actions/quality-gate@2923d18917ed06601d996febd1793ab7a1fcd8e8
+      - uses: kemiller2002/dokimos/actions/quality-gate@fecbe0c51dda4d87a78e43a034c38c00e6045c7b
         with:
-          version: 0.1.0
-          package-sha256: 9fcc30e71e843a20c8b69fcc204e574d590c077b25899c2808e59a9173dba536
+          version: 0.11.1
           source: src
           policy: .dokimos/policy.json
           build-log: artifacts/dokimos/build.log
