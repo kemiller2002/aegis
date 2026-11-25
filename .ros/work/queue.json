@@ -3647,10 +3647,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-25T17:49:59.751Z",
-      "updatedAt": "2026-11-25T17:50:03Z",
+      "updatedAt": "2026-11-25T17:52:22Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
