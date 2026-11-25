@@ -324,6 +324,19 @@ module Aegis =
             return { Fault = fault; Delivery = delivery }
         }
 
+    /// Record a failure from a synchronous boundary. A detached record is
+    /// started without any blocking wait, so a single-threaded host such as
+    /// WebAssembly, which cannot complete one, is never stalled; only a
+    /// Blocking configuration waits for delivery. Requirements: logging 18;
+    /// core 5.
+    let private recordFailureNow config scope classify (ex: exn) =
+        match config.Persistence with
+        | Detached ->
+            let fault = classify scope ex
+            reportDetached config (FaultRecorded fault)
+            { Fault = fault; Delivery = Delivery.NotAwaited }
+        | Blocking -> recordFailure config scope classify ex |> Async.RunSynchronously
+
     /// Guard a boundary and report what happened to the fault's record as
     /// well as the fault itself. Use this where persistence matters: with a
     /// Required sink, `RequiredSinkFailed` tells the caller the fault was
@@ -336,7 +349,7 @@ module Aegis =
         with ex ->
             if isProgrammingDefect ex then reraise ()
             elif isCancellation ex then reraise ()
-            else Result.Error(recordFailure config scope classify ex |> Async.RunSynchronously)
+            else Result.Error(recordFailureNow config scope classify ex)
 
     /// Async form of `captureReported`.
     let captureReportedAsync config scope classify (operation: unit -> Async<'T>) : Async<Result<'T, Captured>> =

@@ -382,3 +382,52 @@ let ``forCommandLine awaits delivery before capture returns`` () =
     Assert.Equal(Blocking, config.Persistence)
     Aegis.capture config scope classify (fun () -> failwith "boom") |> ignore
     Assert.Single collector.Events |> ignore
+
+/// A synchronization context that records every blocking wait made on its
+/// thread. A single-threaded host (WebAssembly) cannot complete such a wait,
+/// so a detached capture must make none.
+type private WaitRecordingContext() as this =
+    inherit Threading.SynchronizationContext()
+    do this.SetWaitNotificationRequired()
+    member val Waits = 0 with get, set
+
+    override this.Wait(handles, waitAll, timeout) =
+        this.Waits <- this.Waits + 1
+        Threading.SynchronizationContext.WaitHelper(handles, waitAll, timeout)
+
+let private onRecordingContext (action: unit -> 'T) =
+    let context = WaitRecordingContext()
+    let previous = Threading.SynchronizationContext.Current
+
+    try
+        Threading.SynchronizationContext.SetSynchronizationContext context
+        let result = action ()
+        result, context.Waits
+    finally
+        Threading.SynchronizationContext.SetSynchronizationContext previous
+
+[<Fact>]
+let ``a detached capture makes no blocking wait, so a single-threaded host is never stalled`` () =
+    let slow =
+        { Sinks.noOp with
+            Name = "slow"
+            Write = fun _ -> async { do! Async.Sleep 200 } }
+
+    let config = configWith Detached [ slow ]
+    let scope = Aegis.scope config "Summa.Backlog.Read" Map.empty
+
+    let result, waits =
+        onRecordingContext (fun () -> Aegis.capture config scope classify (fun () -> failwith "unreadable response"))
+
+    Assert.True(Result.isError result)
+    Assert.Equal(0, waits)
+
+[<Fact>]
+let ``a blocking capture still awaits its delivery`` () =
+    let collector = Sinks.Collector()
+    let config = configWith Blocking [ collector.Sink Sinks.Required ]
+    let scope = Aegis.scope config "Praxis.Audit.Write" Map.empty
+
+    match Aegis.captureReported config scope classify (fun () -> failwith "boom") with
+    | Result.Error { Delivery = Delivery.Persisted _ } -> ()
+    | other -> failwith $"expected Persisted, got {other}"
