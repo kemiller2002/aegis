@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "aegis",
-  "nextSeq": 10,
+  "nextSeq": 11,
   "items": [
     {
       "id": "SDE-INSTALL-1-2-0",
@@ -3651,6 +3651,27 @@
       "attachments": [],
       "createdAt": "2026-11-25T17:49:59.751Z",
       "updatedAt": "2026-11-25T17:52:22Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0010",
+      "title": "Move Dokimos CI gate from 0.1.0 to 0.11.1 (echelon-current 1.42.0)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-25T20:37:22.951Z",
+      "updatedAt": "2026-11-25T20:37:25Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
